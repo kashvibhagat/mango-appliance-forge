@@ -21,7 +21,6 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import ProductCard from '@/components/ui/ProductCard';
-import { useCart } from '@/contexts/CartContext';
 import { allProducts } from '@/data/products';
 
 const ProductDetail = () => {
@@ -29,7 +28,6 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const { addToCart } = useCart();
 
   const product = allProducts.find(p => p.slug === slug);
 
@@ -255,7 +253,6 @@ const ProductDetail = () => {
                 size="lg" 
                 className="flex-1 btn-hero"
                 disabled={!product.inStock}
-                onClick={() => addToCart(product, quantity)}
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
                 Add to Cart

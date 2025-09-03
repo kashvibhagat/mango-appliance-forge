@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Product } from '@/types/product';
-import { useCart } from '@/contexts/CartContext';
 
 interface ProductCardProps {
   product: Product;
@@ -12,8 +11,6 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, className = '' }: ProductCardProps) => {
-  const { addToCart } = useCart();
-  
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
@@ -59,14 +56,7 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
 
         {/* Quick Actions - appear on hover */}
         <div className="absolute bottom-3 left-3 right-3 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-          <Button 
-            className="w-full btn-hero text-sm"
-            onClick={(e) => {
-              e.preventDefault();
-              addToCart(product, 1);
-            }}
-            disabled={!product.inStock}
-          >
+          <Button className="w-full btn-hero text-sm">
             <ShoppingCart className="h-4 w-4 mr-2" />
             Add to Cart
           </Button>

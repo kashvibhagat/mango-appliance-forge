@@ -89,8 +89,7 @@
 @layer components {
   /* Button Variants */
   .btn-hero {
-    background: linear-gradient(135deg, hsl(var(--brand)), hsl(var(--accent)));
-    @apply text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300;
+    @apply bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300;
   }
   
   .btn-secondary {
