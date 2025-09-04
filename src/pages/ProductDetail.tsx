@@ -22,14 +22,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import ProductCard from '@/components/ui/ProductCard';
 import { allProducts } from '@/data/products';
+import { useCart } from '@/contexts/CartContext';
 
 const ProductDetail = () => {
   const { slug } = useParams();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { addItem } = useCart();
 
   const product = allProducts.find(p => p.slug === slug);
+
+  const handleAddToCart = () => {
+    if (product) {
+      // Add multiple items based on quantity
+      for (let i = 0; i < quantity; i++) {
+        addItem(product);
+      }
+    }
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart();
+    // In a real app, this would redirect to checkout
+    window.location.href = '/cart';
+  };
 
   if (!product) {
     return (
@@ -253,6 +270,7 @@ const ProductDetail = () => {
                 size="lg" 
                 className="flex-1 btn-hero"
                 disabled={!product.inStock}
+                onClick={handleAddToCart}
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
                 Add to Cart
@@ -270,7 +288,13 @@ const ProductDetail = () => {
               </Button>
             </div>
 
-            <Button variant="outline" size="lg" className="w-full" disabled={!product.inStock}>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="w-full" 
+              disabled={!product.inStock}
+              onClick={handleBuyNow}
+            >
               Buy Now
             </Button>
           </div>

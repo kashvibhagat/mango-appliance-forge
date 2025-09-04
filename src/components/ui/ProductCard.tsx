@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Product } from '@/types/product';
+import { useCart } from '@/contexts/CartContext';
 
 interface ProductCardProps {
   product: Product;
@@ -11,9 +12,17 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, className = '' }: ProductCardProps) => {
+  const { addItem } = useCart();
+  
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(product);
+  };
 
   return (
     <Card className={`group card-hover overflow-hidden ${className}`}>
@@ -56,9 +65,13 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
 
         {/* Quick Actions - appear on hover */}
         <div className="absolute bottom-3 left-3 right-3 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-          <Button className="w-full btn-hero text-sm">
+          <Button 
+            className="w-full btn-hero text-sm" 
+            onClick={handleAddToCart}
+            disabled={!product.inStock}
+          >
             <ShoppingCart className="h-4 w-4 mr-2" />
-            Add to Cart
+            {product.inStock ? 'Add to Cart' : 'Out of Stock'}
           </Button>
         </div>
       </div>
