@@ -17,7 +17,7 @@ const Header = () => {
     { name: 'Shop', href: '/shop' },
     { name: 'Air Coolers', href: '/shop?category=air-coolers' },
     { name: 'Spare Parts', href: '/shop?category=spare-parts' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Track Order', href: '/track-order' },
   ];
 
   const isActive = (href: string) => {

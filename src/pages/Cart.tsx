@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,17 +8,6 @@ import { useCart } from '@/contexts/CartContext';
 
 const Cart = () => {
   const { items, total, itemCount, updateQuantity, removeItem, clearCart } = useCart();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleCheckout = async () => {
-    setIsLoading(true);
-    // Simulate checkout process
-    setTimeout(() => {
-      setIsLoading(false);
-      // In a real app, this would redirect to checkout
-      alert('Checkout functionality will be implemented next!');
-    }, 1000);
-  };
 
   if (items.length === 0) {
     return (
@@ -189,10 +177,11 @@ const Cart = () => {
               <Button 
                 className="w-full btn-hero"
                 size="lg"
-                onClick={handleCheckout}
-                disabled={isLoading}
+                asChild
               >
-                {isLoading ? 'Processing...' : 'Proceed to Checkout'}
+                <Link to="/checkout">
+                  Proceed to Checkout
+                </Link>
               </Button>
 
               <div className="mt-4 text-center">
