@@ -4,52 +4,53 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mango Appliances Design System - Dark Theme */
+/* Mango Appliances Design System - Light Theme */
 
 @layer base {
   :root {
     /* Mango Brand Colors (HSL) */
-    --bg: 217 30% 7%;          /* #0b0e13 */
-    --card: 220 20% 11%;       /* #121722 */
-    --muted: 212 14% 68%;      /* #9aa4b2 */
-    --text: 216 40% 93%;       /* #e8eef9 */
-    --brand: 217 91% 60%;      /* #3b82f6 */
-    --accent: 185 84% 59%;     /* #22d3ee */
-    --ok: 142 71% 45%;         /* #22c55e */
-    --warn: 38 92% 50%;        /* #f59e0b */
-    --danger: 0 84% 60%;       /* #ef4444 */
+    --mango-orange: 38 100% 55%;    /* #FFB000 - Primary Mango Orange */
+    --mango-blue: 217 91% 35%;      /* #1E3A8A - Deep Blue */
+    --mango-light-blue: 207 90% 54%; /* #2563EB - Lighter Blue */
+    --white: 0 0% 100%;             /* #FFFFFF */
+    --light-gray: 210 20% 98%;      /* #F8FAFC */
+    --gray: 215 20% 65%;            /* #94A3B8 */
+    --dark-gray: 215 25% 27%;       /* #334155 */
+    --success: 142 71% 45%;         /* #22C55E */
+    --warning: 38 92% 50%;          /* #F59E0B */
+    --error: 0 84% 60%;             /* #EF4444 */
     
     /* Design System Tokens */
-    --background: var(--bg);
-    --foreground: var(--text);
-    --card: var(--card);
-    --card-foreground: var(--text);
-    --popover: var(--card);
-    --popover-foreground: var(--text);
-    --primary: var(--brand);
-    --primary-foreground: var(--text);
-    --secondary: 220 15% 15%;
-    --secondary-foreground: var(--text);
-    --muted: 220 15% 15%;
-    --muted-foreground: var(--muted);
-    --accent: var(--accent);
-    --accent-foreground: var(--bg);
-    --destructive: var(--danger);
-    --destructive-foreground: var(--text);
-    --border: 220 15% 20%;
-    --input: 220 15% 15%;
-    --ring: var(--brand);
-    --radius: 16px;
+    --background: var(--white);
+    --foreground: var(--dark-gray);
+    --card: var(--white);
+    --card-foreground: var(--dark-gray);
+    --popover: var(--white);
+    --popover-foreground: var(--dark-gray);
+    --primary: var(--mango-orange);
+    --primary-foreground: var(--white);
+    --secondary: var(--mango-blue);
+    --secondary-foreground: var(--white);
+    --muted: var(--light-gray);
+    --muted-foreground: var(--gray);
+    --accent: var(--mango-light-blue);
+    --accent-foreground: var(--white);
+    --destructive: var(--error);
+    --destructive-foreground: var(--white);
+    --border: 214 32% 91%;          /* #E2E8F0 */
+    --input: 214 32% 91%;           /* #E2E8F0 */
+    --ring: var(--mango-orange);
+    --radius: 8px;
     
     /* Gradients */
-    --gradient-brand: linear-gradient(135deg, hsl(var(--brand)), hsl(var(--accent)));
-    --gradient-card: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(220 20% 13%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(var(--bg)) 0%, hsl(220 25% 8%) 100%);
+    --gradient-brand: linear-gradient(135deg, hsl(var(--mango-orange)), hsl(var(--warning)));
+    --gradient-card: linear-gradient(135deg, hsl(var(--white)) 0%, hsl(var(--light-gray)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--light-gray)) 0%, hsl(var(--white)) 100%);
     
     /* Shadows */
-    --shadow-card: 0 4px 20px -2px hsl(var(--bg) / 0.3);
-    --shadow-brand: 0 8px 30px -8px hsl(var(--brand) / 0.4);
-    --shadow-accent: 0 0 40px hsl(var(--accent) / 0.2);
+    --shadow-card: 0 4px 20px -2px hsl(var(--gray) / 0.1);
+    --shadow-brand: 0 8px 30px -8px hsl(var(--mango-orange) / 0.3);
+    --shadow-accent: 0 0 40px hsl(var(--mango-light-blue) / 0.15);
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -64,7 +65,7 @@
   
   body {
     @apply bg-background text-foreground font-inter antialiased;
-    background: hsl(var(--bg));
+    background: hsl(var(--background));
   }
   
   /* Custom scrollbar */
@@ -73,16 +74,16 @@
   }
   
   ::-webkit-scrollbar-track {
-    background: hsl(var(--bg));
+    background: hsl(var(--background));
   }
   
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted) / 0.5);
+    background: hsl(var(--muted-foreground) / 0.3);
     border-radius: 4px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted));
+    background: hsl(var(--muted-foreground) / 0.5);
   }
 }
 
@@ -94,7 +95,7 @@
   }
   
   .btn-secondary {
-    @apply bg-card/50 text-foreground border border-border hover:bg-card hover:border-accent/50 transition-all duration-300;
+    @apply bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary/90 hover:shadow-lg transition-all duration-300;
   }
   
   .btn-ghost {
@@ -103,11 +104,11 @@
   
   /* Card Variants */
   .card-glass {
-    @apply bg-card/60 backdrop-blur-lg border border-border/50 shadow-lg;
+    @apply bg-white/80 backdrop-blur-lg border border-border shadow-lg;
   }
   
   .card-hover {
-    @apply hover:shadow-xl hover:scale-[1.02] hover:bg-card/80 transition-all duration-300;
+    @apply hover:shadow-xl hover:scale-[1.02] hover:shadow-brand transition-all duration-300;
   }
   
   /* Product Grid */

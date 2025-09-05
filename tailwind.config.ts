@@ -56,11 +56,13 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				// Mango brand colors
-				brand: 'hsl(var(--brand))',
-				cyan: 'hsl(var(--accent))',
-				ok: 'hsl(var(--ok))',
-				warn: 'hsl(var(--warn))',
-				danger: 'hsl(var(--danger))',
+				'mango-orange': 'hsl(var(--mango-orange))',
+				'mango-blue': 'hsl(var(--mango-blue))',
+				'mango-light-blue': 'hsl(var(--mango-light-blue))',
+				brand: 'hsl(var(--mango-orange))',
+				success: 'hsl(var(--success))',
+				warning: 'hsl(var(--warning))',
+				error: 'hsl(var(--error))',
 			},
 			backgroundImage: {
 				'gradient-brand': 'var(--gradient-brand)',
