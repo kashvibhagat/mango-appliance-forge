@@ -21,8 +21,8 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-sm text-muted-foreground">
-              Premium air coolers and genuine spare parts for your cooling needs. 
-              Quality products with excellent service since 2015.
+              Growing company into evaporative air coolers with over 25 models. 
+              Pan India network with international exports. Quality products with 15+ years experience.
             </p>
             <div className="flex space-x-3">
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -94,15 +94,19 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4 text-accent" />
-                <span>+91 98765 43210</span>
+                <span>+91 880 404 8811</span>
+              </div>
+              <div className="flex items-center space-x-3 text-sm text-muted-foreground">
+                <Phone className="h-4 w-4 text-accent" />
+                <span>1800 1200 670 (Toll Free)</span>
               </div>
               <div className="flex items-center space-x-3 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-accent" />
-                <span>support@mangoappliances.com</span>
+                <span>info@mangoappliances.com</span>
               </div>
               <div className="flex items-start space-x-3 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4 text-accent mt-0.5" />
-                <span>123 Business Park,<br />Electronic City, Bangalore - 560100</span>
+                <span>Rishika Industries Ltd.<br />Nargol Road, Manda, Valsad<br />Gujarat - 396155</span>
               </div>
             </div>
 

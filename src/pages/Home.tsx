@@ -28,10 +28,10 @@ const Home = () => {
   ];
 
   const stats = [
-    { number: '50,000+', label: 'Happy Customers' },
-    { number: '500+', label: 'Products' },
+    { number: '25+', label: 'Air Cooler Models' },
+    { number: 'Pan India', label: 'Distribution Network' },
     { number: '15+', label: 'Years Experience' },
-    { number: '4.8★', label: 'Average Rating' }
+    { number: '3', label: 'Manufacturing Units' }
   ];
 
   return (
@@ -49,12 +49,11 @@ const Home = () => {
                 <h1 className="text-4xl lg:text-6xl font-bold text-foreground leading-tight">
                   Beat the Heat with{' '}
                   <span className="bg-gradient-brand bg-clip-text text-transparent">
-                    Mango Coolers
+                    Mango Appliances
                   </span>
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-lg">
-                  Discover premium air coolers and genuine spare parts designed for 
-                  maximum cooling efficiency and long-lasting performance.
+                  Growing company into evaporative air coolers with over 25 models in Personal, Tower & Desert coolers for cooling large spaces. Quality products with 15+ years of experience.
                 </p>
               </div>
 
@@ -121,29 +120,60 @@ const Home = () => {
               Shop by Category
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Explore our wide range of premium air coolers and genuine spare parts 
-              for all your cooling needs.
+              Explore our comprehensive range of evaporative air coolers including Personal, Tower & Desert coolers plus genuine spare parts for all your cooling needs.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Air Coolers Category */}
-            <Link to="/shop?category=air-coolers" className="group">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {/* Personal Coolers Category */}
+            <Link to="/shop?category=personal-coolers" className="group">
               <Card className="card-hover overflow-hidden">
                 <div className="relative">
                   <img
                     src={heroAirCooler}
-                    alt="Air Coolers"
-                    className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                    alt="Personal Coolers"
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute bottom-6 left-6 text-white">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <ThermometerSun className="h-5 w-5" />
-                      <span className="text-sm font-medium">Cooling Solutions</span>
-                    </div>
-                    <h3 className="text-2xl font-bold mb-2">Air Coolers</h3>
-                    <p className="text-sm opacity-90">Premium desert & personal coolers</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 className="text-lg font-bold mb-1">Personal Coolers</h3>
+                    <p className="text-xs opacity-90">Cool Master, Thunder Plus</p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+
+            {/* Tower Coolers Category */}
+            <Link to="/shop?category=tower-coolers" className="group">
+              <Card className="card-hover overflow-hidden">
+                <div className="relative">
+                  <img
+                    src={heroAirCooler}
+                    alt="Tower Coolers"
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 className="text-lg font-bold mb-1">Tower Coolers</h3>
+                    <p className="text-xs opacity-90">Arctic TC Series</p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+
+            {/* Desert Coolers Category */}
+            <Link to="/shop?category=desert-coolers" className="group">
+              <Card className="card-hover overflow-hidden">
+                <div className="relative">
+                  <img
+                    src={heroAirCooler}
+                    alt="Desert Coolers"
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 className="text-lg font-bold mb-1">Desert Coolers</h3>
+                    <p className="text-xs opacity-90">Wintry Series</p>
                   </div>
                 </div>
               </Card>
@@ -156,16 +186,12 @@ const Home = () => {
                   <img
                     src={heroSpares}
                     alt="Spare Parts"
-                    className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute bottom-6 left-6 text-white">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Star className="h-5 w-5" />
-                      <span className="text-sm font-medium">Genuine Parts</span>
-                    </div>
-                    <h3 className="text-2xl font-bold mb-2">Spare Parts</h3>
-                    <p className="text-sm opacity-90">Cooling pads, pumps & accessories</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 className="text-lg font-bold mb-1">Spare Parts</h3>
+                    <p className="text-xs opacity-90">Genuine Mango Parts</p>
                   </div>
                 </div>
               </Card>
@@ -218,7 +244,7 @@ const Home = () => {
                 Get Expert Advice
               </Button>
               <Button size="lg" variant="outline" className="btn-secondary text-base px-8">
-                Call +91 98765 43210
+                Call +91 880 404 8811
               </Button>
             </div>
           </div>

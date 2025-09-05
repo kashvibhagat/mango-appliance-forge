@@ -3,56 +3,117 @@ import { Product, ProductCategory } from '@/types/product';
 export const categories: ProductCategory[] = [
   {
     id: '1',
-    name: 'Air Coolers',
-    slug: 'air-coolers',
-    description: 'Premium air coolers for home and office cooling',
+    name: 'Personal Coolers',
+    slug: 'personal-coolers',
+    description: 'Compact personal coolers perfect for small spaces and individual cooling',
     filters: [
       {
         id: 'price',
         name: 'Price',
         type: 'range',
         min: 5000,
-        max: 50000,
+        max: 25000,
         unit: '₹'
       },
       {
         id: 'cooling-area',
-        name: 'Cooling Area',
+        name: 'Room Space',
         type: 'select',
         options: [
-          { value: 'small', label: 'Small (150-300 sq ft)', count: 12 },
-          { value: 'medium', label: 'Medium (300-600 sq ft)', count: 18 },
-          { value: 'large', label: 'Large (600+ sq ft)', count: 8 }
+          { value: '150-250', label: '150-250 sq ft', count: 8 },
+          { value: '250-350', label: '250-350 sq ft', count: 10 },
+          { value: '350-450', label: '350-450 sq ft', count: 6 }
         ]
       },
       {
         id: 'tank-capacity',
-        name: 'Tank Capacity',
+        name: 'Tank Size',
         type: 'select',
         options: [
-          { value: '20-30', label: '20-30 Liters', count: 8 },
-          { value: '30-50', label: '30-50 Liters', count: 15 },
-          { value: '50+', label: '50+ Liters', count: 15 }
-        ]
-      },
-      {
-        id: 'type',
-        name: 'Type',
-        type: 'checkbox',
-        options: [
-          { value: 'personal', label: 'Personal', count: 12 },
-          { value: 'desert', label: 'Desert', count: 16 },
-          { value: 'window', label: 'Window', count: 8 },
-          { value: 'tower', label: 'Tower', count: 12 }
+          { value: '15-25', label: '15-25 Liters', count: 12 },
+          { value: '25-35', label: '25-35 Liters', count: 8 },
+          { value: '35+', label: '35+ Liters', count: 4 }
         ]
       }
     ]
   },
   {
     id: '2',
+    name: 'Tower Coolers',
+    slug: 'tower-coolers',
+    description: 'Sleek tower air coolers with space-saving vertical designs',
+    filters: [
+      {
+        id: 'price',
+        name: 'Price',
+        type: 'range',
+        min: 8000,
+        max: 35000,
+        unit: '₹'
+      },
+      {
+        id: 'cooling-area',
+        name: 'Room Space',
+        type: 'select',
+        options: [
+          { value: '300-500', label: '300-500 sq ft', count: 6 },
+          { value: '500-700', label: '500-700 sq ft', count: 8 },
+          { value: '700+', label: '700+ sq ft', count: 4 }
+        ]
+      },
+      {
+        id: 'tank-capacity',
+        name: 'Tank Size',
+        type: 'select',
+        options: [
+          { value: '25-40', label: '25-40 Liters', count: 8 },
+          { value: '40-60', label: '40-60 Liters', count: 6 },
+          { value: '60+', label: '60+ Liters', count: 4 }
+        ]
+      }
+    ]
+  },
+  {
+    id: '3',
+    name: 'Desert Coolers',
+    slug: 'desert-coolers',
+    description: 'High-capacity desert coolers for large spaces and commercial use',
+    filters: [
+      {
+        id: 'price',
+        name: 'Price',
+        type: 'range',
+        min: 15000,
+        max: 60000,
+        unit: '₹'
+      },
+      {
+        id: 'cooling-area',
+        name: 'Room Space',
+        type: 'select',
+        options: [
+          { value: '600-1000', label: '600-1000 sq ft', count: 8 },
+          { value: '1000-1500', label: '1000-1500 sq ft', count: 6 },
+          { value: '1500+', label: '1500+ sq ft', count: 4 }
+        ]
+      },
+      {
+        id: 'tank-capacity',
+        name: 'Tank Size',
+        type: 'select',
+        options: [
+          { value: '60-80', label: '60-80 Liters', count: 8 },
+          { value: '80-120', label: '80-120 Liters', count: 6 },
+          { value: '120+', label: '120+ Liters', count: 4 }
+        ]
+      }
+    ]
+  },
+  {
+    id: '4',
     name: 'Spare Parts',
     slug: 'spare-parts',
-    description: 'Genuine spare parts and accessories for air coolers',
+    description: 'Genuine Mango spare parts and accessories for air coolers',
     filters: [
       {
         id: 'price',
@@ -67,24 +128,11 @@ export const categories: ProductCategory[] = [
         name: 'Part Type',
         type: 'checkbox',
         options: [
-          { value: 'cooling-pads', label: 'Cooling Pads', count: 25 },
-          { value: 'motors', label: 'Motors', count: 15 },
-          { value: 'pumps', label: 'Water Pumps', count: 12 },
-          { value: 'fans', label: 'Fans', count: 18 },
-          { value: 'remote', label: 'Remote Controls', count: 8 },
+          { value: 'cooling-pads', label: 'Honeycomb Cooling Pads', count: 15 },
+          { value: 'motors', label: 'Motors', count: 8 },
+          { value: 'pumps', label: 'Water Pumps', count: 6 },
+          { value: 'remote', label: 'Remote Controls', count: 12 },
           { value: 'filters', label: 'Filters', count: 10 }
-        ]
-      },
-      {
-        id: 'compatibility',
-        name: 'Brand Compatibility',
-        type: 'select',
-        options: [
-          { value: 'symphony', label: 'Symphony', count: 20 },
-          { value: 'bajaj', label: 'Bajaj', count: 18 },
-          { value: 'crompton', label: 'Crompton', count: 15 },
-          { value: 'orient', label: 'Orient', count: 12 },
-          { value: 'universal', label: 'Universal', count: 25 }
         ]
       }
     ]
@@ -94,207 +142,206 @@ export const categories: ProductCategory[] = [
 export const featuredProducts: Product[] = [
   {
     id: '1',
-    name: 'Mango Arctic Pro 50L Desert Air Cooler',
-    slug: 'mango-arctic-pro-50l-desert-cooler',
-    description: 'Premium desert air cooler with advanced cooling technology, perfect for large rooms and offices. Features honeycomb cooling pads, powerful motor, and smart controls.',
-    shortDescription: 'Premium 50L desert cooler with honeycomb pads and smart controls',
+    name: 'Mango Cool Master i Personal Cooler',
+    slug: 'mango-cool-master-i-personal-cooler',
+    description: 'Intelligent personal air cooler with remote control and sensor touch digital control panel. Perfect for small to medium rooms with honeycomb cooling pads and empty tank alarm.',
+    shortDescription: 'Intelligent personal cooler with remote and digital controls',
     images: [
-      '/src/assets/hero-air-cooler.jpg',
-      '/src/assets/product-tower-cooler.jpg',
+      '/src/assets/product-personal-cooler.jpg',
       '/src/assets/hero-air-cooler.jpg'
     ],
-    price: 18999,
-    originalPrice: 24999,
+    price: 12999,
+    originalPrice: 16999,
     category: categories[0],
     brand: 'Mango',
-    sku: 'MNG-ARC-50L-001',
+    sku: 'MNG-CM-I-001',
     inStock: true,
     stockQuantity: 15,
-    rating: 4.6,
-    reviewCount: 234,
+    rating: 4.5,
+    reviewCount: 89,
     specifications: {
-      'Tank Capacity': '50 Liters',
-      'Cooling Area': '600-800 sq ft',
-      'Air Throw': '45 feet',
-      'Power Consumption': '180W',
+      'Tank Capacity': '25 Liters',
+      'Room Space': '250 sq ft',
+      'Air Throw': '30 feet',
+      'Power Consumption': '120W',
       'Cooling Pad Type': 'Honeycomb',
-      'Motor Speed': '1400 RPM',
-      'Weight': '18 kg',
-      'Dimensions': '60 x 45 x 110 cm'
+      'Motor Speed': '1300 RPM',
+      'Weight': '12 kg',
+      'Dimensions': '45 x 35 x 75 cm'
     },
     features: [
-      'Honeycomb cooling pads for maximum cooling',
-      'Powerful 180W motor with low noise operation',
-      'Smart remote control with timer function',
-      'Large 50L water tank with water level indicator',
-      '4-way air deflection for uniform cooling',
-      'Castor wheels for easy mobility',
-      'Ice chamber for extra cooling',
-      'Dust filter for clean air circulation'
+      'Intelligent remote control',
+      'Sensor touch digital control panel',
+      'Empty tank alarm system',
+      'High efficiency honeycomb cooling pads',
+      'Works on inverter power',
+      'Low operating cost like a fan',
+      'Fresh and cool air delivery',
+      'Suitable for indoor and outdoor use'
     ],
-    tags: ['bestseller', 'premium', 'desert-cooler', 'large-room'],
+    tags: ['bestseller', 'personal', 'intelligent', 'remote-control'],
     dimensions: {
-      length: 60,
-      width: 45,
-      height: 110,
-      weight: 18
+      length: 45,
+      width: 35,
+      height: 75,
+      weight: 12
     },
     warranty: '2 Years Comprehensive Warranty',
-    powerConsumption: '180W',
-    tankCapacity: '50 Liters',
-    airThrow: '45 feet',
-    coolingArea: '600-800 sq ft',
+    powerConsumption: '120W',
+    tankCapacity: '25 Liters',
+    airThrow: '30 feet',
+    coolingArea: '250 sq ft',
     createdAt: '2024-01-15T10:00:00Z',
     updatedAt: '2024-03-01T15:30:00Z'
   },
   {
     id: '2',
-    name: 'Mango Breeze Personal Air Cooler 20L',
-    slug: 'mango-breeze-personal-air-cooler-20l',
-    description: 'Compact personal air cooler ideal for small rooms, study areas, and bedrooms. Energy-efficient design with honeycomb cooling pads.',
-    shortDescription: 'Compact 20L personal cooler for small spaces',
+    name: 'Mango Arctic TC 25 Tower Cooler',
+    slug: 'mango-arctic-tc-25-tower-cooler',
+    description: 'Space-saving tower air cooler with intelligent remote control and sensor touch panel. Perfect for medium-sized rooms with efficient honeycomb cooling technology.',
+    shortDescription: 'Tower cooler with remote control and digital panel',
     images: [
-      '/src/assets/product-personal-cooler.jpg',
-      '/src/assets/product-personal-cooler.jpg'
+      '/src/assets/product-tower-cooler.jpg',
+      '/src/assets/hero-air-cooler.jpg'
     ],
-    price: 8999,
-    originalPrice: 11999,
-    category: categories[0],
+    price: 16999,
+    originalPrice: 21999,
+    category: categories[1],
     brand: 'Mango',
-    sku: 'MNG-BRZ-20L-002',
+    sku: 'MNG-ATC-25-002',
     inStock: true,
-    stockQuantity: 28,
-    rating: 4.3,
-    reviewCount: 156,
+    stockQuantity: 18,
+    rating: 4.4,
+    reviewCount: 67,
     specifications: {
-      'Tank Capacity': '20 Liters',
-      'Cooling Area': '150-250 sq ft',
-      'Air Throw': '25 feet',
-      'Power Consumption': '75W',
+      'Tank Capacity': '40 Liters',
+      'Room Space': '500 sq ft',
+      'Air Throw': '40 feet',
+      'Power Consumption': '150W',
       'Cooling Pad Type': 'Honeycomb',
-      'Motor Speed': '1200 RPM',
-      'Weight': '8 kg',
-      'Dimensions': '40 x 30 x 65 cm'
+      'Motor Speed': '1350 RPM',
+      'Weight': '15 kg',
+      'Dimensions': '40 x 40 x 110 cm'
     },
     features: [
-      'Compact design perfect for personal use',
-      'Energy-efficient 75W motor',
-      'Honeycomb cooling pads',
-      '20L water tank with easy fill design',
-      '3-speed fan control',
-      'Portable with built-in handles',
-      'Low water indicator',
-      'Quiet operation'
+      'Space-saving tower design',
+      'Intelligent remote control',
+      'Sensor touch digital control panel',
+      'Empty tank alarm system',
+      'High efficiency honeycomb cooling pads',
+      'Works on inverter power',
+      'Oscillation function for wide coverage',
+      'Modern LED indicators'
     ],
-    tags: ['personal', 'compact', 'energy-efficient'],
+    tags: ['tower', 'space-saving', 'remote-control'],
     dimensions: {
       length: 40,
-      width: 30,
-      height: 65,
-      weight: 8
+      width: 40,
+      height: 110,
+      weight: 15
     },
-    warranty: '1 Year Warranty',
-    powerConsumption: '75W',
-    tankCapacity: '20 Liters',
-    airThrow: '25 feet',
-    coolingArea: '150-250 sq ft',
+    warranty: '2 Years Warranty',
+    powerConsumption: '150W',
+    tankCapacity: '40 Liters',
+    airThrow: '40 feet',
+    coolingArea: '500 sq ft',
     createdAt: '2024-02-01T10:00:00Z',
     updatedAt: '2024-03-01T15:30:00Z'
   },
   {
     id: '3',
-    name: 'Mango Tower Elite 35L Tower Air Cooler',
-    slug: 'mango-tower-elite-35l-tower-cooler',
-    description: 'Sleek tower air cooler with modern design and advanced cooling technology. Space-saving vertical design perfect for contemporary homes.',
-    shortDescription: 'Modern 35L tower cooler with space-saving design',
+    name: 'Mango Wintry Deluxe Desert Cooler',
+    slug: 'mango-wintry-deluxe-desert-cooler',
+    description: 'High-capacity desert air cooler for large spaces and commercial use. Features intelligent controls, honeycomb pads, and powerful cooling performance.',
+    shortDescription: 'High-capacity desert cooler for large spaces',
     images: [
-      '/src/assets/product-tower-cooler.jpg',
+      '/src/assets/hero-air-cooler.jpg',
       '/src/assets/product-tower-cooler.jpg'
     ],
-    price: 13999,
-    originalPrice: 17999,
-    category: categories[0],
+    price: 28999,
+    originalPrice: 35999,
+    category: categories[2],
     brand: 'Mango',
-    sku: 'MNG-TWR-35L-003',
+    sku: 'MNG-WD-80-003',
     inStock: true,
-    stockQuantity: 22,
-    rating: 4.5,
-    reviewCount: 128,
+    stockQuantity: 12,
+    rating: 4.6,
+    reviewCount: 45,
     specifications: {
-      'Tank Capacity': '35 Liters',
-      'Cooling Area': '400-500 sq ft',
-      'Air Throw': '35 feet',
-      'Power Consumption': '120W',
+      'Tank Capacity': '80 Liters',
+      'Room Space': '1000 sq ft',
+      'Air Throw': '60 feet',
+      'Power Consumption': '220W',
       'Cooling Pad Type': 'Honeycomb',
-      'Motor Speed': '1300 RPM',
-      'Weight': '12 kg',
-      'Dimensions': '35 x 35 x 120 cm'
+      'Motor Speed': '1450 RPM',
+      'Weight': '25 kg',
+      'Dimensions': '70 x 50 x 120 cm'
     },
     features: [
-      'Space-saving tower design',
-      'Digital display with touch controls',
-      'Remote control with timer',
-      '35L water tank with easy refill',
-      'Oscillation function for wide coverage',
-      'Silent operation technology',
-      'Auto water level control',
-      'Modern LED indicators'
+      'Large 80L water tank capacity',
+      'Intelligent remote control',
+      'Sensor touch digital control panel',
+      'Empty tank alarm system',
+      'High efficiency honeycomb cooling pads',
+      'Powerful motor for large area cooling',
+      'Heavy-duty castor wheels',
+      'Commercial-grade build quality'
     ],
-    tags: ['tower', 'modern', 'space-saving'],
+    tags: ['desert-cooler', 'commercial', 'high-capacity'],
     dimensions: {
-      length: 35,
-      width: 35,
+      length: 70,
+      width: 50,
       height: 120,
-      weight: 12
+      weight: 25
     },
-    warranty: '2 Years Warranty',
-    powerConsumption: '120W',
-    tankCapacity: '35 Liters',
-    airThrow: '35 feet',
-    coolingArea: '400-500 sq ft',
+    warranty: '2 Years Comprehensive Warranty',
+    powerConsumption: '220W',
+    tankCapacity: '80 Liters',
+    airThrow: '60 feet',
+    coolingArea: '1000 sq ft',
     createdAt: '2024-01-25T10:00:00Z',
     updatedAt: '2024-03-01T15:30:00Z'
   },
   {
     id: '4',
-    name: 'Premium Honeycomb Cooling Pads (Set of 4)',
-    slug: 'premium-honeycomb-cooling-pads-set-4',
-    description: 'High-quality honeycomb cooling pads designed for maximum cooling efficiency. Compatible with most air cooler brands. Set includes 4 pads.',
-    shortDescription: 'High-efficiency honeycomb cooling pads set',
+    name: 'Mango Premium Honeycomb Cooling Pads (Set of 4)',
+    slug: 'mango-premium-honeycomb-cooling-pads-set-4',
+    description: 'Genuine Mango honeycomb cooling pads designed for maximum cooling efficiency. High-grade cellulose construction with anti-bacterial treatment.',
+    shortDescription: 'Genuine honeycomb cooling pads with high efficiency',
     images: [
       '/src/assets/product-spare-parts.jpg',
       '/src/assets/hero-spares.jpg'
     ],
-    price: 1299,
-    originalPrice: 1699,
-    category: categories[1],
+    price: 1599,
+    originalPrice: 2199,
+    category: categories[3],
     brand: 'Mango',
     sku: 'MNG-PAD-HC-004',
     inStock: true,
-    stockQuantity: 45,
+    stockQuantity: 35,
     rating: 4.7,
-    reviewCount: 89,
+    reviewCount: 156,
     specifications: {
       'Material': 'High-grade Cellulose',
       'Thickness': '100mm',
       'Dimensions': '60 x 30 x 10 cm',
       'Pack Size': '4 Pads',
-      'Compatibility': 'Universal fit',
+      'Compatibility': 'Mango Air Coolers',
       'Efficiency': '90% cooling efficiency',
       'Durability': '2-3 seasons',
       'Installation': 'Easy DIY installation'
     },
     features: [
-      'Premium honeycomb structure for maximum cooling',
-      'High water absorption capacity',
+      'High efficiency honeycomb structure',
+      'Maximum water absorption capacity',
       'Anti-bacterial treatment',
-      'Universal compatibility with most brands',
+      'Compatible with all Mango coolers',
       'Easy to install and replace',
       'Long-lasting durability',
       'Eco-friendly materials',
-      'Set of 4 pads included'
+      'Genuine Mango spare part'
     ],
-    tags: ['spare-parts', 'cooling-pads', 'universal', 'premium'],
+    tags: ['spare-parts', 'cooling-pads', 'genuine', 'high-efficiency'],
     warranty: '6 Months Warranty',
     createdAt: '2024-01-20T10:00:00Z',
     updatedAt: '2024-03-01T15:30:00Z'
