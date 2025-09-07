@@ -19,7 +19,7 @@ const Header = () => {
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
     { name: 'Air Coolers', href: '/shop?category=air-coolers' },
-    { name: 'Spare Parts', href: '/shop?category=spare-parts' },
+    { name: 'Contact Us', href: '/contact' },
     { name: 'Track Order', href: '/track-order' },
   ];
 

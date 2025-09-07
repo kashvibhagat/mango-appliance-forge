@@ -83,9 +83,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       })
     } catch (error) {
       const authError = error as AuthError
+      const message = authError.message?.toLowerCase().includes('email not confirmed')
+        ? 'Please confirm your email via the verification link we sent. For testing, you can disable email confirmation in Supabase Auth settings.'
+        : authError.message
       toast({
         title: 'Error signing in',
-        description: authError.message,
+        description: message,
         variant: 'destructive',
       })
       throw error
