@@ -14,6 +14,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const { itemCount } = useCart();
+  const { wishlistItems } = useWishlist();
   const { user, signOut } = useAuth();
   
   const navigation = [
@@ -62,14 +63,18 @@ const Header = () => {
           {/* Actions */}
           <div className="flex items-center space-x-2">
             {/* Wishlist */}
-            <Button variant="ghost" size="sm" className="relative">
-              <Heart className="h-5 w-5" />
-              <Badge 
-                variant="destructive" 
-                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-              >
-                2
-              </Badge>
+            <Button variant="ghost" size="sm" className="relative" asChild>
+              <Link to="/wishlist">
+                <Heart className="h-5 w-5" />
+                {wishlistItems.length > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  >
+                    {wishlistItems.length}
+                  </Badge>
+                )}
+              </Link>
             </Button>
 
             {/* Cart */}
@@ -100,15 +105,15 @@ const Header = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="flex items-center">
+                    <Link to="/profile" className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
+                      <span>Profile</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/dashboard" className="flex items-center">
                       <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
+                      <span>Dashboard</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />

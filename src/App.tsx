@@ -20,6 +20,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Contact from './pages/Contact';
 import Wishlist from './pages/Wishlist';
+import Profile from './pages/Profile';
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/profile" 
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
                     </ProtectedRoute>
                   } 
                 />
