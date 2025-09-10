@@ -8,6 +8,8 @@ import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import Layout from "./components/layout/Layout";
+import PageTransition from "./components/layout/PageTransition";
+import FloatingChatbot from "./components/ui/FloatingChatbot";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
@@ -36,57 +38,60 @@ const App = () => (
             <BrowserRouter>
               <Layout>
                 <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/shop" element={<Shop />} />
-                <Route path="/comparison" element={<Comparison />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/product/:slug" element={<ProductDetail />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route 
-                  path="/checkout" 
-                  element={
-                    <ProtectedRoute>
-                      <Checkout />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/profile" 
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/order-success" 
-                  element={
-                    <ProtectedRoute>
-                      <OrderSuccess />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/track-order" 
-                  element={
-                    <ProtectedRoute>
-                      <TrackOrder />
-                    </ProtectedRoute>
-                  } 
-                />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
+                  <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+                  <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+                  <Route path="/comparison" element={<PageTransition><Comparison /></PageTransition>} />
+                  <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+                  <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
+                  <Route path="/product/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
+                  <Route path="/cart" element={<PageTransition><Cart /></PageTransition>} />
+                  <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
+                  <Route 
+                    path="/checkout" 
+                    element={
+                      <ProtectedRoute>
+                        <PageTransition><Checkout /></PageTransition>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <ProtectedRoute>
+                        <PageTransition><Dashboard /></PageTransition>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/profile" 
+                    element={
+                      <ProtectedRoute>
+                        <PageTransition><Profile /></PageTransition>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/order-success" 
+                    element={
+                      <ProtectedRoute>
+                        <PageTransition><OrderSuccess /></PageTransition>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/track-order" 
+                    element={
+                      <ProtectedRoute>
+                        <PageTransition><TrackOrder /></PageTransition>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
                 </Routes>
+                
+                {/* Floating Chatbot */}
+                <FloatingChatbot />
               </Layout>
             </BrowserRouter>
           </WishlistProvider>

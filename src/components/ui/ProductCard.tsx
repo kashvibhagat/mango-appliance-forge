@@ -37,7 +37,7 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
   };
 
   return (
-    <Card className={`group card-interactive overflow-hidden ${className}`}>
+    <Card className={`group card-interactive overflow-hidden card-3d ${className}`}>
       <div className="relative">
         {/* Product Image */}
         <Link to={`/product/${product.slug}`}>
@@ -45,7 +45,7 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
             <img
               src={product.images[0]}
               alt={product.name}
-              className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
+              className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-1 product-image-3d"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

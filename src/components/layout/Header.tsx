@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
+import SearchWithSuggestions from '@/components/ui/SearchWithSuggestions';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -48,7 +49,7 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 animate-in slide-in-from-top-4 duration-300">
       <div className="container mx-auto px-4">
         {/* Top bar */}
         <div className="flex h-16 items-center justify-between">
@@ -65,16 +66,14 @@ const Header = () => {
 
           {/* Search bar - hidden on mobile */}
           <div className="hidden md:flex flex-1 max-w-lg mx-8">
-            <form onSubmit={handleSearch} className="relative w-full">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-muted/50 border-0 focus:bg-card"
-              />
-            </form>
+            <SearchWithSuggestions 
+              placeholder="Search products, brands, categories..."
+              onSearch={(query) => {
+                navigate(`/shop?search=${encodeURIComponent(query)}`);
+                setIsMenuOpen(false);
+              }}
+              className="w-full"
+            />
           </div>
 
           {/* Actions */}
@@ -209,16 +208,14 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-border py-4 animate-fade-in">
             {/* Mobile search */}
-            <form onSubmit={handleSearch} className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-muted/50 border-0"
-              />
-            </form>
+            <SearchWithSuggestions 
+              placeholder="Search products..."
+              onSearch={(query) => {
+                navigate(`/shop?search=${encodeURIComponent(query)}`);
+                setIsMenuOpen(false);
+              }}
+              className="mb-4"
+            />
 
             {/* Mobile navigation */}
             <nav>

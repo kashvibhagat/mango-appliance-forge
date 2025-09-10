@@ -123,7 +123,7 @@ const Home = () => {
       {/* Categories Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-slide-up">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
               Shop by Category
             </h2>
@@ -132,15 +132,15 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto stagger-animation">
             {/* Personal Coolers Category */}
             <Link to="/shop?category=personal-coolers" className="group">
-              <Card className="card-hover overflow-hidden">
+              <Card className="card-hover overflow-hidden card-perspective">
                 <div className="relative">
                   <img
                     src={personalCoolersCategory}
                     alt="Personal Coolers"
-                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                   <div className="absolute bottom-4 left-4 text-white">
@@ -153,12 +153,12 @@ const Home = () => {
 
             {/* Tower Coolers Category */}
             <Link to="/shop?category=tower-coolers" className="group">
-              <Card className="card-hover overflow-hidden">
+              <Card className="card-hover overflow-hidden card-perspective">
                 <div className="relative">
                   <img
                     src={towerCoolersCategory}
                     alt="Tower Coolers"
-                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                   <div className="absolute bottom-4 left-4 text-white">
@@ -171,12 +171,12 @@ const Home = () => {
 
             {/* Desert Coolers Category */}
             <Link to="/shop?category=desert-coolers" className="group">
-              <Card className="card-hover overflow-hidden">
+              <Card className="card-hover overflow-hidden card-perspective">
                 <div className="relative">
                   <img
                     src={desertCoolersCategory}
                     alt="Desert Coolers"
-                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                   <div className="absolute bottom-4 left-4 text-white">
@@ -189,12 +189,12 @@ const Home = () => {
 
             {/* Industrial Coolers Category */}
             <Link to="/shop?category=industrial-coolers" className="group">
-              <Card className="card-hover overflow-hidden">
+              <Card className="card-hover overflow-hidden card-perspective">
                 <div className="relative">
                   <img
                     src={industrialCoolersCategory}
                     alt="Industrial Coolers"
-                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                   <div className="absolute bottom-4 left-4 text-white">
@@ -207,12 +207,12 @@ const Home = () => {
 
             {/* Spare Parts Category */}
             <Link to="/shop?category=spare-parts" className="group">
-              <Card className="card-hover overflow-hidden">
+              <Card className="card-hover overflow-hidden card-perspective">
                 <div className="relative">
                   <img
                     src={heroSpares}
                     alt="Spare Parts"
-                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                   <div className="absolute bottom-4 left-4 text-white">
