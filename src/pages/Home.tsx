@@ -10,6 +10,7 @@ import heroSpares from '@/assets/hero-spares.jpg';
 import personalCoolersCategory from '@/assets/personal-coolers-category.jpg';
 import towerCoolersCategory from '@/assets/tower-coolers-category.png';
 import desertCoolersCategory from '@/assets/desert-coolers-category.jpg';
+import industrialCoolersCategory from '@/assets/industrial-coolers-category.jpg';
 
 const Home = () => {
   const features = [
@@ -131,7 +132,7 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
             {/* Personal Coolers Category */}
             <Link to="/shop?category=personal-coolers" className="group">
               <Card className="card-hover overflow-hidden">
@@ -181,6 +182,24 @@ const Home = () => {
                   <div className="absolute bottom-4 left-4 text-white">
                     <h3 className="text-lg font-bold mb-1">Desert Coolers</h3>
                     <p className="text-xs opacity-90">Wintry Series</p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+
+            {/* Industrial Coolers Category */}
+            <Link to="/shop?category=industrial-coolers" className="group">
+              <Card className="card-hover overflow-hidden">
+                <div className="relative">
+                  <img
+                    src={industrialCoolersCategory}
+                    alt="Industrial Coolers"
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 className="text-lg font-bold mb-1">Industrial Coolers</h3>
+                    <p className="text-xs opacity-90">Heavy-duty Solutions</p>
                   </div>
                 </div>
               </Card>

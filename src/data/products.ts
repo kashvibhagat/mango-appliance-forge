@@ -136,6 +136,42 @@ export const categories: ProductCategory[] = [
         ]
       }
     ]
+  },
+  {
+    id: '5',
+    name: 'Industrial Coolers',
+    slug: 'industrial-coolers',
+    description: 'Heavy-duty industrial coolers for commercial spaces, factories, and warehouses',
+    filters: [
+      {
+        id: 'price',
+        name: 'Price',
+        type: 'range',
+        min: 25000,
+        max: 100000,
+        unit: '₹'
+      },
+      {
+        id: 'cooling-area',
+        name: 'Room Space',
+        type: 'select',
+        options: [
+          { value: '1500-3000', label: '1500-3000 sq ft', count: 6 },
+          { value: '3000-5000', label: '3000-5000 sq ft', count: 4 },
+          { value: '5000+', label: '5000+ sq ft', count: 3 }
+        ]
+      },
+      {
+        id: 'tank-capacity',
+        name: 'Tank Size',
+        type: 'select',
+        options: [
+          { value: '150-200', label: '150-200 Liters', count: 5 },
+          { value: '200-300', label: '200-300 Liters', count: 4 },
+          { value: '300+', label: '300+ Liters', count: 3 }
+        ]
+      }
+    ]
   }
 ];
 

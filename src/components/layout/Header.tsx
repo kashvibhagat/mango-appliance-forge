@@ -27,10 +27,11 @@ const Header = () => {
     { name: 'Track Order', href: '/track-order' },
   ];
 
-  const airCoolerCategories = [
+  const coolerCategories = [
     { name: 'Personal Coolers', href: '/shop?category=personal-coolers' },
     { name: 'Desert Coolers', href: '/shop?category=desert-coolers' },
     { name: 'Tower Coolers', href: '/shop?category=tower-coolers' },
+    { name: 'Industrial Coolers', href: '/shop?category=industrial-coolers' },
   ];
 
   const isActive = (href: string) => {
@@ -177,16 +178,16 @@ const Header = () => {
               </Link>
             ))}
             
-            {/* Air Coolers Dropdown */}
+            {/* Category Dropdown */}
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="text-sm font-medium text-muted-foreground hover:text-accent data-[state=open]:text-accent">
-                    Air Coolers
+                    Category
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="w-48 p-2">
-                      {airCoolerCategories.map((category) => (
+                      {coolerCategories.map((category) => (
                         <NavigationMenuLink key={category.name} asChild>
                           <Link
                             to={category.href}
@@ -238,12 +239,12 @@ const Header = () => {
                   </li>
                 ))}
                 
-                {/* Air Coolers submenu for mobile */}
+                {/* Category submenu for mobile */}
                 <li>
                   <div className="py-2">
-                    <span className="text-sm font-medium text-muted-foreground">Air Coolers</span>
+                    <span className="text-sm font-medium text-muted-foreground">Category</span>
                     <ul className="mt-2 ml-4 space-y-1">
-                      {airCoolerCategories.map((category) => (
+                      {coolerCategories.map((category) => (
                         <li key={category.name}>
                           <Link
                             to={category.href}
