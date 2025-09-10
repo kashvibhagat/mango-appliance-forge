@@ -5,8 +5,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import ProductCard from '@/components/ui/ProductCard';
 import { featuredProducts, categories } from '@/data/products';
-import heroAirCooler from '@/assets/hero-air-cooler.jpg';
+import heroLandscapeCoolers from '@/assets/hero-landscape-coolers.jpg';
 import heroSpares from '@/assets/hero-spares.jpg';
+import personalCoolersCategory from '@/assets/personal-coolers-category.jpg';
+import towerCoolersCategory from '@/assets/tower-coolers-category.png';
+import desertCoolersCategory from '@/assets/desert-coolers-category.jpg';
 
 const Home = () => {
   const features = [
@@ -85,8 +88,8 @@ const Home = () => {
             <div className="relative animate-scale-in">
               <div className="relative z-10">
                 <img
-                  src={heroAirCooler}
-                  alt="Premium Air Cooler"
+                  src={heroLandscapeCoolers}
+                  alt="Premium Air Cooler Collection"
                   className="w-full h-auto rounded-2xl shadow-2xl"
                 />
               </div>
@@ -134,7 +137,7 @@ const Home = () => {
               <Card className="card-hover overflow-hidden">
                 <div className="relative">
                   <img
-                    src={heroAirCooler}
+                    src={personalCoolersCategory}
                     alt="Personal Coolers"
                     className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
@@ -152,7 +155,7 @@ const Home = () => {
               <Card className="card-hover overflow-hidden">
                 <div className="relative">
                   <img
-                    src={heroAirCooler}
+                    src={towerCoolersCategory}
                     alt="Tower Coolers"
                     className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
@@ -170,7 +173,7 @@ const Home = () => {
               <Card className="card-hover overflow-hidden">
                 <div className="relative">
                   <img
-                    src={heroAirCooler}
+                    src={desertCoolersCategory}
                     alt="Desert Coolers"
                     className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
