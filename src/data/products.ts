@@ -660,6 +660,384 @@ export const featuredProducts: Product[] = [
     createdAt: "2024-01-09T00:00:00Z",
     updatedAt: "2024-01-09T00:00:00Z"
   },
+  // Additional Desert Coolers from Mango Appliances
+  {
+    id: "13",
+    name: "Glacial Deluxe-i",
+    slug: "glacial-deluxe-i",
+    description: "The Glacial Deluxe-i is a premium desert air cooler featuring advanced cooling technology and smart features. With intelligent controls, high-efficiency honeycomb pads, and powerful air circulation, it delivers exceptional cooling for large commercial and residential spaces.",
+    shortDescription: "Premium smart desert cooler with intelligent controls",
+    images: ["/src/assets/hero-air-cooler.jpg"],
+    price: 24999,
+    originalPrice: 28999,
+    category: categories[2], // Desert Coolers
+    brand: "Mango",
+    sku: "GD-I-013",
+    inStock: true,
+    stockQuantity: 10,
+    rating: 4.7,
+    reviewCount: 38,
+    specifications: {
+      "Tank Capacity": "70 Liters",
+      "Power Consumption": "260 Watts",
+      "Air Throw": "65 feet",
+      "Room Size": "Up to 1200 sq ft",
+      "Pump": "Smart auto-fill pump system",
+      "Material": "Premium Metal Body with Anti-corrosion Coating"
+    },
+    features: [
+      "Smart remote control with display",
+      "Auto-fill water system",
+      "4-way motorized air deflection",
+      "Premium honeycomb cooling pads",
+      "Digital temperature display",
+      "Timer and sleep mode functions"
+    ],
+    tags: ["desert", "premium", "smart", "auto-fill"],
+    dimensions: {
+      length: 68,
+      width: 52,
+      height: 135,
+      weight: 45
+    },
+    warranty: "3 years comprehensive warranty",
+    powerConsumption: "260W",
+    tankCapacity: "70L",
+    airThrow: "65 feet",
+    coolingArea: "1200 sq ft",
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-01-01T00:00:00Z"
+  },
+  {
+    id: "14",
+    name: "Glacial Deluxe",
+    slug: "glacial-deluxe",
+    description: "The Glacial Deluxe offers superior cooling performance for large spaces with robust construction and enhanced features. Perfect for commercial establishments, large halls, and industrial applications requiring powerful and consistent cooling.",
+    shortDescription: "Superior desert cooler for commercial applications",
+    images: ["/src/assets/hero-air-cooler.jpg"],
+    price: 20999,
+    originalPrice: 24999,
+    category: categories[2], // Desert Coolers
+    brand: "Mango",
+    sku: "GD-014",
+    inStock: true,
+    stockQuantity: 14,
+    rating: 4.6,
+    reviewCount: 52,
+    specifications: {
+      "Tank Capacity": "60 Liters",
+      "Power Consumption": "240 Watts",
+      "Air Throw": "55 feet",
+      "Room Size": "Up to 900 sq ft",
+      "Pump": "High-pressure water pump",
+      "Material": "Heavy-duty Metal Body"
+    },
+    features: [
+      "Heavy-duty construction",
+      "High-pressure water circulation",
+      "4-way air deflection system",
+      "Extra-thick cooling pads",
+      "Industrial-grade motor",
+      "Reinforced castor wheels"
+    ],
+    tags: ["desert", "commercial", "heavy-duty", "industrial"],
+    dimensions: {
+      length: 62,
+      width: 48,
+      height: 125,
+      weight: 38
+    },
+    warranty: "3 years comprehensive warranty",
+    powerConsumption: "240W",
+    tankCapacity: "60L",
+    airThrow: "55 feet",
+    coolingArea: "900 sq ft",
+    createdAt: "2024-01-03T00:00:00Z",
+    updatedAt: "2024-01-03T00:00:00Z"
+  },
+  {
+    id: "15",
+    name: "Glacial-i",
+    slug: "glacial-i",
+    description: "The Glacial-i combines modern technology with reliable desert cooling performance. Features intelligent controls and efficient operation for medium to large spaces requiring consistent and powerful air circulation.",
+    shortDescription: "Modern desert cooler with intelligent controls",
+    images: ["/src/assets/hero-air-cooler.jpg"],
+    price: 18999,
+    originalPrice: 21999,
+    category: categories[2], // Desert Coolers
+    brand: "Mango",
+    sku: "G-I-015",
+    inStock: true,
+    stockQuantity: 16,
+    rating: 4.5,
+    reviewCount: 47,
+    specifications: {
+      "Tank Capacity": "50 Liters",
+      "Power Consumption": "210 Watts",
+      "Air Throw": "48 feet",
+      "Room Size": "Up to 700 sq ft",
+      "Pump": "Efficient auto-circulation pump",
+      "Material": "Metal Body with Weather Protection"
+    },
+    features: [
+      "Intelligent control panel",
+      "Auto water level monitoring",
+      "Multi-speed operation",
+      "Enhanced cooling pad system",
+      "Remote control operation",
+      "Energy-efficient motor"
+    ],
+    tags: ["desert", "intelligent", "efficient", "modern"],
+    dimensions: {
+      length: 58,
+      width: 44,
+      height: 118,
+      weight: 32
+    },
+    warranty: "2 years comprehensive warranty",
+    powerConsumption: "210W",
+    tankCapacity: "50L",
+    airThrow: "48 feet",
+    coolingArea: "700 sq ft",
+    createdAt: "2024-01-06T00:00:00Z",
+    updatedAt: "2024-01-06T00:00:00Z"
+  },
+  {
+    id: "16",
+    name: "Glacial",
+    slug: "glacial",
+    description: "The Glacial is a reliable desert air cooler designed for consistent performance and value. With solid construction and effective cooling capabilities, it's ideal for residential and small commercial spaces.",
+    shortDescription: "Reliable desert cooler for residential use",
+    images: ["/src/assets/hero-air-cooler.jpg"],
+    price: 16999,
+    originalPrice: 19999,
+    category: categories[2], // Desert Coolers
+    brand: "Mango",
+    sku: "G-016",
+    inStock: true,
+    stockQuantity: 20,
+    rating: 4.4,
+    reviewCount: 63,
+    specifications: {
+      "Tank Capacity": "42 Liters",
+      "Power Consumption": "190 Watts",
+      "Air Throw": "42 feet",
+      "Room Size": "Up to 550 sq ft",
+      "Pump": "Standard circulation pump",
+      "Material": "Durable Metal Body"
+    },
+    features: [
+      "Reliable cooling performance",
+      "Easy-to-use controls",
+      "Good water circulation",
+      "Sturdy metal construction",
+      "Effective air distribution",
+      "Low maintenance design"
+    ],
+    tags: ["desert", "reliable", "residential", "value"],
+    dimensions: {
+      length: 54,
+      width: 41,
+      height: 112,
+      weight: 29
+    },
+    warranty: "2 years comprehensive warranty",
+    powerConsumption: "190W",
+    tankCapacity: "42L",
+    airThrow: "42 feet",
+    coolingArea: "550 sq ft",
+    createdAt: "2024-01-08T00:00:00Z",
+    updatedAt: "2024-01-08T00:00:00Z"
+  },
+  // Additional Personal Coolers from Mango Appliances
+  {
+    id: "17",
+    name: "Punch 20i",
+    slug: "punch-20i",
+    description: "The Punch 20i is a compact personal cooler designed for efficient cooling in small spaces. With intelligent features and energy-efficient operation, it delivers powerful performance in a space-saving design perfect for bedrooms and study rooms.",
+    shortDescription: "Compact intelligent personal cooler for small spaces",
+    images: ["/src/assets/product-personal-cooler.jpg"],
+    price: 7999,
+    originalPrice: 9499,
+    category: categories[0], // Personal Coolers
+    brand: "Mango",
+    sku: "P20-I-017",
+    inStock: true,
+    stockQuantity: 35,
+    rating: 4.2,
+    reviewCount: 89,
+    specifications: {
+      "Tank Capacity": "20 Liters",
+      "Power Consumption": "130 Watts",
+      "Air Throw": "28 feet",
+      "Room Size": "Up to 200 sq ft",
+      "Pump": "Compact submersible pump",
+      "Material": "High-quality ABS Plastic"
+    },
+    features: [
+      "Intelligent cooling modes",
+      "Remote control operation",
+      "LED display panel",
+      "Timer function",
+      "Swing operation",
+      "Ultra-quiet motor"
+    ],
+    tags: ["personal", "compact", "intelligent", "quiet"],
+    dimensions: {
+      length: 40,
+      width: 30,
+      height: 65,
+      weight: 9
+    },
+    warranty: "2 years comprehensive warranty",
+    powerConsumption: "130W",
+    tankCapacity: "20L",
+    airThrow: "28 feet",
+    coolingArea: "200 sq ft",
+    createdAt: "2024-01-16T00:00:00Z",
+    updatedAt: "2024-01-16T00:00:00Z"
+  },
+  {
+    id: "18",
+    name: "Punch 20",
+    slug: "punch-20",
+    description: "The Punch 20 offers reliable personal cooling with straightforward operation and efficient performance. Ideal for individual use in small rooms, offices, and personal spaces requiring consistent cooling comfort.",
+    shortDescription: "Reliable personal cooler with efficient performance",
+    images: ["/src/assets/product-personal-cooler.jpg"],
+    price: 6999,
+    originalPrice: 8499,
+    category: categories[0], // Personal Coolers
+    brand: "Mango",
+    sku: "P20-018",
+    inStock: true,
+    stockQuantity: 40,
+    rating: 4.1,
+    reviewCount: 102,
+    specifications: {
+      "Tank Capacity": "18 Liters",
+      "Power Consumption": "120 Watts",
+      "Air Throw": "25 feet",
+      "Room Size": "Up to 180 sq ft",
+      "Pump": "Standard water pump",
+      "Material": "Durable ABS Plastic"
+    },
+    features: [
+      "Simple manual controls",
+      "Efficient cooling pads",
+      "Water level indicator",
+      "Portable design",
+      "Energy-efficient operation",
+      "Easy maintenance"
+    ],
+    tags: ["personal", "reliable", "affordable", "simple"],
+    dimensions: {
+      length: 38,
+      width: 28,
+      height: 62,
+      weight: 8
+    },
+    warranty: "2 years comprehensive warranty",
+    powerConsumption: "120W",
+    tankCapacity: "18L",
+    airThrow: "25 feet",
+    coolingArea: "180 sq ft",
+    createdAt: "2024-01-18T00:00:00Z",
+    updatedAt: "2024-01-18T00:00:00Z"
+  },
+  {
+    id: "19",
+    name: "Punch 40i",
+    slug: "punch-40i",
+    description: "The Punch 40i is a powerful personal cooler with enhanced capacity for larger personal spaces. Features intelligent controls, efficient cooling technology, and robust performance for extended use in medium-sized rooms.",
+    shortDescription: "Powerful personal cooler with enhanced capacity",
+    images: ["/src/assets/product-personal-cooler.jpg"],
+    price: 11999,
+    originalPrice: 13999,
+    category: categories[0], // Personal Coolers
+    brand: "Mango",
+    sku: "P40-I-019",
+    inStock: true,
+    stockQuantity: 25,
+    rating: 4.4,
+    reviewCount: 68,
+    specifications: {
+      "Tank Capacity": "40 Liters",
+      "Power Consumption": "170 Watts",
+      "Air Throw": "40 feet",
+      "Room Size": "Up to 350 sq ft",
+      "Pump": "High-efficiency pump",
+      "Material": "Premium ABS with Metal Reinforcement"
+    },
+    features: [
+      "Enhanced cooling capacity",
+      "Smart remote control",
+      "Multi-speed operation",
+      "Ice chamber compatibility",
+      "Auto swing function",
+      "Digital temperature display"
+    ],
+    tags: ["personal", "powerful", "enhanced", "smart"],
+    dimensions: {
+      length: 52,
+      width: 40,
+      height: 85,
+      weight: 16
+    },
+    warranty: "2 years comprehensive warranty",
+    powerConsumption: "170W",
+    tankCapacity: "40L",
+    airThrow: "40 feet",
+    coolingArea: "350 sq ft",
+    createdAt: "2024-01-11T00:00:00Z",
+    updatedAt: "2024-01-11T00:00:00Z"
+  },
+  {
+    id: "20",
+    name: "Punch 40",
+    slug: "punch-40",
+    description: "The Punch 40 delivers dependable cooling performance with a larger tank capacity for extended operation. Perfect for those who need reliable cooling in medium-sized spaces without frequent water refills.",
+    shortDescription: "Dependable cooler with large tank capacity",
+    images: ["/src/assets/product-personal-cooler.jpg"],
+    price: 10499,
+    originalPrice: 12499,
+    category: categories[0], // Personal Coolers
+    brand: "Mango",
+    sku: "P40-020",
+    inStock: true,
+    stockQuantity: 30,
+    rating: 4.3,
+    reviewCount: 84,
+    specifications: {
+      "Tank Capacity": "38 Liters",
+      "Power Consumption": "165 Watts",
+      "Air Throw": "38 feet",
+      "Room Size": "Up to 320 sq ft",
+      "Pump": "Reliable water pump",
+      "Material": "Sturdy ABS Plastic"
+    },
+    features: [
+      "Large water tank capacity",
+      "Manual speed control",
+      "Effective air circulation",
+      "Water level monitoring",
+      "Durable construction",
+      "Easy mobility"
+    ],
+    tags: ["personal", "large-tank", "dependable", "durable"],
+    dimensions: {
+      length: 50,
+      width: 38,
+      height: 82,
+      weight: 15
+    },
+    warranty: "2 years comprehensive warranty",
+    powerConsumption: "165W",
+    tankCapacity: "38L",
+    airThrow: "38 feet",
+    coolingArea: "320 sq ft",
+    createdAt: "2024-01-13T00:00:00Z",
+    updatedAt: "2024-01-13T00:00:00Z"
+  },
   // Spare Parts
   {
     id: "12",
