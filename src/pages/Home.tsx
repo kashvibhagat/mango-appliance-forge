@@ -102,7 +102,7 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 stagger-animation">
             {features.map((feature, index) => (
-              <Card key={index} className="card-glass text-center p-6 card-interactive hover-lift">
+              <Card key={index} className="group card-glass text-center p-6 card-interactive hover-lift">
                 <CardContent className="space-y-4 p-0">
                   <div className="h-12 w-12 bg-gradient-brand rounded-xl flex items-center justify-center mx-auto hover-rotate animate-pulse-glow">
                     <feature.icon className="h-6 w-6 text-white transition-transform duration-300 group-hover:scale-110" />
