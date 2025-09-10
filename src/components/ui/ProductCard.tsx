@@ -37,17 +37,18 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
   };
 
   return (
-    <Card className={`group card-hover overflow-hidden ${className}`}>
+    <Card className={`group card-interactive overflow-hidden ${className}`}>
       <div className="relative">
         {/* Product Image */}
         <Link to={`/product/${product.slug}`}>
-          <div className="aspect-square overflow-hidden bg-muted/30">
+          <div className="aspect-square overflow-hidden bg-muted/30 relative">
             <img
               src={product.images[0]}
               alt={product.name}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
               loading="lazy"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
         </Link>
 
@@ -69,21 +70,23 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
         {/* Wishlist Button */}
         <Button
           variant="ghost"
-          size="sm"
-          className="absolute top-3 right-3 h-8 w-8 p-0 bg-background/80 backdrop-blur-sm hover:bg-background/90"
+          size="icon-sm"
+          className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm hover:bg-background/90 hover:scale-110 transition-all duration-300"
           onClick={handleWishlistToggle}
         >
-          <Heart className={`h-4 w-4 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
+          <Heart className={`h-4 w-4 transition-all duration-300 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500 scale-110' : 'hover:scale-110'}`} />
         </Button>
 
         {/* Quick Actions - appear on hover */}
-        <div className="absolute bottom-3 left-3 right-3 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+        <div className="absolute bottom-3 left-3 right-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
           <Button 
-            className="w-full btn-hero text-sm" 
+            variant="hero"
+            size="sm"
+            className="w-full animate-shimmer"
             onClick={handleAddToCart}
             disabled={!product.inStock}
           >
-            <ShoppingCart className="h-4 w-4 mr-2" />
+            <ShoppingCart className="h-4 w-4 mr-2 transition-transform group-hover:scale-110" />
             {product.inStock ? 'Add to Cart' : 'Out of Stock'}
           </Button>
         </div>

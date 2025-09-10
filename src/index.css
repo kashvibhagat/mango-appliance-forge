@@ -88,27 +88,48 @@
 }
 
 @layer components {
-  /* Button Variants */
+  /* Enhanced Button Variants */
   .btn-hero {
     background: var(--gradient-brand);
-    @apply text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300;
+    @apply text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 relative overflow-hidden;
+  }
+  
+  .btn-hero::before {
+    content: '';
+    @apply absolute inset-0 bg-white/20 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700 ease-out;
   }
   
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary/90 hover:shadow-lg transition-all duration-300;
+    @apply bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary/90 hover:shadow-lg hover:scale-[1.02] transition-all duration-300;
   }
   
   .btn-ghost {
-    @apply bg-transparent text-muted-foreground hover:text-foreground hover:bg-card/30 transition-all duration-300;
+    @apply bg-transparent text-muted-foreground hover:text-foreground hover:bg-card/30 hover:scale-[1.02] transition-all duration-300;
   }
   
-  /* Card Variants */
+  .btn-outline-glow {
+    @apply border-2 border-primary/30 bg-transparent text-primary hover:bg-primary hover:text-primary-foreground hover:shadow-brand hover:scale-[1.02] transition-all duration-300;
+  }
+  
+  .btn-floating {
+    @apply fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300;
+  }
+  
+  /* Enhanced Card Variants */
   .card-glass {
     @apply bg-white/80 backdrop-blur-lg border border-border shadow-lg;
   }
   
   .card-hover {
-    @apply hover:shadow-xl hover:scale-[1.02] hover:shadow-brand transition-all duration-300;
+    @apply hover:shadow-xl hover:scale-[1.02] hover:shadow-brand transition-all duration-300 hover:-translate-y-1;
+  }
+  
+  .card-interactive {
+    @apply cursor-pointer group hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-2 transition-all duration-500 hover:shadow-accent/20;
+  }
+  
+  .card-floating {
+    @apply bg-card/95 backdrop-blur-md border border-border/50 shadow-2xl;
   }
   
   /* Product Grid */
@@ -116,7 +137,7 @@
     @apply grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
   }
   
-  /* Animations */
+  /* Enhanced Animations */
   .animate-fade-in {
     @apply animate-in fade-in-0 duration-500;
   }
@@ -127,5 +148,70 @@
   
   .animate-scale-in {
     @apply animate-in zoom-in-95 duration-300;
+  }
+  
+  .animate-bounce-gentle {
+    animation: bounce-gentle 2s infinite;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+  
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  /* Stagger animation for lists */
+  .stagger-animation > * {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: stagger-in 0.5s ease-out forwards;
+  }
+  
+  .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-animation > *:nth-child(6) { animation-delay: 0.6s; }
+  .stagger-animation > *:nth-child(7) { animation-delay: 0.7s; }
+  .stagger-animation > *:nth-child(8) { animation-delay: 0.8s; }
+  
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-xl;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-accent hover:shadow-lg;
+  }
+  
+  .hover-rotate {
+    @apply transition-transform duration-300 hover:rotate-3;
+  }
+  
+  @keyframes bounce-gentle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  
+  @keyframes pulse-glow {
+    from { box-shadow: 0 0 20px hsl(var(--primary) / 0.3); }
+    to { box-shadow: 0 0 30px hsl(var(--primary) / 0.6); }
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  
+  @keyframes stagger-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

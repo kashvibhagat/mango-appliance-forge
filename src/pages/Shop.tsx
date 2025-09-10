@@ -322,7 +322,7 @@ const Shop = () => {
               </div>
             </Card>
           ) : (
-            <div className={viewMode === 'grid' ? 'product-grid' : 'space-y-6'}>
+            <div className={viewMode === 'grid' ? 'product-grid stagger-animation' : 'space-y-6 stagger-animation'}>
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

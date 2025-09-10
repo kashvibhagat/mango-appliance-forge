@@ -58,13 +58,17 @@ const Home = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="btn-hero text-base px-8">
-                  Shop Air Coolers
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-                <Button size="lg" variant="outline" className="btn-secondary text-base px-8">
-                  View Spare Parts
-                </Button>
+                <Link to="/shop">
+                  <Button variant="hero" size="lg" className="w-full sm:w-auto">
+                    Shop Air Coolers
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                <Link to="/shop?category=spare-parts">
+                  <Button variant="outline-glow" size="lg" className="w-full sm:w-auto">
+                    View Spare Parts
+                  </Button>
+                </Link>
               </div>
 
               {/* Stats */}
@@ -96,12 +100,12 @@ const Home = () => {
       {/* Features Section */}
       <section className="py-16 bg-card/30">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 stagger-animation">
             {features.map((feature, index) => (
-              <Card key={index} className="card-glass text-center p-6 card-hover">
+              <Card key={index} className="card-glass text-center p-6 card-interactive hover-lift">
                 <CardContent className="space-y-4 p-0">
-                  <div className="h-12 w-12 bg-gradient-brand rounded-xl flex items-center justify-center mx-auto">
-                    <feature.icon className="h-6 w-6 text-white" />
+                  <div className="h-12 w-12 bg-gradient-brand rounded-xl flex items-center justify-center mx-auto hover-rotate animate-pulse-glow">
+                    <feature.icon className="h-6 w-6 text-white transition-transform duration-300 group-hover:scale-110" />
                   </div>
                   <h3 className="text-lg font-semibold text-foreground">{feature.title}</h3>
                   <p className="text-muted-foreground text-sm">{feature.description}</p>
@@ -220,7 +224,7 @@ const Home = () => {
             </Link>
           </div>
 
-          <div className="product-grid">
+          <div className="product-grid stagger-animation">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -240,10 +244,10 @@ const Home = () => {
               Get personalized recommendations based on your room size and cooling needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="btn-hero text-base px-8">
+              <Button variant="hero" size="lg" className="animate-bounce-gentle">
                 Get Expert Advice
               </Button>
-              <Button size="lg" variant="outline" className="btn-secondary text-base px-8">
+              <Button variant="outline-glow" size="lg">
                 Call +91 880 404 8811
               </Button>
             </div>
