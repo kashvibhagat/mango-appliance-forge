@@ -125,7 +125,7 @@
   }
   
   .card-interactive {
-    @apply cursor-pointer group hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-2 transition-all duration-500 hover:shadow-accent/20;
+    @apply cursor-pointer hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-2 transition-all duration-500 hover:shadow-accent/20;
   }
   
   .card-floating {

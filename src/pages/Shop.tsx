@@ -21,11 +21,26 @@ const Shop = () => {
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
 
   const categorySlug = searchParams.get('category');
+  const searchQuery = searchParams.get('search') || '';
   const selectedCategory = categories.find(cat => cat.slug === categorySlug);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
     let filtered = allProducts;
+
+    // Filter by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(product => 
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query) ||
+        product.shortDescription.toLowerCase().includes(query) ||
+        product.brand.toLowerCase().includes(query) ||
+        product.features.some(feature => feature.toLowerCase().includes(query)) ||
+        product.tags.some(tag => tag.toLowerCase().includes(query)) ||
+        Object.values(product.specifications).some(spec => spec.toLowerCase().includes(query))
+      );
+    }
 
     // Filter by category
     if (selectedCategory) {
@@ -81,7 +96,7 @@ const Shop = () => {
       default:
         return filtered;
     }
-  }, [allProducts, selectedCategory, priceRange, selectedFilters, sortBy]);
+  }, [allProducts, selectedCategory, searchQuery, priceRange, selectedFilters, sortBy]);
 
   const handleFilterChange = (filterId: string, value: string, checked: boolean) => {
     setSelectedFilters(prev => {
@@ -196,7 +211,8 @@ const Shop = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            {selectedCategory ? selectedCategory.name : 'All Products'}
+            {searchQuery ? `Search results for "${searchQuery}"` : 
+             selectedCategory ? selectedCategory.name : 'All Products'}
           </h1>
           <p className="text-muted-foreground mt-1">
             {filteredProducts.length} products found
