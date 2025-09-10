@@ -9,13 +9,22 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Loader2 } from 'lucide-react'
+import { PasswordStrengthIndicator } from '@/components/ui/PasswordStrengthIndicator'
+import { checkPasswordStrength } from '@/utils/passwordUtils'
 
 const registerSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   phone: z.string().min(10, 'Please enter a valid phone number'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .refine((password) => {
+      const strength = checkPasswordStrength(password)
+      return strength.isStrong
+    }, {
+      message: 'Password must contain uppercase, lowercase, numbers, and special characters'
+    }),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
@@ -32,6 +41,7 @@ interface RegisterFormProps {
 export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => {
   const [loading, setLoading] = useState(false)
   const { signUp } = useAuth()
+  const [password, setPassword] = useState('')
 
   const form = useForm<RegisterData>({
     resolver: zodResolver(registerSchema),
@@ -136,8 +146,17 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Create a password" {...field} />
+                    <Input 
+                      type="password" 
+                      placeholder="Create a strong password" 
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e)
+                        setPassword(e.target.value)
+                      }}
+                    />
                   </FormControl>
+                  <PasswordStrengthIndicator password={password} className="mt-2" />
                   <FormMessage />
                 </FormItem>
               )}

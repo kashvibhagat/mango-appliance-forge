@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, Session, AuthError } from '@supabase/supabase-js'
 import { supabase } from '@/integrations/supabase/client'
 import { toast } from '@/components/ui/use-toast'
+import { securityLogger, authRateLimiter } from '@/utils/securityUtils'
 
 interface AuthContextType {
   user: User | null
@@ -41,6 +42,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [])
 
   const signUp = async (email: string, password: string, userData?: any) => {
+    // Check rate limiting
+    if (!authRateLimiter.isAllowed(`signup:${email}`, 3, 60 * 60 * 1000)) {
+      const message = 'Too many signup attempts. Please try again later.'
+      toast({
+        title: 'Rate limited',
+        description: message,
+        variant: 'destructive',
+      })
+      securityLogger.logEvent({
+        type: 'failed_signup',
+        email
+      })
+      throw new Error(message)
+    }
+
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -53,12 +69,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) throw error
 
+      // Reset rate limiter on success
+      authRateLimiter.reset(`signup:${email}`)
+      
       toast({
         title: 'Account created successfully!',
         description: 'Please check your email to verify your account.',
       })
     } catch (error) {
       const authError = error as AuthError
+      
+      securityLogger.logEvent({
+        type: 'failed_signup',
+        email
+      })
+      
       toast({
         title: 'Error creating account',
         description: authError.message,
@@ -69,6 +94,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const signIn = async (email: string, password: string) => {
+    // Check rate limiting
+    if (!authRateLimiter.isAllowed(`login:${email}`, 5, 15 * 60 * 1000)) {
+      const remaining = authRateLimiter.getRemainingAttempts(`login:${email}`, 5)
+      const message = `Too many failed login attempts. Please try again in 15 minutes. (${remaining} attempts remaining)`
+      
+      toast({
+        title: 'Rate limited',
+        description: message,
+        variant: 'destructive',
+      })
+      
+      securityLogger.logEvent({
+        type: 'failed_login',
+        email
+      })
+      
+      throw new Error(message)
+    }
+
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -77,15 +121,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) throw error
 
+      // Reset rate limiter on success
+      authRateLimiter.reset(`login:${email}`)
+      
+      securityLogger.logEvent({
+        type: 'successful_login',
+        email
+      })
+
       toast({
         title: 'Welcome back!',
         description: 'You have been signed in successfully.',
       })
     } catch (error) {
       const authError = error as AuthError
+      
+      securityLogger.logEvent({
+        type: 'failed_login',
+        email
+      })
+      
       const message = authError.message?.toLowerCase().includes('email not confirmed')
         ? 'Please confirm your email via the verification link we sent. For testing, you can disable email confirmation in Supabase Auth settings.'
         : authError.message
+      
       toast({
         title: 'Error signing in',
         description: message,
@@ -122,6 +181,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       })
 
       if (error) throw error
+
+      securityLogger.logEvent({
+        type: 'password_reset',
+        email
+      })
 
       toast({
         title: 'Password reset email sent',
