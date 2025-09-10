@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Truck, Shield, Headphones, Star, Zap, ThermometerSun, Clock, Phone, Leaf } from 'lucide-react';
+import { ArrowRight, Truck, Shield, Headphones, Star, Zap, ThermometerSun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,55 +11,23 @@ import personalCoolersCategory from '@/assets/personal-coolers-category.jpg';
 import towerCoolersCategory from '@/assets/tower-coolers-category.png';
 import desertCoolersCategory from '@/assets/desert-coolers-category.jpg';
 import industrialCoolersCategory from '@/assets/industrial-coolers-category.jpg';
-import heroColnessFreshness from '@/assets/hero-coolness-freshness.jpg';
-import maharathi20Cooler from '@/assets/maharathi-20-cooler.jpg';
-import tentoFighterCooler from '@/assets/tento-fighter-cooler.jpg';
-import thundercoolCooler from '@/assets/thundercool-cooler.jpg';
 
 const Home = () => {
   const features = [
     {
-      icon: Clock,
-      title: 'On Time Delivery',
-      description: 'Timely delivery across India'
-    },
-    {
       icon: Truck,
-      title: 'Free Home Delivery',
-      description: 'Free delivery to your doorstep'
+      title: 'Free Shipping',
+      description: 'On orders above ₹999 across India'
     },
     {
       icon: Shield,
-      title: '1 Year Warranty',
-      description: 'Comprehensive product warranty'
+      title: '2 Year Warranty',
+      description: 'Comprehensive warranty on all products'
     },
     {
       icon: Headphones,
-      title: 'Life Time Support',
-      description: '24/7 customer support service'
-    }
-  ];
-
-  const serviceFeatures = [
-    {
-      icon: Truck,
-      title: 'Free Home Service',
-      description: 'Professional installation and maintenance'
-    },
-    {
-      icon: Truck,
-      title: 'Free Home Delivery',
-      description: 'No delivery charges on all orders'
-    },
-    {
-      icon: Shield,
-      title: '1 Year Warranty',
-      description: 'Comprehensive product protection'
-    },
-    {
-      icon: Phone,
-      title: 'Life Time Raj Support',
-      description: 'Dedicated customer support forever'
+      title: '24/7 Support',
+      description: 'Expert customer service support'
     }
   ];
 
@@ -72,123 +40,94 @@ const Home = () => {
 
   return (
     <div className="animate-fade-in">
-      {/* Main Hero Banner */}
-      <section className="relative overflow-hidden">
-        <div className="w-full">
-          <img
-            src={heroColnessFreshness}
-            alt="Coolness Freshness - Mango Appliances Air Coolers"
-            className="w-full h-[600px] lg:h-[700px] object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-transparent">
-            <div className="container mx-auto px-4 h-full flex items-center">
-              <div className="max-w-2xl">
-                <h1 className="text-5xl lg:text-8xl font-bold text-white mb-6 leading-tight">
-                  <span className="text-cyan-300">COOLNESS</span><br/>
-                  <span className="text-white font-light italic">FRESHNESS</span>
+      {/* Hero Section */}
+      <section className="relative bg-gradient-hero py-20 lg:py-32 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8 animate-slide-up">
+              <div className="space-y-4">
+                <Badge className="bg-accent/20 text-accent border-accent/30">
+                  <Zap className="h-3 w-3 mr-1" />
+                  Premium Cooling Solutions
+                </Badge>
+                <h1 className="text-4xl lg:text-6xl font-bold text-foreground leading-tight">
+                  Beat the Heat with{' '}
+                  <span className="bg-gradient-brand bg-clip-text text-transparent">
+                    Mango Appliances
+                  </span>
                 </h1>
-                <div className="grid grid-cols-2 gap-6 mt-8">
-                  {serviceFeatures.map((feature, index) => (
-                    <div key={index} className="flex items-center space-x-3 text-white">
-                      <div className="bg-white/20 p-2 rounded-lg">
-                        <feature.icon className="h-5 w-5" />
-                      </div>
-                      <span className="text-sm font-medium">{feature.title}</span>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-lg text-muted-foreground max-w-lg">
+                  Growing company into evaporative air coolers with over 25 models in Personal, Tower & Desert coolers for cooling large spaces. Quality products with 15+ years of experience.
+                </p>
               </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/shop">
+                  <Button variant="hero" size="lg" className="w-full sm:w-auto">
+                    Shop Air Coolers
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                <Link to="/shop?category=spare-parts">
+                  <Button variant="outline-glow" size="lg" className="w-full sm:w-auto">
+                    View Spare Parts
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8">
+                {stats.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className="text-2xl font-bold text-accent">{stat.number}</div>
+                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative animate-scale-in">
+              <div className="relative z-10">
+                <img
+                  src={heroLandscapeCoolers}
+                  alt="Premium Air Cooler Collection"
+                  className="w-full h-auto rounded-2xl shadow-2xl"
+                />
+              </div>
+              <div className="absolute -top-4 -right-4 w-72 h-72 bg-accent/20 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-brand/20 rounded-full blur-3xl"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Product Showcase Section */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
+      {/* Features Section */}
+      <section className="py-16 bg-card/30">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Maharathi 20 */}
-            <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl overflow-hidden text-white relative">
-              <div className="p-8">
-                <h2 className="text-3xl font-bold mb-2">Maharathi 20</h2>
-                <p className="text-blue-100 mb-6">Efficient Cooling, Built To Last</p>
-                <Button className="bg-white text-blue-700 hover:bg-blue-50">
-                  Buy Now
-                </Button>
-              </div>
-              <div className="absolute right-0 bottom-0">
-                <img
-                  src={maharathi20Cooler}
-                  alt="Maharathi 20 Air Cooler"
-                  className="w-48 h-48 object-cover rounded-tl-3xl"
-                />
-              </div>
-            </div>
-
-            {/* Tento Fighter */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl overflow-hidden text-white relative">
-              <div className="p-8">
-                <h2 className="text-3xl font-bold mb-2">Tento Fighter</h2>
-                <p className="text-gray-300 mb-6">Powerful Tower Cooling</p>
-                <Button className="bg-white text-gray-800 hover:bg-gray-50">
-                  Shop Now
-                </Button>
-              </div>
-              <div className="absolute right-0 bottom-0">
-                <img
-                  src={tentoFighterCooler}
-                  alt="Tento Fighter Air Cooler"
-                  className="w-48 h-48 object-cover rounded-tl-3xl"
-                />
-              </div>
-            </div>
-
-            {/* Thundercool */}
-            <div className="bg-gradient-to-br from-indigo-600 to-blue-800 rounded-2xl overflow-hidden text-white relative">
-              <div className="p-8">
-                <h2 className="text-3xl font-bold mb-2">Thundercool</h2>
-                <p className="text-blue-100 mb-2">Cool Together, Smile Together</p>
-                <Button className="bg-white text-blue-700 hover:bg-blue-50 mt-4">
-                  Shop Now
-                </Button>
-              </div>
-              <div className="absolute right-0 bottom-0">
-                <img
-                  src={thundercoolCooler}
-                  alt="Thundercool Air Cooler"
-                  className="w-48 h-48 object-cover rounded-tl-3xl"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Service Features Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 stagger-animation">
             {features.map((feature, index) => (
-              <div key={index} className="text-center group">
-                <div className="bg-gradient-to-br from-blue-500 to-cyan-500 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <feature.icon className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">{feature.title}</h3>
-                <p className="text-gray-600 text-sm">{feature.description}</p>
-              </div>
+              <Card key={index} className="card-glass text-center p-6 card-interactive hover-lift">
+                <CardContent className="space-y-4 p-0">
+                  <div className="h-12 w-12 bg-gradient-brand rounded-xl flex items-center justify-center mx-auto hover-rotate animate-pulse-glow">
+                    <feature.icon className="h-6 w-6 text-white transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground">{feature.title}</h3>
+                  <p className="text-muted-foreground text-sm">{feature.description}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Popular Categories Section */}
-      <section className="py-20 bg-gray-50">
+      {/* Categories Section */}
+      <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
-              Popular Categories
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Shop by Category
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               Explore our comprehensive range of evaporative air coolers including Personal, Tower & Desert coolers plus genuine spare parts for all your cooling needs.
             </p>
           </div>
@@ -287,20 +226,20 @@ const Home = () => {
         </div>
       </section>
 
-      {/* New Arrival Products */}
-      <section className="py-20 bg-white">
+      {/* Featured Products */}
+      <section className="py-20 bg-card/30">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-12">
             <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
-                New Arrival Products
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+                Featured Products
               </h2>
-              <p className="text-gray-600">
-                Discover our latest and most advanced cooling solutions
+              <p className="text-muted-foreground">
+                Discover our top-rated and bestselling products
               </p>
             </div>
             <Link to="/shop">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button variant="outline" className="btn-secondary">
                 View All Products
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -316,21 +255,21 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-600 to-cyan-600">
+      <section className="py-20 bg-gradient-hero">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto space-y-8">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
               Need Help Choosing the Right Cooler?
             </h2>
-            <p className="text-lg text-blue-100">
+            <p className="text-lg text-muted-foreground">
               Our cooling experts are here to help you find the perfect air cooler for your space. 
               Get personalized recommendations based on your room size and cooling needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3">
+              <Button variant="hero" size="lg" className="animate-bounce-gentle">
                 Get Expert Advice
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3">
+              <Button variant="outline-glow" size="lg">
                 Call +91 880 404 8811
               </Button>
             </div>
