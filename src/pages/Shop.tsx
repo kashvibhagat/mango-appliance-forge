@@ -193,157 +193,203 @@ const Shop = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Breadcrumb */}
-      <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-        <span>Home</span>
-        <span>/</span>
-        <span>Shop</span>
-        {selectedCategory && (
-          <>
-            <span>/</span>
-            <span className="text-foreground">{selectedCategory.name}</span>
-          </>
-        )}
-      </div>
-
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {searchQuery ? `Search results for "${searchQuery}"` : 
-             selectedCategory ? selectedCategory.name : 'All Products'}
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            {filteredProducts.length} products found
-          </p>
-        </div>
-
-        <div className="flex items-center space-x-4">
-          {/* Sort */}
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="featured">Featured</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="rating">Highest Rated</SelectItem>
-              <SelectItem value="newest">Newest First</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* View Mode */}
-          <div className="hidden md:flex border rounded-lg p-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setViewMode('grid')}
-              className={viewMode === 'grid' ? 'bg-accent text-accent-foreground' : ''}
-            >
-              <Grid className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setViewMode('list')}
-              className={viewMode === 'list' ? 'bg-accent text-accent-foreground' : ''}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Mobile Filter */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" className="md:hidden">
-                <Filter className="h-4 w-4 mr-2" />
-                Filters
-                {activeFilterCount > 0 && (
-                  <Badge variant="destructive" className="ml-2 h-5 w-5 p-0 text-xs">
-                    {activeFilterCount}
-                  </Badge>
-                )}
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-80">
-              <SheetHeader>
-                <SheetTitle>Filters</SheetTitle>
-              </SheetHeader>
-              <div className="mt-6">
-                <FilterSidebar />
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </div>
-
-      {/* Active Filters */}
-      {activeFilterCount > 0 && (
-        <div className="flex items-center space-x-2 mb-6">
-          <span className="text-sm text-muted-foreground">Active filters:</span>
-          {Object.entries(selectedFilters).map(([filterId, values]) =>
-            values.map((value) => {
-              const filter = selectedCategory?.filters.find(f => f.id === filterId);
-              const option = filter?.options?.find(o => o.value === value);
-              return (
-                <Badge key={`${filterId}-${value}`} variant="secondary" className="gap-1">
-                  {option?.label || value}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-auto p-0 text-muted-foreground hover:text-foreground"
-                    onClick={() => handleFilterChange(filterId, value, false)}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </Badge>
-              );
-            })
-          )}
-          <Button variant="ghost" size="sm" onClick={clearFilters}>
-            Clear all
-          </Button>
-        </div>
-      )}
-
-      <div className="flex gap-8">
-        {/* Desktop Filters Sidebar */}
-        <aside className="hidden md:block w-80 flex-shrink-0">
-          <div className="sticky top-24">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-foreground">Filters</h3>
-              {activeFilterCount > 0 && (
-                <Button variant="ghost" size="sm" onClick={clearFilters}>
-                  Clear all
-                </Button>
-              )}
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 py-16">
+        <div className="container mx-auto px-4">
+          {/* Hero Content */}
+          <div className="text-center mb-12">
+            <p className="text-sm text-muted-foreground mb-2">Find the right Cooler for you</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-8">
+              Ultimate Cooling Solutions By Mango
+            </h1>
+            
+            {/* Hero Image */}
+            <div className="relative max-w-4xl mx-auto mb-12">
+              <img 
+                src="/src/assets/hero-landscape-coolers.jpg" 
+                alt="Mango Coolers Collection" 
+                className="w-full h-auto rounded-2xl shadow-lg"
+              />
             </div>
-            <FilterSidebar />
           </div>
-        </aside>
 
-        {/* Products Grid */}
-        <div className="flex-1">
-          {filteredProducts.length === 0 ? (
-            <Card className="p-12 text-center">
-              <div className="space-y-4">
-                <SlidersHorizontal className="h-12 w-12 text-muted-foreground mx-auto" />
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">No products found</h3>
-                  <p className="text-muted-foreground">Try adjusting your filters to see more results.</p>
+          {/* Category Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setSearchParams({ category: category.slug })}
+                className="group flex flex-col items-center p-6 bg-card rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105"
+              >
+                <div className="w-16 h-16 md:w-20 md:h-20 mb-4 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <img 
+                    src={category.image || '/placeholder.svg'} 
+                    alt={category.name}
+                    className="w-10 h-10 md:w-12 md:h-12 object-contain"
+                  />
                 </div>
-                <Button onClick={clearFilters}>Clear all filters</Button>
-              </div>
-            </Card>
-          ) : (
-            <div className={viewMode === 'grid' ? 'product-grid stagger-animation' : 'space-y-6 stagger-animation'}>
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+                <h3 className="text-sm md:text-base font-medium text-foreground text-center group-hover:text-primary transition-colors">
+                  {category.name}
+                </h3>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Breadcrumb */}
+        <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
+          <span>Home</span>
+          <span>/</span>
+          <span>Shop</span>
+          {selectedCategory && (
+            <>
+              <span>/</span>
+              <span className="text-foreground">{selectedCategory.name}</span>
+            </>
           )}
+        </div>
+
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
+          <div>
+            <h2 className="text-3xl font-bold text-foreground">
+              {searchQuery ? `Search results for "${searchQuery}"` : 
+               selectedCategory ? selectedCategory.name : 'All Products'}
+            </h2>
+            <p className="text-muted-foreground mt-1">
+              {filteredProducts.length} products found
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            {/* Sort */}
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="featured">Featured</SelectItem>
+                <SelectItem value="price-low">Price: Low to High</SelectItem>
+                <SelectItem value="price-high">Price: High to Low</SelectItem>
+                <SelectItem value="rating">Highest Rated</SelectItem>
+                <SelectItem value="newest">Newest First</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* View Mode */}
+            <div className="hidden md:flex border rounded-lg p-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className={viewMode === 'grid' ? 'bg-accent text-accent-foreground' : ''}
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className={viewMode === 'list' ? 'bg-accent text-accent-foreground' : ''}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Mobile Filter */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="md:hidden">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filters
+                  {activeFilterCount > 0 && (
+                    <Badge variant="destructive" className="ml-2 h-5 w-5 p-0 text-xs">
+                      {activeFilterCount}
+                    </Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80">
+                <SheetHeader>
+                  <SheetTitle>Filters</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6">
+                  <FilterSidebar />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+
+        {/* Active Filters */}
+        {activeFilterCount > 0 && (
+          <div className="flex items-center space-x-2 mb-6">
+            <span className="text-sm text-muted-foreground">Active filters:</span>
+            {Object.entries(selectedFilters).map(([filterId, values]) =>
+              values.map((value) => {
+                const filter = selectedCategory?.filters.find(f => f.id === filterId);
+                const option = filter?.options?.find(o => o.value === value);
+                return (
+                  <Badge key={`${filterId}-${value}`} variant="secondary" className="gap-1">
+                    {option?.label || value}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-auto p-0 text-muted-foreground hover:text-foreground"
+                      onClick={() => handleFilterChange(filterId, value, false)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </Badge>
+                );
+              })
+            )}
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
+              Clear all
+            </Button>
+          </div>
+        )}
+
+        <div className="flex gap-8">
+          {/* Desktop Filters Sidebar */}
+          <aside className="hidden md:block w-80 flex-shrink-0">
+            <div className="sticky top-24">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-foreground">Filters</h3>
+                {activeFilterCount > 0 && (
+                  <Button variant="ghost" size="sm" onClick={clearFilters}>
+                    Clear all
+                  </Button>
+                )}
+              </div>
+              <FilterSidebar />
+            </div>
+          </aside>
+
+          {/* Products Grid */}
+          <div className="flex-1">
+            {filteredProducts.length === 0 ? (
+              <Card className="p-12 text-center">
+                <div className="space-y-4">
+                  <SlidersHorizontal className="h-12 w-12 text-muted-foreground mx-auto" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground">No products found</h3>
+                    <p className="text-muted-foreground">Try adjusting your filters to see more results.</p>
+                  </div>
+                  <Button onClick={clearFilters}>Clear all filters</Button>
+                </div>
+              </Card>
+            ) : (
+              <div className={viewMode === 'grid' ? 'product-grid stagger-animation' : 'space-y-6 stagger-animation'}>
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
