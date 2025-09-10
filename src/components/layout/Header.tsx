@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, Settings } from 'lucide-react';
+import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, Settings, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -20,9 +21,14 @@ const Header = () => {
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
-    { name: 'Air Coolers', href: '/shop?category=air-coolers' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'Track Order', href: '/track-order' },
+  ];
+
+  const airCoolerCategories = [
+    { name: 'Personal Coolers', href: '/shop?category=personal-coolers' },
+    { name: 'Desert Coolers', href: '/shop?category=desert-coolers' },
+    { name: 'Tower Coolers', href: '/shop?category=tower-coolers' },
   ];
 
   const isActive = (href: string) => {
@@ -146,22 +152,46 @@ const Header = () => {
 
         {/* Navigation - desktop */}
         <nav className="hidden md:flex border-t border-border py-4">
-          <ul className="flex space-x-8">
+          <div className="flex items-center space-x-8">
             {navigation.map((item) => (
-              <li key={item.name}>
-                <Link
-                  to={item.href}
-                  className={`text-sm font-medium transition-colors hover:text-accent ${
-                    isActive(item.href)
-                      ? 'text-accent border-b-2 border-accent pb-1'
-                      : 'text-muted-foreground'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              </li>
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`text-sm font-medium transition-colors hover:text-accent ${
+                  isActive(item.href)
+                    ? 'text-accent border-b-2 border-accent pb-1'
+                    : 'text-muted-foreground'
+                }`}
+              >
+                {item.name}
+              </Link>
             ))}
-          </ul>
+            
+            {/* Air Coolers Dropdown */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-sm font-medium text-muted-foreground hover:text-accent data-[state=open]:text-accent">
+                    Air Coolers
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="w-48 p-2">
+                      {airCoolerCategories.map((category) => (
+                        <NavigationMenuLink key={category.name} asChild>
+                          <Link
+                            to={category.href}
+                            className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors"
+                          >
+                            {category.name}
+                          </Link>
+                        </NavigationMenuLink>
+                      ))}
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
         </nav>
 
         {/* Mobile menu */}
@@ -197,6 +227,26 @@ const Header = () => {
                     </Link>
                   </li>
                 ))}
+                
+                {/* Air Coolers submenu for mobile */}
+                <li>
+                  <div className="py-2">
+                    <span className="text-sm font-medium text-muted-foreground">Air Coolers</span>
+                    <ul className="mt-2 ml-4 space-y-1">
+                      {airCoolerCategories.map((category) => (
+                        <li key={category.name}>
+                          <Link
+                            to={category.href}
+                            className="block py-1 text-sm text-muted-foreground hover:text-foreground"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {category.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
               </ul>
             </nav>
           </div>
