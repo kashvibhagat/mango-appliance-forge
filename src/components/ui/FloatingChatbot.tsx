@@ -25,10 +25,12 @@ const FloatingChatbot = () => {
   const [inputValue, setInputValue] = useState('');
 
   const quickQuestions = [
-    'Which cooler is best for my room?',
-    'Compare tower vs desert coolers',
-    'Spare parts availability',
-    'Warranty information'
+    'Which cooler for 200 sq ft room?',
+    'Compare tower vs desert coolers', 
+    'Spare parts for Cool Master',
+    'Warranty registration help',
+    'Budget under ₹15,000?',
+    'Power consumption details'
   ];
 
   const handleSendMessage = (text?: string) => {
@@ -46,21 +48,30 @@ const FloatingChatbot = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
 
-    // Simulate bot response
-    setTimeout(() => {
-      let botResponse = '';
-      
-      if (messageText.toLowerCase().includes('room') || messageText.toLowerCase().includes('size')) {
-        botResponse = 'For room selection, I recommend: Small rooms (up to 150 sq ft) - Personal coolers like Cool Master. Medium rooms (150-300 sq ft) - Tower coolers like Arctic TC series. Large rooms (300+ sq ft) - Desert coolers from our Wintry series.';
-      } else if (messageText.toLowerCase().includes('compare') || messageText.toLowerCase().includes('tower') || messageText.toLowerCase().includes('desert')) {
-        botResponse = 'Tower coolers are compact, stylish and perfect for medium rooms with good air circulation. Desert coolers are powerful, suitable for large open spaces and provide maximum cooling. Would you like specific model recommendations?';
-      } else if (messageText.toLowerCase().includes('spare') || messageText.toLowerCase().includes('parts')) {
-        botResponse = 'We have genuine Mango spare parts available for all our cooler models. Common parts include cooling pads, water pumps, and motors. All parts come with warranty. Need help finding parts for a specific model?';
-      } else if (messageText.toLowerCase().includes('warranty')) {
-        botResponse = 'All Mango air coolers come with a comprehensive 2-year warranty covering manufacturing defects. Our service network covers Pan India with 24/7 support. Would you like warranty registration assistance?';
-      } else {
-        botResponse = 'I\'d be happy to help! You can ask me about cooler recommendations, product comparisons, spare parts, warranty, or any other questions about Mango air coolers.';
-      }
+      // Simulate bot response with enhanced logic
+      setTimeout(() => {
+        let botResponse = '';
+        
+        if (messageText.toLowerCase().includes('room') || messageText.toLowerCase().includes('size') || messageText.toLowerCase().includes('area')) {
+          botResponse = 'For room selection, I recommend: \n\n• **Small rooms (up to 150 sq ft)** - Personal coolers like Cool Master (₹7,999-₹8,999)\n• **Medium rooms (150-300 sq ft)** - Tower coolers like Arctic TC series (₹10,999-₹12,999)\n• **Large rooms (300+ sq ft)** - Desert coolers from our Wintry series (₹15,999+)\n\nWhat\'s your room size in square feet?';
+        } else if (messageText.toLowerCase().includes('compare') || messageText.toLowerCase().includes('tower') || messageText.toLowerCase().includes('desert')) {
+          botResponse = '**Tower vs Desert Coolers:**\n\n**Tower Coolers:**\n• Compact & stylish design\n• Perfect for medium rooms\n• Better air circulation\n• Price: ₹10,999-₹16,999\n\n**Desert Coolers:**\n• Powerful cooling for large spaces\n• Higher water capacity\n• Best for open areas\n• Price: ₹15,999+\n\nWhich type of space are you cooling?';
+        } else if (messageText.toLowerCase().includes('spare') || messageText.toLowerCase().includes('parts')) {
+          botResponse = 'We have **genuine Mango spare parts** available:\n\n• **Water Pumps** - ₹899 onwards\n• **Motors** - ₹2,499 onwards  \n• **Honeycomb Pads** - ₹1,299 for set of 4\n• **Remote Controls** - ₹499\n• **Filters** - ₹299 onwards\n\nAll parts come with warranty. Which cooler model do you need parts for?';
+        } else if (messageText.toLowerCase().includes('warranty') || messageText.toLowerCase().includes('service')) {
+          botResponse = '**Warranty & Service:**\n\n• **2-3 years comprehensive warranty** on all coolers\n• **24/7 customer support** - +91 880 404 8811\n• **Pan India service network**\n• **Free warranty registration** available\n\nWould you like help with warranty registration or service booking?';
+        } else if (messageText.toLowerCase().includes('price') || messageText.toLowerCase().includes('budget') || messageText.toLowerCase().includes('cost')) {
+          const budgetRanges = [
+            'Under ₹10,000 - Personal coolers (Cool Master series)',
+            '₹10,000-₹15,000 - Tower coolers (Arctic TC series)', 
+            '₹15,000+ - Desert & Industrial coolers'
+          ];
+          botResponse = `**Budget-wise recommendations:**\n\n${budgetRanges.map(range => `• ${range}`).join('\n')}\n\n**Free shipping** on orders above ₹4,999!\n\nWhat\'s your budget range?`;
+        } else if (messageText.toLowerCase().includes('power') || messageText.toLowerCase().includes('consumption') || messageText.toLowerCase().includes('electricity')) {
+          botResponse = '**Power Consumption Guide:**\n\n• **Personal coolers**: 140-160W (₹2-3/hour)\n• **Tower coolers**: 120-220W (₹3-5/hour)\n• **Desert coolers**: 180-300W (₹4-7/hour)\n\nAll our coolers are **energy efficient** with 5-star ratings. Need help choosing based on power requirements?';
+        } else {
+          botResponse = '👋 **Welcome to Mango Appliances!**\n\nI can help you with:\n• **Cooler recommendations** by room size\n• **Product comparisons** \n• **Spare parts** information\n• **Warranty & service** support\n• **Budget-friendly** options\n\nWhat would you like to know about our air coolers?';
+        }
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),

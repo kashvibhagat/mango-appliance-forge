@@ -74,8 +74,31 @@ const Shop = () => {
                 if (value === '50+') return product.tankCapacity && parseInt(product.tankCapacity) >= 50;
                 return false;
               });
-            case 'type':
-              return values.some(value => product.tags.includes(value));
+            case 'part-type':
+              return values.some(value => {
+                if (value === 'cooling-pads') return product.tags.includes('cooling-pads') || product.name.toLowerCase().includes('pad');
+                if (value === 'motors') return product.tags.includes('motors') || product.name.toLowerCase().includes('motor');  
+                if (value === 'pumps') return product.tags.includes('pumps') || product.name.toLowerCase().includes('pump');
+                if (value === 'remote') return product.tags.includes('remote') || product.name.toLowerCase().includes('remote');
+                if (value === 'filters') return product.tags.includes('filters') || product.name.toLowerCase().includes('filter');
+                return product.tags.includes(value);
+              });
+            case 'compatibility':
+              return values.some(value => {
+                if (value === 'personal') return product.specifications['Compatibility']?.includes('Personal') || product.description.toLowerCase().includes('personal');
+                if (value === 'tower') return product.specifications['Compatibility']?.includes('Tower') || product.description.toLowerCase().includes('tower');
+                if (value === 'desert') return product.specifications['Compatibility']?.includes('Desert') || product.description.toLowerCase().includes('desert');
+                if (value === 'industrial') return product.specifications['Compatibility']?.includes('Industrial') || product.description.toLowerCase().includes('industrial');
+                return false;
+              });
+            case 'price-range':
+              return values.some(value => {
+                if (value === 'under-1000') return product.price < 1000;
+                if (value === '1000-2500') return product.price >= 1000 && product.price <= 2500;
+                if (value === '2500-5000') return product.price >= 2500 && product.price <= 5000;
+                if (value === 'above-5000') return product.price > 5000;
+                return false;
+              });
             default:
               return true;
           }

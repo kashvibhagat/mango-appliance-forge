@@ -21,6 +21,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import ProductCard from '@/components/ui/ProductCard';
+import ProductPoliciesSection from '@/components/ui/ProductPoliciesSection';
 import { allProducts } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 
@@ -396,6 +397,9 @@ const ProductDetail = () => {
           </TabsContent>
         </Tabs>
       </Card>
+
+      {/* Product Policies & Information */}
+      <ProductPoliciesSection product={product} />
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (

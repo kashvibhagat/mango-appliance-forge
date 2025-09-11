@@ -113,16 +113,19 @@ export const categories: ProductCategory[] = [
   {
     id: '4',
     name: 'Spare Parts',
-    slug: 'spare-parts',
+    slug: 'spare-parts',  
     description: 'Genuine Mango spare parts and accessories for air coolers',
     filters: [
       {
-        id: 'price',
-        name: 'Price',
-        type: 'range',
-        min: 100,
-        max: 5000,
-        unit: '₹'
+        id: 'price-range',
+        name: 'Price Range',
+        type: 'checkbox',
+        options: [
+          { value: 'under-1000', label: 'Under ₹1,000', count: 8 },
+          { value: '1000-2500', label: '₹1,000 - ₹2,500', count: 6 },
+          { value: '2500-5000', label: '₹2,500 - ₹5,000', count: 4 },
+          { value: 'above-5000', label: 'Above ₹5,000', count: 2 }
+        ]
       },
       {
         id: 'part-type',
@@ -134,6 +137,17 @@ export const categories: ProductCategory[] = [
           { value: 'pumps', label: 'Water Pumps', count: 6 },
           { value: 'remote', label: 'Remote Controls', count: 12 },
           { value: 'filters', label: 'Filters', count: 10 }
+        ]
+      },
+      {
+        id: 'compatibility',
+        name: 'Compatible With',
+        type: 'checkbox',
+        options: [
+          { value: 'personal', label: 'Personal Coolers', count: 20 },
+          { value: 'tower', label: 'Tower Coolers', count: 18 },
+          { value: 'desert', label: 'Desert Coolers', count: 15 },
+          { value: 'industrial', label: 'Industrial Coolers', count: 8 }
         ]
       }
     ]
