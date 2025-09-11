@@ -10,7 +10,7 @@ import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import Layout from "./components/layout/Layout";
 import PageTransition from "./components/layout/PageTransition";
 import FloatingChatbot, { ChatbotRef } from "./components/ui/FloatingChatbot";
-import { useRef, createContext, useContext } from "react";
+import { useRef, createContext, useContext, useState } from "react";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
@@ -43,6 +43,12 @@ export const useChatbot = () => {
 
 const App = () => {
   const chatbotRef = useRef<ChatbotRef>(null);
+  const [chatbotController, setChatbotController] = useState<ChatbotRef | null>(null);
+
+  const handleChatbotRef = (ref: ChatbotRef | null) => {
+    chatbotRef.current = ref;
+    setChatbotController(ref);
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -50,7 +56,7 @@ const App = () => {
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              <ChatbotContext.Provider value={chatbotRef.current}>
+              <ChatbotContext.Provider value={chatbotController}>
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
@@ -123,7 +129,7 @@ const App = () => {
                     </Routes>
                     
                     {/* Floating Chatbot - hide the default floating button since we have header button */}
-                    <FloatingChatbot ref={chatbotRef} hideFloatingButton={true} />
+                    <FloatingChatbot ref={handleChatbotRef} hideFloatingButton={true} />
                   </Layout>
                 </BrowserRouter>
               </ChatbotContext.Provider>
