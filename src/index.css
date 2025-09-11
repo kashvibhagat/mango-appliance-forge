@@ -9,26 +9,26 @@
 @layer base {
   :root {
     /* Mango Brand Colors (HSL) */
-    --mango-orange: 45 100% 60%;     /* #FFC933 - Light Mango Orange */
-    --mango-blue: 217 91% 60%;       /* #3B82F6 - Softer Blue */
-    --mango-light-blue: 213 93% 68%; /* #60A5FA - Light Blue Accent */
-    --white: 0 0% 100%;              /* #FFFFFF */
-    --light-gray: 210 40% 98%;       /* #F8FAFC - Soft Background */
-    --gray: 215 20% 65%;             /* #94A3B8 */
-    --dark-gray: 215 25% 27%;        /* #334155 */
-    --success: 142 71% 45%;          /* #22C55E */
-    --warning: 38 92% 50%;           /* #F59E0B */
-    --error: 0 84% 60%;              /* #EF4444 */
+    --mango-orange: 38 100% 55%;    /* #FFB000 - Primary Mango Orange */
+    --mango-blue: 217 91% 35%;      /* #1E3A8A - Deep Blue */
+    --mango-light-blue: 207 90% 54%; /* #2563EB - Lighter Blue */
+    --white: 0 0% 100%;             /* #FFFFFF */
+    --light-gray: 210 20% 98%;      /* #F8FAFC */
+    --gray: 215 20% 65%;            /* #94A3B8 */
+    --dark-gray: 215 25% 27%;       /* #334155 */
+    --success: 142 71% 45%;         /* #22C55E */
+    --warning: 38 92% 50%;          /* #F59E0B */
+    --error: 0 84% 60%;             /* #EF4444 */
     
     /* Design System Tokens */
-    --background: var(--light-gray);
+    --background: var(--white);
     --foreground: var(--dark-gray);
     --card: var(--white);
     --card-foreground: var(--dark-gray);
     --popover: var(--white);
     --popover-foreground: var(--dark-gray);
     --primary: var(--mango-orange);
-    --primary-foreground: var(--dark-gray);
+    --primary-foreground: var(--white);
     --secondary: var(--mango-blue);
     --secondary-foreground: var(--white);
     --muted: var(--light-gray);
@@ -37,15 +37,15 @@
     --accent-foreground: var(--white);
     --destructive: var(--error);
     --destructive-foreground: var(--white);
-    --border: 214 32% 91%;           /* #E2E8F0 */
-    --input: 214 32% 91%;            /* #E2E8F0 */
+    --border: 214 32% 91%;          /* #E2E8F0 */
+    --input: 214 32% 91%;           /* #E2E8F0 */
     --ring: var(--mango-orange);
     --radius: 8px;
     
     /* Gradients */
-    --gradient-brand: linear-gradient(135deg, hsl(var(--mango-orange)), hsl(var(--mango-light-blue)));
+    --gradient-brand: linear-gradient(135deg, hsl(var(--mango-orange)), hsl(var(--warning)));
     --gradient-card: linear-gradient(135deg, hsl(var(--white)) 0%, hsl(var(--light-gray)) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(var(--light-gray)) 0%, hsl(var(--white)) 50%, hsl(var(--mango-orange) / 0.1) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--light-gray)) 0%, hsl(var(--white)) 100%);
     
     /* Shadows */
     --shadow-card: 0 4px 20px -2px hsl(var(--gray) / 0.1);
