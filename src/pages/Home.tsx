@@ -17,7 +17,7 @@ const Home = () => {
     {
       icon: Truck,
       title: 'Free Shipping',
-      description: 'On orders above ₹999 across India'
+      description: 'On orders above ₹4999 across India'
     },
     {
       icon: Shield,

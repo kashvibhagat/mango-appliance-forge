@@ -1,16 +1,29 @@
-import { useState } from 'react';
-import { Search, Package, Truck, CheckCircle, Clock, MapPin } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import OrderTrackingCard from '@/components/ui/OrderTrackingCard';
+import { Search, Package } from 'lucide-react';
+
+interface Order {
+  id: string;
+  order_number: string;
+  status: string;
+  total_amount: number;
+  created_at: string;
+  user_id: string;
+}
 
 const TrackOrder = () => {
-  const [orderId, setOrderId] = useState('');
-  const [trackingData, setTrackingData] = useState<any>(null);
-  const [isSearching, setIsSearching] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('');
+  const [searchedOrder, setSearchedOrder] = useState<Order | null>(null);
+  const [userOrders, setUserOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const { user } = useAuth();
 
   // Mock tracking data
   const mockTrackingData = {

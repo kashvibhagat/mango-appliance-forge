@@ -26,6 +26,7 @@ const Header = () => {
     { name: 'Comparison', href: '/comparison' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'Track Order', href: '/track-order' },
+    { name: 'Warranty Registration', href: '/warranty-registration' },
   ];
 
   const coolerCategories = [
@@ -33,6 +34,7 @@ const Header = () => {
     { name: 'Desert Coolers', href: '/shop?category=desert-coolers' },
     { name: 'Tower Coolers', href: '/shop?category=tower-coolers' },
     { name: 'Industrial Coolers', href: '/shop?category=industrial-coolers' },
+    { name: 'Spare Parts', href: '/shop?category=spare-parts' },
   ];
 
   const isActive = (href: string) => {

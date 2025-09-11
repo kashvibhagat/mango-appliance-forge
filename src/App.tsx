@@ -20,6 +20,8 @@ import TrackOrder from "./pages/TrackOrder";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import WarrantyRegistration from "./pages/WarrantyRegistration";
+import AdminDashboard from "./pages/AdminDashboard";
 import Contact from './pages/Contact';
 import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
@@ -84,6 +86,20 @@ const App = () => (
                       <ProtectedRoute>
                         <PageTransition><TrackOrder /></PageTransition>
                       </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/warranty-registration" 
+                    element={
+                      <PageTransition><WarrantyRegistration /></PageTransition>
+                    } 
+                  />
+                  <Route 
+                    path="/admin" 
+                    element={
+                      <ProtectedRoute>
+                        <PageTransition><AdminDashboard /></PageTransition>
+                      </ProtectedRoute>  
                     } 
                   />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -14,13 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      notifications: {
+        Row: {
+          created_at: string
+          data: Json | null
+          expires_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          priority: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          priority?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          priority?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string
           id: string
+          is_free_shipping: boolean | null
           items: Json
           order_number: string
           shipping_address: Json | null
+          shipping_cost: number | null
           status: string
           total_amount: number
           updated_at: string
@@ -29,9 +67,11 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_free_shipping?: boolean | null
           items: Json
           order_number: string
           shipping_address?: Json | null
+          shipping_cost?: number | null
           status?: string
           total_amount: number
           updated_at?: string
@@ -40,9 +80,11 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_free_shipping?: boolean | null
           items?: Json
           order_number?: string
           shipping_address?: Json | null
+          shipping_cost?: number | null
           status?: string
           total_amount?: number
           updated_at?: string
@@ -77,6 +119,83 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      shipment_details: {
+        Row: {
+          created_at: string
+          delivered_at: string | null
+          id: string
+          order_id: string
+          pod_number: string | null
+          shipped_at: string | null
+          status: string
+          tracking_link: string | null
+          tracking_number: string | null
+          updated_at: string
+          vendor_name: string
+        }
+        Insert: {
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          order_id: string
+          pod_number?: string | null
+          shipped_at?: string | null
+          status?: string
+          tracking_link?: string | null
+          tracking_number?: string | null
+          updated_at?: string
+          vendor_name: string
+        }
+        Update: {
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          order_id?: string
+          pod_number?: string | null
+          shipped_at?: string | null
+          status?: string
+          tracking_link?: string | null
+          tracking_number?: string | null
+          updated_at?: string
+          vendor_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipment_details_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shipping_rules: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          min_order_amount: number | null
+          name: string
+          shipping_cost: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          min_order_amount?: number | null
+          name: string
+          shipping_cost?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          min_order_amount?: number | null
+          name?: string
+          shipping_cost?: number | null
         }
         Relationships: []
       }
@@ -129,6 +248,57 @@ export type Database = {
           postal_code?: string
           state?: string
           title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      warranty_registrations: {
+        Row: {
+          admin_approved: boolean | null
+          admin_notes: string | null
+          bill_upload_url: string | null
+          created_at: string
+          customer_mobile: string
+          customer_name: string
+          date_of_purchase: string
+          id: string
+          otp_verified: boolean | null
+          product_model: string
+          serial_number: string
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_approved?: boolean | null
+          admin_notes?: string | null
+          bill_upload_url?: string | null
+          created_at?: string
+          customer_mobile: string
+          customer_name: string
+          date_of_purchase: string
+          id?: string
+          otp_verified?: boolean | null
+          product_model: string
+          serial_number: string
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_approved?: boolean | null
+          admin_notes?: string | null
+          bill_upload_url?: string | null
+          created_at?: string
+          customer_mobile?: string
+          customer_name?: string
+          date_of_purchase?: string
+          id?: string
+          otp_verified?: boolean | null
+          product_model?: string
+          serial_number?: string
+          status?: string | null
           updated_at?: string
           user_id?: string
         }
