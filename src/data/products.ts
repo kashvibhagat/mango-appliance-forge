@@ -1,4 +1,5 @@
 import { Product, ProductCategory } from '@/types/product';
+import { spareProducts } from './spareProducts';
 
 export const categories: ProductCategory[] = [
   {
@@ -1122,5 +1123,6 @@ export const featuredProducts: Product[] = [
 
 export const allProducts: Product[] = [
   ...featuredProducts,
+  ...spareProducts,
   // Add more products here as needed
 ];
