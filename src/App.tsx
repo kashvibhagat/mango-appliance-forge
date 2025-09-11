@@ -43,19 +43,13 @@ export const useChatbot = () => {
 
 const App = () => {
   const chatbotRef = useRef<ChatbotRef>(null);
-  const chatbotController = React.useMemo<ChatbotRef>(() => ({
-    openChat: () => chatbotRef.current?.openChat?.(),
-    closeChat: () => chatbotRef.current?.closeChat?.(),
-    toggleChat: () => chatbotRef.current?.toggleChat?.(),
-  }), []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              <ChatbotContext.Provider value={chatbotController}>
+              <ChatbotContext.Provider value={null}>
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>

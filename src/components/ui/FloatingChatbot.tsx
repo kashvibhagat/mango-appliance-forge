@@ -42,6 +42,21 @@ const FloatingChatbot = forwardRef<ChatbotRef, FloatingChatbotProps>(({ hideFloa
 
   useImperativeHandle(ref, () => chatbotMethods);
 
+  // External event triggers (no context/refs required)
+  useEffect(() => {
+    const onOpen = () => setIsOpen(true);
+    const onClose = () => setIsOpen(false);
+    const onToggle = () => setIsOpen(prev => !prev);
+    window.addEventListener('mango-chat-open', onOpen);
+    window.addEventListener('mango-chat-close', onClose);
+    window.addEventListener('mango-chat-toggle', onToggle);
+    return () => {
+      window.removeEventListener('mango-chat-open', onOpen);
+      window.removeEventListener('mango-chat-close', onClose);
+      window.removeEventListener('mango-chat-toggle', onToggle);
+    };
+  }, []);
+
 
   const quickQuestions = [
     'Which cooler for 200 sq ft room?',

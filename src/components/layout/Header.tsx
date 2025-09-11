@@ -10,8 +10,6 @@ import SearchWithSuggestions from '@/components/ui/SearchWithSuggestions';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { ChatbotContext } from '@/App';
-import { useContext } from 'react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,8 +19,6 @@ const Header = () => {
   const { itemCount } = useCart();
   const { wishlistItems } = useWishlist();
   const { user, signOut } = useAuth();
-  const chatbot = useContext(ChatbotContext);
-  
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
@@ -97,7 +93,7 @@ const Header = () => {
               variant="ghost" 
               size="sm" 
               className="relative hover:bg-accent/10" 
-              onClick={() => chatbot?.toggleChat()}
+              onClick={() => window.dispatchEvent(new Event('mango-chat-toggle'))}
               title="AI Assistant"
             >
               <Bot className="h-5 w-5 text-primary" />
