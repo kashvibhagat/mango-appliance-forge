@@ -59,7 +59,16 @@ const Header = () => {
         {/* Top bar */}
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
+          <Link 
+            to="/" 
+            className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer z-10" 
+            onClick={() => {
+              console.log('Logo clicked');
+              if (location.pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+          >
             <div className="h-8 w-8 bg-gradient-brand rounded-lg flex items-center justify-center">
               <span className="text-lg font-bold text-white">M</span>
             </div>
