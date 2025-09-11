@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, Settings, ChevronDown, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +10,8 @@ import SearchWithSuggestions from '@/components/ui/SearchWithSuggestions';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { ChatbotContext } from '@/App';
+import { useContext } from 'react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,6 +21,7 @@ const Header = () => {
   const { itemCount } = useCart();
   const { wishlistItems } = useWishlist();
   const { user, signOut } = useAuth();
+  const chatbot = useContext(ChatbotContext);
   
   const navigation = [
     { name: 'Home', href: '/' },
@@ -80,6 +83,17 @@ const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-2">
+            {/* AI Assistant */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="relative hover:bg-accent/10" 
+              onClick={() => chatbot?.toggleChat()}
+              title="AI Assistant"
+            >
+              <Bot className="h-5 w-5 text-primary" />
+            </Button>
+
             {/* Wishlist */}
             <Button variant="ghost" size="sm" className="relative" asChild>
               <Link to="/wishlist">

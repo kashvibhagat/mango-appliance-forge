@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { MessageCircle, X, Send, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,17 @@ interface Message {
   timestamp: Date;
 }
 
-const FloatingChatbot = () => {
+export interface ChatbotRef {
+  openChat: () => void;
+  closeChat: () => void;
+  toggleChat: () => void;
+}
+
+interface FloatingChatbotProps {
+  hideFloatingButton?: boolean;
+}
+
+const FloatingChatbot = forwardRef<ChatbotRef, FloatingChatbotProps>(({ hideFloatingButton = false }, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -23,6 +33,12 @@ const FloatingChatbot = () => {
     }
   ]);
   const [inputValue, setInputValue] = useState('');
+
+  useImperativeHandle(ref, () => ({
+    openChat: () => setIsOpen(true),
+    closeChat: () => setIsOpen(false),
+    toggleChat: () => setIsOpen(prev => !prev),
+  }));
 
   const quickQuestions = [
     'Which cooler for 200 sq ft room?',
@@ -163,16 +179,20 @@ const FloatingChatbot = () => {
         </Card>
       )}
 
-      {/* Floating Button */}
-      <Button
-        onClick={() => setIsOpen(!isOpen)}
-        className="btn-floating animate-bounce-gentle hover:scale-110 btn-ripple"
-        size="icon"
-      >
-        <MessageCircle className="h-6 w-6" />
-      </Button>
+      {/* Floating Button - only show if not hidden */}
+      {!hideFloatingButton && (
+        <Button
+          onClick={() => setIsOpen(!isOpen)}
+          className="btn-floating animate-bounce-gentle hover:scale-110 btn-ripple"
+          size="icon"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Button>
+      )}
     </>
   );
-};
+});
+
+FloatingChatbot.displayName = 'FloatingChatbot';
 
 export default FloatingChatbot;
