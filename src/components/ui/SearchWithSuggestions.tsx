@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { allProducts } from '@/data/products';
+import { featuredProducts } from '@/data/products';
+import { spareProducts } from '@/data/spareProducts';
 
 interface SearchSuggestion {
   id: string;
@@ -58,6 +59,7 @@ const SearchWithSuggestions = ({
       setSuggestions([...recentSuggestions, ...trendingSuggestions]);
     } else {
       // Filter products and categories based on query
+      const allProducts = [...featuredProducts, ...spareProducts];
       const productSuggestions = allProducts
         .filter(product => 
           product.name.toLowerCase().includes(query.toLowerCase()) ||

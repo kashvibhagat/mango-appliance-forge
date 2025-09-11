@@ -22,7 +22,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import ProductCard from '@/components/ui/ProductCard';
 import ProductPoliciesSection from '@/components/ui/ProductPoliciesSection';
-import { allProducts } from '@/data/products';
+import { featuredProducts } from '@/data/products';
+import { spareProducts } from '@/data/spareProducts';
 import { useCart } from '@/contexts/CartContext';
 
 const ProductDetail = () => {
@@ -32,6 +33,7 @@ const ProductDetail = () => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const { addItem } = useCart();
 
+  const allProducts = [...featuredProducts, ...spareProducts];
   const product = allProducts.find(p => p.slug === slug);
 
   const handleAddToCart = () => {

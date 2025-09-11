@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { allProducts } from '@/data/products';
+import { featuredProducts } from '@/data/products';
+import { spareProducts } from '@/data/spareProducts';
 import { Product } from '@/types/product';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -20,6 +21,7 @@ const Comparison = () => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
   // Filter products based on search query
+  const allProducts = [...featuredProducts, ...spareProducts];
   const filteredProducts = allProducts.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -10,7 +10,8 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import ProductCard from '@/components/ui/ProductCard';
-import { allProducts, categories } from '@/data/products';
+import { featuredProducts, categories } from '@/data/products';
+import { spareProducts } from '@/data/spareProducts';
 import { Product } from '@/types/product';
 
 const Shop = () => {
@@ -26,6 +27,7 @@ const Shop = () => {
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
+    const allProducts = [...featuredProducts, ...spareProducts];
     let filtered = allProducts;
 
     // Filter by search query
@@ -119,7 +121,7 @@ const Shop = () => {
       default:
         return filtered;
     }
-  }, [allProducts, selectedCategory, searchQuery, priceRange, selectedFilters, sortBy]);
+  }, [featuredProducts, spareProducts, selectedCategory, searchQuery, priceRange, selectedFilters, sortBy]);
 
   const handleFilterChange = (filterId: string, value: string, checked: boolean) => {
     setSelectedFilters(prev => {

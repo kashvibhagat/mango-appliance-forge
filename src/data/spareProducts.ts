@@ -1,5 +1,48 @@
-import { Product } from '@/types/product';
-import { categories } from './products';
+import { Product, ProductCategory } from '@/types/product';
+
+// Define spare parts category directly to avoid circular dependency
+const sparePartsCategory: ProductCategory = {
+  id: '4',
+  name: 'Spare Parts',
+  slug: 'spare-parts',
+  description: 'Genuine Mango spare parts and accessories for air coolers',
+  filters: [
+    {
+      id: 'price-range',
+      name: 'Price Range',
+      type: 'checkbox',
+      options: [
+        { value: 'under-1000', label: 'Under ₹1,000', count: 8 },
+        { value: '1000-2500', label: '₹1,000 - ₹2,500', count: 6 },
+        { value: '2500-5000', label: '₹2,500 - ₹5,000', count: 4 },
+        { value: 'above-5000', label: 'Above ₹5,000', count: 2 }
+      ]
+    },
+    {
+      id: 'part-type',
+      name: 'Part Type',
+      type: 'checkbox',
+      options: [
+        { value: 'cooling-pads', label: 'Honeycomb Cooling Pads', count: 15 },
+        { value: 'motors', label: 'Motors', count: 8 },
+        { value: 'pumps', label: 'Water Pumps', count: 6 },
+        { value: 'remote', label: 'Remote Controls', count: 12 },
+        { value: 'filters', label: 'Filters', count: 10 }
+      ]
+    },
+    {
+      id: 'compatibility',
+      name: 'Compatible With',
+      type: 'checkbox',
+      options: [
+        { value: 'personal', label: 'Personal Coolers', count: 20 },
+        { value: 'tower', label: 'Tower Coolers', count: 18 },
+        { value: 'desert', label: 'Desert Coolers', count: 15 },
+        { value: 'industrial', label: 'Industrial Coolers', count: 8 }
+      ]
+    }
+  ]
+};
 
 export const spareProducts: Product[] = [
   {
@@ -11,7 +54,7 @@ export const spareProducts: Product[] = [
     images: ["/src/assets/product-spare-parts.jpg"],
     price: 899,
     originalPrice: 1199,
-    category: categories.find(c => c.slug === 'spare-parts')!,
+    category: sparePartsCategory,
     brand: "Mango",
     sku: "PUMP-STD-001",
     inStock: true,
@@ -39,7 +82,7 @@ export const spareProducts: Product[] = [
     images: ["/src/assets/product-spare-parts.jpg"],
     price: 2499,
     originalPrice: 2999,
-    category: categories.find(c => c.slug === 'spare-parts')!,
+    category: sparePartsCategory,
     brand: "Mango",
     sku: "MOTOR-HP-002",
     inStock: true,
@@ -67,7 +110,7 @@ export const spareProducts: Product[] = [
     images: ["/src/assets/product-spare-parts.jpg"],
     price: 1299,
     originalPrice: 1599,
-    category: categories.find(c => c.slug === 'spare-parts')!,
+    category: sparePartsCategory,
     brand: "Mango",
     sku: "PAD-HC-003",
     inStock: true,

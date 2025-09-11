@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { allProducts } from '@/data/products';
+import { featuredProducts } from '@/data/products';
+import { spareProducts } from '@/data/spareProducts';
 import { Product } from '@/types/product';
 import ProductCard from '@/components/ui/ProductCard';
 import { Separator } from '@/components/ui/separator';
@@ -16,7 +17,8 @@ const Wishlist = () => {
 
   useEffect(() => {
     // Filter products that are in the wishlist
-    const products = allProducts.filter(product => 
+    const allProducts = [...featuredProducts, ...spareProducts];
+    const products = allProducts.filter(product =>
       wishlistItems.includes(product.id)
     );
     setWishlistProducts(products);
