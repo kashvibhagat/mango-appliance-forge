@@ -42,12 +42,6 @@ const FloatingChatbot = forwardRef<ChatbotRef, FloatingChatbotProps>(({ hideFloa
 
   useImperativeHandle(ref, () => chatbotMethods);
 
-  // Also handle callback ref pattern
-  useEffect(() => {
-    if (typeof ref === 'function') {
-      ref(chatbotMethods);
-    }
-  }, [ref]);
 
   const quickQuestions = [
     'Which cooler for 200 sq ft room?',
