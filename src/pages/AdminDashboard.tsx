@@ -21,8 +21,12 @@ import {
   Clock,
   XCircle,
   Eye,
-  Edit
+  Edit,
+  User,
+  MapPin,
+  Package2
 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface Notification {
   id: string;
@@ -42,6 +46,13 @@ interface Order {
   total_amount: number;
   created_at: string;
   user_id: string;
+  items: any;
+  shipping_address: any;
+  profiles?: {
+    first_name: string;
+    last_name: string;
+    phone: string;
+  };
 }
 
 interface WarrantyRegistration {
@@ -88,13 +99,16 @@ const AdminDashboard = () => {
     try {
       const [notificationsData, ordersData, warrantiesData, shipmentsData] = await Promise.all([
         supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20),
-        supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(50),
+        supabase.from('orders').select(`
+          *,
+          profiles(first_name, last_name, phone)
+        `).order('created_at', { ascending: false }).limit(50),
         supabase.from('warranty_registrations').select('*').order('created_at', { ascending: false }),
         supabase.from('shipment_details').select('*').order('created_at', { ascending: false })
       ]);
 
       setNotifications(notificationsData.data || []);
-      setOrders(ordersData.data || []);
+      setOrders((ordersData.data as any) || []);
       setWarranties(warrantiesData.data || []);
       setShipments(shipmentsData.data || []);
     } catch (error) {
@@ -375,20 +389,151 @@ const AdminDashboard = () => {
               <div className="space-y-3">
                 {orders.map((order) => (
                   <div key={order.id} className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">Order {order.order_number}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          ₹{order.total_amount} • {new Date(order.created_at).toLocaleDateString()}
-                        </p>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Package2 className="h-4 w-4 text-muted-foreground" />
+                          <h4 className="font-medium">Order {order.order_number}</h4>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            <span>
+                              {order.profiles ? 
+                                `${order.profiles.first_name} ${order.profiles.last_name}` : 
+                                'Customer'
+                              }
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-center gap-1">
+                            <Package className="h-3 w-3" />
+                            <span>
+                              {Array.isArray(order.items) ? 
+                                `${order.items.length} items` : 
+                                'Items ordered'
+                              }
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            <span>
+                              {order.shipping_address?.city || 'Address on file'}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-2 text-sm">
+                          <span className="font-medium">₹{order.total_amount}</span> • {new Date(order.created_at).toLocaleDateString()}
+                        </div>
                       </div>
+                      
                       <div className="flex items-center gap-2">
                         <Badge className={getStatusColor(order.status)}>
                           {order.status}
                         </Badge>
-                        <Button size="sm" variant="outline">
-                          <Eye className="h-4 w-4" />
-                        </Button>
+                        
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size="sm" variant="outline">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle>Order Details - {order.order_number}</DialogTitle>
+                            </DialogHeader>
+                            
+                            <div className="space-y-6">
+                              {/* Customer Information */}
+                              <div>
+                                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                                  <User className="h-4 w-4" />
+                                  Customer Information
+                                </h3>
+                                <div className="bg-muted/50 p-3 rounded-lg">
+                                  <p><strong>Name:</strong> {order.profiles ? `${order.profiles.first_name} ${order.profiles.last_name}` : 'N/A'}</p>
+                                  <p><strong>Phone:</strong> {order.profiles?.phone || 'N/A'}</p>
+                                  <p><strong>User ID:</strong> {order.user_id}</p>
+                                </div>
+                              </div>
+
+                              {/* Shipping Address */}
+                              {order.shipping_address && (
+                                <div>
+                                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                                    <MapPin className="h-4 w-4" />
+                                    Shipping Address
+                                  </h3>
+                                  <div className="bg-muted/50 p-3 rounded-lg">
+                                    {typeof order.shipping_address === 'object' ? (
+                                      <>
+                                        <p>{order.shipping_address.first_name} {order.shipping_address.last_name}</p>
+                                        <p>{order.shipping_address.address_line_1}</p>
+                                        {order.shipping_address.address_line_2 && <p>{order.shipping_address.address_line_2}</p>}
+                                        <p>{order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}</p>
+                                        <p>{order.shipping_address.country}</p>
+                                        <p>Phone: {order.shipping_address.phone}</p>
+                                      </>
+                                    ) : (
+                                      <p>{JSON.stringify(order.shipping_address)}</p>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Order Items */}
+                              <div>
+                                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                                  <Package2 className="h-4 w-4" />
+                                  Items Ordered
+                                </h3>
+                                <div className="space-y-2">
+                                  {Array.isArray(order.items) ? order.items.map((item: any, index: number) => (
+                                    <div key={index} className="bg-muted/50 p-3 rounded-lg flex justify-between items-center">
+                                      <div>
+                                        <p className="font-medium">{item.name || item.title || 'Product'}</p>
+                                        <p className="text-sm text-muted-foreground">
+                                          Qty: {item.quantity} | Model: {item.model || 'N/A'}
+                                        </p>
+                                        {item.variant && <p className="text-sm text-muted-foreground">Variant: {item.variant}</p>}
+                                      </div>
+                                      <div className="text-right">
+                                        <p className="font-medium">₹{item.price}</p>
+                                        <p className="text-sm text-muted-foreground">Total: ₹{item.price * item.quantity}</p>
+                                      </div>
+                                    </div>
+                                  )) : (
+                                    <div className="bg-muted/50 p-3 rounded-lg">
+                                      <p>Items: {JSON.stringify(order.items)}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Order Summary */}
+                              <div>
+                                <h3 className="font-semibold mb-2">Order Summary</h3>
+                                <div className="bg-muted/50 p-3 rounded-lg">
+                                  <div className="flex justify-between">
+                                    <span>Status:</span>
+                                    <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
+                                  </div>
+                                  <div className="flex justify-between mt-2">
+                                    <span>Total Amount:</span>
+                                    <span className="font-medium">₹{order.total_amount}</span>
+                                  </div>
+                                  <div className="flex justify-between mt-2">
+                                    <span>Order Date:</span>
+                                    <span>{new Date(order.created_at).toLocaleString()}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     </div>
                   </div>
