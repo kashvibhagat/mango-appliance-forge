@@ -7,6 +7,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { AdminRoute } from "./components/auth/AdminRoute";
 import Layout from "./components/layout/Layout";
 import PageTransition from "./components/layout/PageTransition";
 import FloatingChatbot, { ChatbotRef } from "./components/ui/FloatingChatbot";
@@ -112,9 +113,9 @@ const App = () => {
                       <Route 
                         path="/admin" 
                         element={
-                          <ProtectedRoute>
+                          <AdminRoute>
                             <PageTransition><AdminDashboard /></PageTransition>
-                          </ProtectedRoute>  
+                          </AdminRoute>
                         } 
                       />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
