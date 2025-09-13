@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
+import { validateAdminAccess } from '@/utils/domainUtils'
 
 interface ProtectedRouteProps {
   children: ReactNode

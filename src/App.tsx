@@ -8,9 +8,12 @@ import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { AdminRoute } from "./components/auth/AdminRoute";
+import { AdminLayout } from "./components/layout/AdminLayout";
+import { DomainBasedRoute } from "./components/auth/DomainBasedRoute";
 import Layout from "./components/layout/Layout";
 import PageTransition from "./components/layout/PageTransition";
 import FloatingChatbot, { ChatbotRef } from "./components/ui/FloatingChatbot";
+import { DomainIndicator } from "./components/layout/DomainIndicator";
 import React, { useRef, createContext, useContext, useMemo } from "react";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
@@ -57,73 +60,222 @@ const App = () => {
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
-                  <Layout>
-                    <Routes>
-                      <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-                      <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-                      <Route path="/comparison" element={<PageTransition><Comparison /></PageTransition>} />
-                      <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-                      <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
-                      <Route path="/product/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
-                      <Route path="/cart" element={<PageTransition><Cart /></PageTransition>} />
-                      <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
-                      <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
-                      <Route 
-                        path="/checkout" 
-                        element={
+                  <Routes>
+                    {/* Customer-facing routes - only accessible from main domain */}
+                    <Route 
+                      path="/" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><Home /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/shop" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><Shop /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/comparison" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><Comparison /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/contact" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><Contact /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/wishlist" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><Wishlist /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/product/:slug" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><ProductDetail /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/cart" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><Cart /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/auth" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><Auth /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/reset-password" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><ResetPassword /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/checkout" 
+                      element={
+                        <DomainBasedRoute customerOnly>
                           <ProtectedRoute>
-                            <PageTransition><Checkout /></PageTransition>
+                            <Layout>
+                              <PageTransition><Checkout /></PageTransition>
+                            </Layout>
                           </ProtectedRoute>
-                        } 
-                      />
-                      <Route 
-                        path="/dashboard" 
-                        element={
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/dashboard" 
+                      element={
+                        <DomainBasedRoute customerOnly>
                           <ProtectedRoute>
-                            <PageTransition><Dashboard /></PageTransition>
+                            <Layout>
+                              <PageTransition><Dashboard /></PageTransition>
+                            </Layout>
                           </ProtectedRoute>
-                        } 
-                      />
-                      <Route 
-                        path="/profile" 
-                        element={
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/profile" 
+                      element={
+                        <DomainBasedRoute customerOnly>
                           <ProtectedRoute>
-                            <PageTransition><Profile /></PageTransition>
+                            <Layout>
+                              <PageTransition><Profile /></PageTransition>
+                            </Layout>
                           </ProtectedRoute>
-                        } 
-                      />
-                      <Route 
-                        path="/order-success" 
-                        element={
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/order-success" 
+                      element={
+                        <DomainBasedRoute customerOnly>
                           <ProtectedRoute>
-                            <PageTransition><OrderSuccess /></PageTransition>
+                            <Layout>
+                              <PageTransition><OrderSuccess /></PageTransition>
+                            </Layout>
                           </ProtectedRoute>
-                        } 
-                      />
-                      <Route path="/track-order" element={<PageTransition><TrackOrder /></PageTransition>} />
-                      <Route path="/complaint-booking" element={<PageTransition><ComplaintBooking /></PageTransition>} />
-                      <Route path="/complaint-tracking" element={<PageTransition><ComplaintTracking /></PageTransition>} />
-                      <Route 
-                        path="/warranty-registration" 
-                        element={
-                          <PageTransition><WarrantyRegistration /></PageTransition>
-                        } 
-                      />
-                      <Route 
-                        path="/admin" 
-                        element={
-                          <AdminRoute>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/track-order" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><TrackOrder /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/complaint-booking" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><ComplaintBooking /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/complaint-tracking" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><ComplaintTracking /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/warranty-registration" 
+                      element={
+                        <DomainBasedRoute customerOnly>
+                          <Layout>
+                            <PageTransition><WarrantyRegistration /></PageTransition>
+                          </Layout>
+                        </DomainBasedRoute>
+                      } 
+                    />
+
+                    {/* Admin routes - only accessible from admin subdomain */}
+                    <Route 
+                      path="/admin" 
+                      element={
+                        <AdminRoute>
+                          <AdminLayout>
                             <PageTransition><AdminDashboard /></PageTransition>
+                          </AdminLayout>
+                        </AdminRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/" 
+                      element={
+                        <DomainBasedRoute adminOnly>
+                          <AdminRoute>
+                            <AdminLayout>
+                              <PageTransition><AdminDashboard /></PageTransition>
+                            </AdminLayout>
                           </AdminRoute>
-                        } 
-                      />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                      <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-                    </Routes>
-                    
-                    {/* Floating Chatbot - hide the default floating button since we have header button */}
+                        </DomainBasedRoute>
+                      } 
+                    />
+
+                    {/* Catch-all route */}
+                    <Route path="*" element={<Layout><PageTransition><NotFound /></PageTransition></Layout>} />
+                  </Routes>
+                  
+                  {/* Floating Chatbot - only show on customer site */}
+                  <DomainBasedRoute customerOnly>
                     <FloatingChatbot ref={chatbotRef} hideFloatingButton={true} />
-                  </Layout>
+                  </DomainBasedRoute>
+                  
+                  {/* Domain Indicator for development */}
+                  <DomainIndicator />
                 </BrowserRouter>
               </ChatbotContext.Provider>
             </WishlistProvider>
