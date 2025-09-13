@@ -15,7 +15,10 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
 
   useEffect(() => {
     const checkAdminRole = async () => {
+      console.log('AdminRoute: Checking admin role for user:', user?.id, user?.email);
+      
       if (!user) {
+        console.log('AdminRoute: No user found');
         setIsAdmin(false);
         setLoading(false);
         return;
@@ -28,10 +31,14 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
           .eq('user_id', user.id)
           .eq('role', 'admin');
 
+        console.log('AdminRoute: Query result:', { data, error });
+
         // Check if we found at least one admin role record
-        setIsAdmin(!error && data && data.length > 0);
+        const hasAdminRole = !error && data && data.length > 0;
+        console.log('AdminRoute: Has admin role:', hasAdminRole);
+        setIsAdmin(hasAdminRole);
       } catch (error) {
-        console.error('Error checking admin role:', error);
+        console.error('AdminRoute: Error checking admin role:', error);
         setIsAdmin(false);
       } finally {
         setLoading(false);
