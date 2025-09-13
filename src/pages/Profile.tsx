@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/hooks/use-toast';
-import { User, MapPin, Lock, Plus, Edit2, Trash2 } from 'lucide-react';
+import { User, MapPin, Lock, Plus, Edit2, Trash2, Package, Calendar, DollarSign, Eye } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface UserAddress {
@@ -30,6 +30,7 @@ const Profile = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [addresses, setAddresses] = useState<UserAddress[]>([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -67,6 +68,7 @@ const Profile = () => {
     if (user) {
       loadProfile();
       loadAddresses();
+      loadOrders();
     }
   }, [user]);
 
@@ -109,6 +111,21 @@ const Profile = () => {
       setAddresses(data || []);
     } catch (error) {
       console.error('Error loading addresses:', error);
+    }
+  };
+
+  const loadOrders = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setOrders(data || []);
+    } catch (error) {
+      console.error('Error loading orders:', error);
     }
   };
 
@@ -300,10 +317,14 @@ const Profile = () => {
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="h-4 w-4" />
             Profile
+          </TabsTrigger>
+          <TabsTrigger value="orders" className="flex items-center gap-2">
+            <Package className="h-4 w-4" />
+            Orders
           </TabsTrigger>
           <TabsTrigger value="addresses" className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
@@ -368,6 +389,92 @@ const Profile = () => {
                   {updating ? 'Updating...' : 'Update Profile'}
                 </Button>
               </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="orders">
+          <Card>
+            <CardHeader>
+              <CardTitle>Order History</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {orders.length === 0 ? (
+                <div className="text-center py-8">
+                  <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No Orders Yet</h3>
+                  <p className="text-muted-foreground mb-4">
+                    You haven't placed any orders yet. Start shopping to see your orders here.
+                  </p>
+                  <Button asChild className="btn-hero">
+                    <a href="/shop">Start Shopping</a>
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {orders.map((order: any) => (
+                    <Card key={order.id} className="border">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <p className="font-semibold text-lg">#{order.order_number}</p>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {new Date(order.created_at).toLocaleDateString('en-IN')}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <DollarSign className="h-3 w-3" />
+                                ₹{order.total_amount.toLocaleString()}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-right space-y-2">
+                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                              order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                              order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              asChild
+                              className="flex items-center gap-1"
+                            >
+                              <a href={`/track-order?search=${order.order_number}`}>
+                                <Eye className="h-3 w-3" />
+                                Track
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Order Items Preview */}
+                        <div className="border-t pt-3">
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {order.items?.length || 0} item{(order.items?.length || 0) !== 1 ? 's' : ''}
+                          </p>
+                          <div className="flex gap-2 overflow-x-auto">
+                            {order.items?.slice(0, 3).map((item: any, index: number) => (
+                              <div key={index} className="flex-shrink-0 text-xs p-2 bg-muted/30 rounded">
+                                {item.name} × {item.quantity}
+                              </div>
+                            ))}
+                            {(order.items?.length || 0) > 3 && (
+                              <div className="flex-shrink-0 text-xs p-2 bg-muted/30 rounded">
+                                +{(order.items?.length || 0) - 3} more
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
