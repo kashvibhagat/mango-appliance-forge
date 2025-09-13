@@ -18,24 +18,26 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
+  const totalSlides = Math.ceil(mangoFeaturedProducts.length / 4);
+
   // Auto-play carousel
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || totalSlides <= 1) return;
     
     const interval = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % mangoFeaturedProducts.length);
-    }, 4000);
+      setCurrentSlide(prev => (prev + 1) % totalSlides);
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, totalSlides]);
 
   const nextSlide = () => {
-    setCurrentSlide(prev => (prev + 1) % mangoFeaturedProducts.length);
+    setCurrentSlide(prev => (prev + 1) % totalSlides);
     setIsAutoPlaying(false);
   };
 
   const prevSlide = () => {
-    setCurrentSlide(prev => (prev - 1 + mangoFeaturedProducts.length) % mangoFeaturedProducts.length);
+    setCurrentSlide(prev => (prev - 1 + totalSlides) % totalSlides);
     setIsAutoPlaying(false);
   };
 
@@ -316,11 +318,11 @@ const Home = () => {
                 className="flex transition-transform duration-500 ease-in-out"
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
-                {mangoFeaturedProducts.map((product) => (
-                  <div key={product.id} className="w-full flex-shrink-0">
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
-                      {mangoFeaturedProducts.slice(currentSlide * 4, (currentSlide * 4) + 4).map((prod) => (
-                        <ProductCard key={prod.id} product={prod} />
+                {Array.from({ length: Math.ceil(mangoFeaturedProducts.length / 4) }).map((_, slideIndex) => (
+                  <div key={slideIndex} className="w-full flex-shrink-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+                      {mangoFeaturedProducts.slice(slideIndex * 4, (slideIndex * 4) + 4).map((product) => (
+                        <ProductCard key={product.id} product={product} />
                       ))}
                     </div>
                   </div>
@@ -329,35 +331,43 @@ const Home = () => {
             </div>
 
             {/* Navigation Arrows */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background"
-              onClick={prevSlide}
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background"
-              onClick={nextSlide}
-            >
-              <ChevronRight className="h-5 w-5" />
-            </Button>
+            {Math.ceil(mangoFeaturedProducts.length / 4) > 1 && (
+              <>
+                <Button
+                  variant="ghost"  
+                  size="icon"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background border"
+                  onClick={prevSlide}
+                  disabled={currentSlide === 0}
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background border"
+                  onClick={nextSlide}
+                  disabled={currentSlide === Math.ceil(mangoFeaturedProducts.length / 4) - 1}
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </Button>
+              </>
+            )}
 
             {/* Carousel Dots */}
-            <div className="flex justify-center mt-6 space-x-2">
-              {Array.from({ length: Math.ceil(mangoFeaturedProducts.length / 4) }).map((_, index) => (
-                <button
-                  key={index}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    Math.floor(currentSlide / 4) === index ? 'bg-accent' : 'bg-muted'
-                  }`}
-                  onClick={() => setCurrentSlide(index * 4)}
-                />
-              ))}
-            </div>
+            {Math.ceil(mangoFeaturedProducts.length / 4) > 1 && (
+              <div className="flex justify-center mt-6 space-x-2">
+                {Array.from({ length: Math.ceil(mangoFeaturedProducts.length / 4) }).map((_, index) => (
+                  <button
+                    key={index}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      currentSlide === index ? 'bg-accent scale-110' : 'bg-muted hover:bg-muted-foreground/30'
+                    }`}
+                    onClick={() => setCurrentSlide(index)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -514,42 +524,46 @@ const Home = () => {
                 Stay updated with our latest products, tips, and industry news
               </p>
             </div>
-            <Button variant="outline" className="btn-secondary">
-              View All Articles
-              <ExternalLink className="ml-2 h-4 w-4" />
-            </Button>
+            <Link to="/shop">
+              <Button variant="outline" className="btn-secondary">
+                View All Articles
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 stagger-animation">
             {blogPosts.map((post, index) => (
-              <Card key={index} className="card-hover overflow-hidden">
-                <div className="relative">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <Badge className="absolute top-4 left-4 bg-accent/90 text-white">
-                    {post.category}
-                  </Badge>
-                </div>
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>{new Date(post.date).toLocaleDateString('en-IN')}</span>
+              <Link key={index} to="/shop" className="group">
+                <Card className="card-hover overflow-hidden h-full transition-all duration-300 group-hover:shadow-xl">
+                  <div className="relative">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <Badge className="absolute top-4 left-4 bg-accent/90 text-white">
+                      {post.category}
+                    </Badge>
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground line-clamp-2">
-                    {post.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-3">
-                    {post.excerpt}
-                  </p>
-                  <Button variant="ghost" className="p-0 h-auto text-accent hover:text-accent/80">
-                    Read More
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </Button>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      <span>{new Date(post.date).toLocaleDateString('en-IN')}</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-accent transition-colors">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground line-clamp-3">
+                      {post.excerpt}
+                    </p>
+                    <div className="flex items-center text-accent text-sm font-medium group-hover:translate-x-1 transition-transform">
+                      Read More
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
