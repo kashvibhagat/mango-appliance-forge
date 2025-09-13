@@ -9,13 +9,25 @@ interface AdminRouteProps {
 }
 
 export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
-  const { user } = useAuth();
+  const authContext = useAuth();
+  console.log('AdminRoute: Auth context:', authContext);
+  
+  const { user, loading: authLoading } = authContext;
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+
+  console.log('AdminRoute: Auth loading:', authLoading, 'User:', user?.id, user?.email);
 
   useEffect(() => {
     const checkAdminRole = async () => {
       console.log('AdminRoute: Checking admin role for user:', user?.id, user?.email);
+      console.log('AdminRoute: Auth loading state:', authLoading);
+      
+      // Wait for auth to finish loading
+      if (authLoading) {
+        console.log('AdminRoute: Still loading auth, waiting...');
+        return;
+      }
       
       if (!user) {
         console.log('AdminRoute: No user found');
@@ -25,6 +37,7 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
       }
 
       try {
+        console.log('AdminRoute: Making query for user_id:', user.id);
         const { data, error } = await supabase
           .from('user_roles')
           .select('role')
@@ -46,7 +59,7 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     };
 
     checkAdminRole();
-  }, [user]);
+  }, [user, authLoading]);
 
   if (loading) {
     return (
