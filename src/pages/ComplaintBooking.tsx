@@ -101,7 +101,7 @@ const ComplaintBooking = () => {
 
       // Submit complaint
       const { error } = await supabase
-        .from('complaints' as any)
+        .from('complaints')
         .insert({
           user_id: user?.id,
           category: data.category,
@@ -125,23 +125,7 @@ const ComplaintBooking = () => {
         description: "We'll review your complaint and get back to you within 24-48 hours.",
       });
 
-      // Send confirmation email
-      try {
-        await supabase.functions.invoke('send-complaint-confirmation', {
-          body: {
-            complaintNumber: `MNG-COMP-${String(Date.now()).slice(-4)}`, // Temporary number
-            customerEmail: data.customerEmail,
-            customerName: data.customerName,
-            subject: data.subject,
-            category: data.category,
-            productModel: data.productModel,
-          }
-        });
-      } catch (emailError) {
-        console.error('Failed to send confirmation email:', emailError);
-      }
-
-      navigate('/complaint-tracking');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error submitting complaint:', error);
       toast({

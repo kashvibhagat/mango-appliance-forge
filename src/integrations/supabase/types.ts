@@ -14,69 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      complaints: {
-        Row: {
-          admin_response: string | null
-          attachment_url: string | null
-          category: string
-          complaint_number: string
-          created_at: string
-          customer_email: string
-          customer_name: string
-          customer_phone: string
-          description: string
-          id: string
-          order_number: string | null
-          priority: string
-          product_model: string
-          resolution_notes: string | null
-          status: string
-          subject: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          admin_response?: string | null
-          attachment_url?: string | null
-          category: string
-          complaint_number: string
-          created_at?: string
-          customer_email: string
-          customer_name: string
-          customer_phone: string
-          description: string
-          id?: string
-          order_number?: string | null
-          priority?: string
-          product_model: string
-          resolution_notes?: string | null
-          status?: string
-          subject: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          admin_response?: string | null
-          attachment_url?: string | null
-          category?: string
-          complaint_number?: string
-          created_at?: string
-          customer_email?: string
-          customer_name?: string
-          customer_phone?: string
-          description?: string
-          id?: string
-          order_number?: string | null
-          priority?: string
-          product_model?: string
-          resolution_notes?: string | null
-          status?: string
-          subject?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       notifications: {
         Row: {
           created_at: string

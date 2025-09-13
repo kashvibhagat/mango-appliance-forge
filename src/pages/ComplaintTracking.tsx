@@ -51,13 +51,13 @@ const ComplaintTracking = () => {
     
     try {
       const { data, error } = await supabase
-        .from('complaints' as any)
+        .from('complaints')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setComplaints((data || []) as unknown as Complaint[]);
+      setComplaints(data || []);
     } catch (error) {
       console.error('Error fetching complaints:', error);
       toast({
@@ -76,22 +76,24 @@ const ComplaintTracking = () => {
     setSearchLoading(true);
     try {
       const { data, error } = await supabase
-        .from('complaints' as any)
+        .from('complaints')
         .select('*')
         .eq('complaint_number', searchId.trim())
-        .maybeSingle();
+        .single();
 
       if (error) {
-        throw error;
-      } else if (!data) {
-        toast({
-          title: "Complaint not found",
-          description: "Please check the complaint ID and try again.",
-          variant: "destructive",
-        });
+        if (error.code === 'PGRST116') {
+          toast({
+            title: "Complaint not found",
+            description: "Please check the complaint ID and try again.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
         setSearchResult(null);
       } else {
-        setSearchResult(data as unknown as Complaint);
+        setSearchResult(data);
       }
     } catch (error) {
       console.error('Error searching complaint:', error);
