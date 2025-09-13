@@ -583,36 +583,50 @@ const AdminDashboard = () => {
                                     </div>
                                   </div>
 
-                                  {/* Shipping Address */}
-                                  {order.shipping_address && (
-                                    <div>
-                                      <h3 className="font-semibold mb-2 flex items-center gap-2">
-                                        <MapPin className="h-4 w-4" />
-                                        Shipping Address
-                                      </h3>
-                                      <div className="bg-muted/50 p-3 rounded-lg">
-                                        {typeof order.shipping_address === 'object' ? (
-                                          <div className="space-y-1">
-                                            <p><strong>{order.shipping_address.first_name} {order.shipping_address.last_name}</strong></p>
-                                            <p>{order.shipping_address.address_line_1}</p>
-                                            {order.shipping_address.address_line_2 && <p>{order.shipping_address.address_line_2}</p>}
-                                            <p>{order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}</p>
-                                            <p>{order.shipping_address.country}</p>
-                                            <p><strong>Phone:</strong> {order.shipping_address.phone}</p>
-                                            {order.shipping_address.gst_details && (
-                                              <div className="mt-2 pt-2 border-t">
-                                                <p><strong>GST Details:</strong></p>
-                                                <p>Company: {order.shipping_address.gst_details.company_name}</p>
-                                                <p>GST Number: {order.shipping_address.gst_details.gst_number}</p>
-                                              </div>
-                                            )}
-                                          </div>
-                                        ) : (
-                                          <p>{JSON.stringify(order.shipping_address)}</p>
-                                        )}
-                                      </div>
-                                    </div>
-                                  )}
+                                   {/* Shipping Address */}
+                                   {order.shipping_address && (
+                                     <div>
+                                       <h3 className="font-semibold mb-2 flex items-center gap-2">
+                                         <MapPin className="h-4 w-4" />
+                                         Complete Delivery Address
+                                       </h3>
+                                       <div className="bg-muted/50 p-4 rounded-lg">
+                                         <div className="space-y-3">
+                                           <div>
+                                             <p className="font-semibold text-lg">{order.shipping_address.name}</p>
+                                             {order.shipping_address.phone && (
+                                               <p className="text-muted-foreground"><strong>Phone:</strong> {order.shipping_address.phone}</p>
+                                             )}
+                                             {order.shipping_address.email && (
+                                               <p className="text-muted-foreground"><strong>Email:</strong> {order.shipping_address.email}</p>
+                                             )}
+                                           </div>
+                                           
+                                           <div className="border-t pt-3">
+                                             <p className="font-medium mb-1">Delivery Address:</p>
+                                             <div className="bg-background p-3 rounded border">
+                                               <p className="leading-relaxed">{order.shipping_address.address}</p>
+                                               <div className="mt-2 flex flex-wrap gap-4 text-sm">
+                                                 <span><strong>City:</strong> {order.shipping_address.city}</span>
+                                                 <span><strong>State:</strong> {order.shipping_address.state}</span>
+                                                 <span><strong>Pincode:</strong> <span className="font-mono bg-muted px-2 py-1 rounded text-foreground">{order.shipping_address.pincode}</span></span>
+                                               </div>
+                                             </div>
+                                           </div>
+                                           
+                                           {order.shipping_address.gst_details && (
+                                             <div className="border-t pt-3">
+                                               <p className="font-medium mb-2">GST Details:</p>
+                                               <div className="bg-background p-3 rounded border text-sm">
+                                                 <p><strong>Company:</strong> {order.shipping_address.gst_details.company_name}</p>
+                                                 <p><strong>GST Number:</strong> <span className="font-mono">{order.shipping_address.gst_details.gst_number}</span></p>
+                                               </div>
+                                             </div>
+                                           )}
+                                         </div>
+                                       </div>
+                                     </div>
+                                   )}
 
                                   {/* Order Items */}
                                   <div>
