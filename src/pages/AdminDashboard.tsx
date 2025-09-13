@@ -48,6 +48,8 @@ interface Order {
   user_id: string;
   items: any;
   shipping_address: any;
+  shipping_cost?: number;
+  is_free_shipping?: boolean;
   profiles?: {
     first_name: string;
     last_name: string;
@@ -374,6 +376,12 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                 ))}
+                {notifications.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No notifications found</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -388,15 +396,18 @@ const AdminDashboard = () => {
             <CardContent>
               <div className="space-y-3">
                 {orders.map((order) => (
-                  <div key={order.id} className="p-4 border rounded-lg">
+                  <div key={order.id} className="p-4 border rounded-lg hover:bg-muted/20 transition-colors">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <Package2 className="h-4 w-4 text-muted-foreground" />
-                          <h4 className="font-medium">Order {order.order_number}</h4>
+                          <h4 className="font-medium">Order #{order.order_number}</h4>
+                          <Badge className={getStatusColor(order.status)}>
+                            {order.status}
+                          </Badge>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-muted-foreground mb-3">
                           <div className="flex items-center gap-1">
                             <User className="h-3 w-3" />
                             <span>
@@ -423,121 +434,176 @@ const AdminDashboard = () => {
                               {order.shipping_address?.city || 'Address on file'}
                             </span>
                           </div>
+
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            <span>
+                              {new Date(order.created_at).toLocaleDateString()}
+                            </span>
+                          </div>
                         </div>
                         
-                        <div className="mt-2 text-sm">
-                          <span className="font-medium">₹{order.total_amount}</span> • {new Date(order.created_at).toLocaleDateString()}
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <Badge className={getStatusColor(order.status)}>
-                          {order.status}
-                        </Badge>
-                        
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button size="sm" variant="outline">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-                            <DialogHeader>
-                              <DialogTitle>Order Details - {order.order_number}</DialogTitle>
-                            </DialogHeader>
-                            
-                            <div className="space-y-6">
-                              {/* Customer Information */}
-                              <div>
-                                <h3 className="font-semibold mb-2 flex items-center gap-2">
-                                  <User className="h-4 w-4" />
-                                  Customer Information
-                                </h3>
-                                <div className="bg-muted/50 p-3 rounded-lg">
-                                  <p><strong>Name:</strong> {order.profiles ? `${order.profiles.first_name} ${order.profiles.last_name}` : 'N/A'}</p>
-                                  <p><strong>Phone:</strong> {order.profiles?.phone || 'N/A'}</p>
-                                  <p><strong>User ID:</strong> {order.user_id}</p>
-                                </div>
-                              </div>
-
-                              {/* Shipping Address */}
-                              {order.shipping_address && (
-                                <div>
-                                  <h3 className="font-semibold mb-2 flex items-center gap-2">
-                                    <MapPin className="h-4 w-4" />
-                                    Shipping Address
-                                  </h3>
-                                  <div className="bg-muted/50 p-3 rounded-lg">
-                                    {typeof order.shipping_address === 'object' ? (
-                                      <>
-                                        <p>{order.shipping_address.first_name} {order.shipping_address.last_name}</p>
-                                        <p>{order.shipping_address.address_line_1}</p>
-                                        {order.shipping_address.address_line_2 && <p>{order.shipping_address.address_line_2}</p>}
-                                        <p>{order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}</p>
-                                        <p>{order.shipping_address.country}</p>
-                                        <p>Phone: {order.shipping_address.phone}</p>
-                                      </>
-                                    ) : (
-                                      <p>{JSON.stringify(order.shipping_address)}</p>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Order Items */}
-                              <div>
-                                <h3 className="font-semibold mb-2 flex items-center gap-2">
-                                  <Package2 className="h-4 w-4" />
-                                  Items Ordered
-                                </h3>
-                                <div className="space-y-2">
-                                  {Array.isArray(order.items) ? order.items.map((item: any, index: number) => (
-                                    <div key={index} className="bg-muted/50 p-3 rounded-lg flex justify-between items-center">
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm">
+                            <span className="font-bold text-green-600">₹{order.total_amount}</span>
+                            {order.is_free_shipping && (
+                              <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                                FREE SHIPPING
+                              </span>
+                            )}
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button size="sm" variant="outline">
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View Details
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Order Details - #{order.order_number}</DialogTitle>
+                                </DialogHeader>
+                                
+                                <div className="space-y-6">
+                                  {/* Order Status & Actions */}
+                                  <div className="bg-muted/30 p-4 rounded-lg">
+                                    <h3 className="font-semibold mb-3 flex items-center gap-2">
+                                      <Settings className="h-4 w-4" />
+                                      Order Management
+                                    </h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                       <div>
-                                        <p className="font-medium">{item.name || item.title || 'Product'}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                          Qty: {item.quantity} | Model: {item.model || 'N/A'}
-                                        </p>
-                                        {item.variant && <p className="text-sm text-muted-foreground">Variant: {item.variant}</p>}
+                                        <Label>Current Status</Label>
+                                        <div className="mt-1">
+                                          <Badge className={getStatusColor(order.status)}>
+                                            {order.status.toUpperCase()}
+                                          </Badge>
+                                        </div>
                                       </div>
-                                      <div className="text-right">
-                                        <p className="font-medium">₹{item.price}</p>
-                                        <p className="text-sm text-muted-foreground">Total: ₹{item.price * item.quantity}</p>
+                                      <div>
+                                        <Label>Order Date</Label>
+                                        <div className="mt-1 text-sm">
+                                          {new Date(order.created_at).toLocaleString()}
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <Label>Order ID</Label>
+                                        <div className="mt-1 font-mono text-sm text-muted-foreground">
+                                          {order.id}
+                                        </div>
                                       </div>
                                     </div>
-                                  )) : (
+                                  </div>
+
+                                  {/* Customer Information */}
+                                  <div>
+                                    <h3 className="font-semibold mb-2 flex items-center gap-2">
+                                      <User className="h-4 w-4" />
+                                      Customer Information
+                                    </h3>
                                     <div className="bg-muted/50 p-3 rounded-lg">
-                                      <p>Items: {JSON.stringify(order.items)}</p>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                          <p><strong>Name:</strong> {order.profiles ? `${order.profiles.first_name} ${order.profiles.last_name}` : 'N/A'}</p>
+                                          <p><strong>Phone:</strong> {order.profiles?.phone || 'N/A'}</p>
+                                        </div>
+                                        <div>
+                                          <p><strong>User ID:</strong> {order.user_id}</p>
+                                          <p><strong>Customer Type:</strong> {order.user_id ? 'Registered' : 'Guest'}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Shipping Address */}
+                                  {order.shipping_address && (
+                                    <div>
+                                      <h3 className="font-semibold mb-2 flex items-center gap-2">
+                                        <MapPin className="h-4 w-4" />
+                                        Shipping Address
+                                      </h3>
+                                      <div className="bg-muted/50 p-3 rounded-lg">
+                                        {typeof order.shipping_address === 'object' ? (
+                                          <div className="space-y-1">
+                                            <p><strong>{order.shipping_address.first_name} {order.shipping_address.last_name}</strong></p>
+                                            <p>{order.shipping_address.address_line_1}</p>
+                                            {order.shipping_address.address_line_2 && <p>{order.shipping_address.address_line_2}</p>}
+                                            <p>{order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}</p>
+                                            <p>{order.shipping_address.country}</p>
+                                            <p><strong>Phone:</strong> {order.shipping_address.phone}</p>
+                                            {order.shipping_address.gst_details && (
+                                              <div className="mt-2 pt-2 border-t">
+                                                <p><strong>GST Details:</strong></p>
+                                                <p>Company: {order.shipping_address.gst_details.company_name}</p>
+                                                <p>GST Number: {order.shipping_address.gst_details.gst_number}</p>
+                                              </div>
+                                            )}
+                                          </div>
+                                        ) : (
+                                          <p>{JSON.stringify(order.shipping_address)}</p>
+                                        )}
+                                      </div>
                                     </div>
                                   )}
-                                </div>
-                              </div>
 
-                              {/* Order Summary */}
-                              <div>
-                                <h3 className="font-semibold mb-2">Order Summary</h3>
-                                <div className="bg-muted/50 p-3 rounded-lg">
-                                  <div className="flex justify-between">
-                                    <span>Status:</span>
-                                    <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
-                                  </div>
-                                  <div className="flex justify-between mt-2">
-                                    <span>Total Amount:</span>
-                                    <span className="font-medium">₹{order.total_amount}</span>
-                                  </div>
-                                  <div className="flex justify-between mt-2">
-                                    <span>Order Date:</span>
-                                    <span>{new Date(order.created_at).toLocaleString()}</span>
+                                  {/* Order Items */}
+                                  <div>
+                                    <h3 className="font-semibold mb-2 flex items-center gap-2">
+                                      <Package className="h-4 w-4" />
+                                      Order Items
+                                    </h3>
+                                    <div className="bg-muted/50 p-3 rounded-lg">
+                                      {Array.isArray(order.items) ? (
+                                        <div className="space-y-3">
+                                          {order.items.map((item: any, index: number) => (
+                                            <div key={index} className="flex justify-between items-center p-3 bg-background rounded border">
+                                              <div className="flex-1">
+                                                <p className="font-medium">{item.name}</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                  Product ID: {item.product_id}
+                                                </p>
+                                              </div>
+                                              <div className="text-right">
+                                                <p className="font-medium">₹{item.price} × {item.quantity}</p>
+                                                <p className="text-sm font-bold">₹{item.total}</p>
+                                              </div>
+                                            </div>
+                                          ))}
+                                          
+                                          <div className="border-t pt-3 mt-3">
+                                            <div className="flex justify-between items-center text-sm">
+                                              <span>Shipping Cost:</span>
+                                              <span>₹{order.shipping_cost || 0}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center font-bold text-lg mt-2">
+                                              <span>Total Amount:</span>
+                                              <span className="text-green-600">₹{order.total_amount}</span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <p>Order items information not available</p>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 ))}
+                
+                {orders.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No orders found</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -547,179 +613,193 @@ const AdminDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>Warranty Registrations</CardTitle>
-              <CardDescription>Review and approve warranty registrations</CardDescription>
+              <CardDescription>Manage customer warranty requests</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {warranties.map((warranty) => (
                   <div key={warranty.id} className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">{warranty.product_model}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {warranty.customer_name} • {warranty.serial_number}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(warranty.created_at).toLocaleDateString()}
-                        </p>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Shield className="h-4 w-4 text-muted-foreground" />
+                          <h4 className="font-medium">Serial: {warranty.serial_number}</h4>
+                          <Badge className={getStatusColor(warranty.status)}>
+                            {warranty.status}
+                          </Badge>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+                          <div>
+                            <strong>Customer:</strong> {warranty.customer_name}
+                          </div>
+                          <div>
+                            <strong>Product:</strong> {warranty.product_model}
+                          </div>
+                          <div>
+                            <strong>Mobile:</strong> {warranty.customer_mobile}
+                          </div>
+                        </div>
+                        <div className="mt-2 text-sm text-muted-foreground">
+                          Registered: {new Date(warranty.created_at).toLocaleDateString()}
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge className={getStatusColor(warranty.status)}>
-                          {warranty.status}
-                        </Badge>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => setSelectedWarranty(warranty)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size="sm" variant="outline">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Warranty Details</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <Label>Status Update</Label>
+                                <div className="flex gap-2 mt-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+                                    onClick={() => updateWarrantyStatus(warranty.id, 'approved')}
+                                  >
+                                    Approve
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+                                    onClick={() => updateWarrantyStatus(warranty.id, 'rejected')}
+                                  >
+                                    Reject
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     </div>
                   </div>
                 ))}
+                {warranties.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No warranty registrations found</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="shipments">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Create Shipment</CardTitle>
-                <CardDescription>Add shipping details for orders</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="orderId">Order</Label>
-                  <Select value={shipmentForm.orderId} onValueChange={(value) => setShipmentForm(prev => ({ ...prev, orderId: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select order" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {orders.filter(o => o.status === 'confirmed').map(order => (
-                        <SelectItem key={order.id} value={order.id}>
-                          Order {order.order_number}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="vendorName">Vendor Name</Label>
-                  <Input
-                    id="vendorName"
-                    value={shipmentForm.vendorName}
-                    onChange={(e) => setShipmentForm(prev => ({ ...prev, vendorName: e.target.value }))}
-                    placeholder="e.g., Blue Dart, DTDT"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="trackingNumber">Tracking Number</Label>
-                  <Input
-                    id="trackingNumber"
-                    value={shipmentForm.trackingNumber}
-                    onChange={(e) => setShipmentForm(prev => ({ ...prev, trackingNumber: e.target.value }))}
-                    placeholder="Enter tracking number"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="trackingLink">Tracking Link</Label>
-                  <Input
-                    id="trackingLink"
-                    value={shipmentForm.trackingLink}
-                    onChange={(e) => setShipmentForm(prev => ({ ...prev, trackingLink: e.target.value }))}
-                    placeholder="https://tracking.vendor.com/..."
-                  />
-                </div>
-                
-                <Button onClick={createShipment} className="w-full">
-                  Create Shipment
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Active Shipments</CardTitle>
-                <CardDescription>Track ongoing shipments</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {shipments.map((shipment) => (
-                    <div key={shipment.id} className="p-3 border rounded">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{shipment.vendor_name}</p>
-                          <p className="text-sm text-muted-foreground">{shipment.tracking_number}</p>
-                        </div>
-                        <Badge className={getStatusColor(shipment.status)}>
-                          {shipment.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      {/* Warranty Review Modal */}
-      {selectedWarranty && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-md">
+          <Card>
             <CardHeader>
-              <CardTitle>Review Warranty Registration</CardTitle>
+              <CardTitle>Shipment Management</CardTitle>
+              <CardDescription>Create and manage shipments</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <p><strong>Product:</strong> {selectedWarranty.product_model}</p>
-                <p><strong>Serial:</strong> {selectedWarranty.serial_number}</p>
-                <p><strong>Customer:</strong> {selectedWarranty.customer_name}</p>
-                <p><strong>Mobile:</strong> {selectedWarranty.customer_mobile}</p>
-              </div>
-              
-              <div>
-                <Label htmlFor="adminNotes">Admin Notes</Label>
-                <Textarea
-                  id="adminNotes"
-                  placeholder="Add notes about this registration..."
-                  className="mt-1"
-                />
-              </div>
-              
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setSelectedWarranty(null)}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => updateWarrantyStatus(selectedWarranty.id, 'rejected')}
-                  className="flex-1"
-                >
-                  Reject
-                </Button>
-                <Button
-                  onClick={() => updateWarrantyStatus(selectedWarranty.id, 'approved')}
-                  className="flex-1"
-                >
-                  Approve
-                </Button>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Create Shipment Form */}
+                <div className="border p-4 rounded-lg">
+                  <h3 className="font-semibold mb-4">Create New Shipment</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="orderId">Order ID</Label>
+                      <Select
+                        value={shipmentForm.orderId}
+                        onValueChange={(value) => setShipmentForm(prev => ({ ...prev, orderId: value }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select order" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {orders.filter(o => o.status === 'pending').map((order) => (
+                            <SelectItem key={order.id} value={order.id}>
+                              {order.order_number} - ₹{order.total_amount}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="vendorName">Vendor Name</Label>
+                      <Input
+                        id="vendorName"
+                        value={shipmentForm.vendorName}
+                        onChange={(e) => setShipmentForm(prev => ({ ...prev, vendorName: e.target.value }))}
+                        placeholder="e.g., Blue Dart, DTDC"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="trackingNumber">Tracking Number</Label>
+                      <Input
+                        id="trackingNumber"
+                        value={shipmentForm.trackingNumber}
+                        onChange={(e) => setShipmentForm(prev => ({ ...prev, trackingNumber: e.target.value }))}
+                        placeholder="Enter tracking number"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="trackingLink">Tracking Link (Optional)</Label>
+                      <Input
+                        id="trackingLink"
+                        value={shipmentForm.trackingLink}
+                        onChange={(e) => setShipmentForm(prev => ({ ...prev, trackingLink: e.target.value }))}
+                        placeholder="https://..."
+                      />
+                    </div>
+                  </div>
+                  <Button onClick={createShipment} className="mt-4">
+                    Create Shipment
+                  </Button>
+                </div>
+
+                {/* Active Shipments */}
+                <div>
+                  <h3 className="font-semibold mb-4">Active Shipments</h3>
+                  <div className="space-y-3">
+                    {shipments.map((shipment) => (
+                      <div key={shipment.id} className="p-4 border rounded-lg">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Truck className="h-4 w-4 text-muted-foreground" />
+                              <h4 className="font-medium">Tracking: {shipment.tracking_number}</h4>
+                              <Badge className={getStatusColor(shipment.status)}>
+                                {shipment.status}
+                              </Badge>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+                              <div>
+                                <strong>Vendor:</strong> {shipment.vendor_name}
+                              </div>
+                              <div>
+                                <strong>Order ID:</strong> {shipment.order_id}
+                              </div>
+                              <div>
+                                <strong>Created:</strong> {new Date(shipment.created_at).toLocaleDateString()}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {shipments.length === 0 && (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Truck className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p>No shipments found</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
-        </div>
-      )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

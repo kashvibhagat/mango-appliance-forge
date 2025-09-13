@@ -217,6 +217,20 @@ const Checkout = () => {
 
       if (orderError) throw orderError;
 
+      // Send admin notification about new order
+      try {
+        await supabase.functions.invoke('send-admin-order-notification', {
+          body: {
+            orderId: orderData.id,
+            orderNumber: orderNumber
+          }
+        });
+        console.log('Admin notification sent for order:', orderNumber);
+      } catch (notificationError) {
+        console.error('Failed to send admin notification:', notificationError);
+        // Don't fail the order placement if notification fails
+      }
+
       // Save address if requested
       if (saveAddress && user && !selectedAddressId) {
         await supabase.from('user_addresses').insert({
