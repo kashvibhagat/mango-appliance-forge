@@ -14,6 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
+      complaints: {
+        Row: {
+          admin_response: string | null
+          attachment_url: string | null
+          category: string
+          complaint_number: string
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          description: string
+          id: string
+          order_number: string | null
+          priority: string
+          product_model: string
+          resolution_notes: string | null
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_response?: string | null
+          attachment_url?: string | null
+          category: string
+          complaint_number: string
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          description: string
+          id?: string
+          order_number?: string | null
+          priority?: string
+          product_model: string
+          resolution_notes?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_response?: string | null
+          attachment_url?: string | null
+          category?: string
+          complaint_number?: string
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          description?: string
+          id?: string
+          order_number?: string | null
+          priority?: string
+          product_model?: string
+          resolution_notes?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      customers: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string | null
+          id: string
+          is_blocked: boolean | null
+          last_name: string | null
+          last_order_date: string | null
+          phone: string | null
+          total_orders: number | null
+          total_spent: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name?: string | null
+          id?: string
+          is_blocked?: boolean | null
+          last_name?: string | null
+          last_order_date?: string | null
+          phone?: string | null
+          total_orders?: number | null
+          total_spent?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string | null
+          id?: string
+          is_blocked?: boolean | null
+          last_name?: string | null
+          last_order_date?: string | null
+          phone?: string | null
+          total_orders?: number | null
+          total_spent?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
@@ -89,6 +197,57 @@ export type Database = {
           total_amount?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          brand: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          images: Json | null
+          is_active: boolean | null
+          model: string | null
+          name: string
+          price: number
+          specifications: Json | null
+          stock_quantity: number
+          updated_at: string
+          warranty_period: number | null
+        }
+        Insert: {
+          brand?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: Json | null
+          is_active?: boolean | null
+          model?: string | null
+          name: string
+          price?: number
+          specifications?: Json | null
+          stock_quantity?: number
+          updated_at?: string
+          warranty_period?: number | null
+        }
+        Update: {
+          brand?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: Json | null
+          is_active?: boolean | null
+          model?: string | null
+          name?: string
+          price?: number
+          specifications?: Json | null
+          stock_quantity?: number
+          updated_at?: string
+          warranty_period?: number | null
         }
         Relationships: []
       }
@@ -196,6 +355,39 @@ export type Database = {
           min_order_amount?: number | null
           name?: string
           shipping_cost?: number | null
+        }
+        Relationships: []
+      }
+      system_settings: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
