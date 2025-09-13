@@ -72,6 +72,7 @@ interface ShipmentDetail {
   order_id: string;
   vendor_name: string;
   tracking_number: string;
+  tracking_link?: string;
   status: string;
   created_at: string;
 }
@@ -215,36 +216,50 @@ const AdminDashboard = () => {
       return;
     }
 
-    const { error } = await supabase
-      .from('shipment_details')
-      .insert({
-        order_id: shipmentForm.orderId,
-        vendor_name: shipmentForm.vendorName,
-        tracking_number: shipmentForm.trackingNumber,
-        tracking_link: shipmentForm.trackingLink,
-        status: shipmentForm.status,
-        shipped_at: new Date().toISOString()
-      });
+    try {
+      // Create shipment record
+      const { error: shipmentError } = await supabase
+        .from('shipment_details')
+        .insert({
+          order_id: shipmentForm.orderId,
+          vendor_name: shipmentForm.vendorName,
+          tracking_number: shipmentForm.trackingNumber,
+          tracking_link: shipmentForm.trackingLink,
+          status: 'in_transit',
+          shipped_at: new Date().toISOString()
+        });
 
-    if (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to create shipment',
-        variant: 'destructive'
-      });
-    } else {
+      if (shipmentError) throw shipmentError;
+
+      // Update order status to shipped
+      const { error: orderError } = await supabase
+        .from('orders')
+        .update({ status: 'shipped' })
+        .eq('id', shipmentForm.orderId);
+
+      if (orderError) throw orderError;
+
       toast({
         title: 'Success',
-        description: 'Shipment created successfully'
+        description: 'Shipment created and order status updated successfully'
       });
+      
       setShipmentForm({
         orderId: '',
         vendorName: '',
         trackingNumber: '',
         trackingLink: '',
-        status: 'shipped'
+        status: 'in_transit'
       });
+      
       fetchDashboardData();
+
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: `Failed to create shipment: ${error.message}`,
+        variant: 'destructive'
+      });
     }
   };
 
@@ -416,7 +431,7 @@ const AdminDashboard = () => {
                           </Badge>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-muted-foreground mb-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground mb-3">
                           <div className="flex items-center gap-1">
                             <User className="h-3 w-3" />
                             <span>
@@ -424,6 +439,9 @@ const AdminDashboard = () => {
                                 `${order.profiles.first_name} ${order.profiles.last_name}` : 
                                 'Customer'
                               }
+                              {order.profiles?.phone && (
+                                <span className="ml-1 text-xs">• {order.profiles.phone}</span>
+                              )}
                             </span>
                           </div>
                           
@@ -436,18 +454,48 @@ const AdminDashboard = () => {
                               }
                             </span>
                           </div>
-                          
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            <span>
-                              {order.shipping_address?.city || 'Address on file'}
-                            </span>
-                          </div>
+                        </div>
 
+                        {/* Complete Shipping Address */}
+                        {order.shipping_address && (
+                          <div className="bg-muted/30 p-3 rounded text-sm mb-3">
+                            <div className="flex items-start gap-1 mb-1">
+                              <MapPin className="h-3 w-3 mt-0.5 text-muted-foreground" />
+                              <div className="flex-1">
+                                <strong>Shipping to: </strong>
+                                {order.shipping_address.first_name} {order.shipping_address.last_name}
+                                {order.shipping_address.phone && (
+                                  <span className="ml-2 text-muted-foreground">• {order.shipping_address.phone}</span>
+                                )}
+                              </div>
+                            </div>
+                            <div className="ml-4 text-muted-foreground">
+                              {order.shipping_address.address_line_1}
+                              {order.shipping_address.address_line_2 && `, ${order.shipping_address.address_line_2}`}
+                              <br />
+                              {order.shipping_address.city}, {order.shipping_address.state} - {order.shipping_address.postal_code}
+                              <br />
+                              {order.shipping_address.country}
+                              {order.shipping_address.gst_details && (
+                                <span className="block mt-1 text-xs">
+                                  GST: {order.shipping_address.gst_details.gst_number} ({order.shipping_address.gst_details.company_name})
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground mb-3">
                           <div className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             <span>
-                              {new Date(order.created_at).toLocaleDateString()}
+                              Ordered: {new Date(order.created_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Truck className="h-3 w-3" />
+                            <span>
+                              {order.is_free_shipping ? 'FREE SHIPPING' : `Shipping: ₹${order.shipping_cost || 0}`}
                             </span>
                           </div>
                         </div>
@@ -725,9 +773,9 @@ const AdminDashboard = () => {
                           <SelectValue placeholder="Select order" />
                         </SelectTrigger>
                         <SelectContent>
-                          {orders.filter(o => o.status === 'pending').map((order) => (
+                          {orders.filter(o => o.status === 'pending' || o.status === 'confirmed').map((order) => (
                             <SelectItem key={order.id} value={order.id}>
-                              {order.order_number} - ₹{order.total_amount}
+                              {order.order_number} - ₹{order.total_amount} ({order.profiles?.first_name} {order.profiles?.last_name})
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -781,15 +829,26 @@ const AdminDashboard = () => {
                                 {shipment.status}
                               </Badge>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
                               <div>
                                 <strong>Vendor:</strong> {shipment.vendor_name}
-                              </div>
-                              <div>
-                                <strong>Order ID:</strong> {shipment.order_id}
+                                <br />
+                                <strong>Order:</strong> {orders.find(o => o.id === shipment.order_id)?.order_number || shipment.order_id}
                               </div>
                               <div>
                                 <strong>Created:</strong> {new Date(shipment.created_at).toLocaleDateString()}
+                                {shipment.tracking_link && (
+                                  <div className="mt-1">
+                                    <a 
+                                      href={shipment.tracking_link} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 hover:underline text-xs"
+                                    >
+                                      Track Package →
+                                    </a>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
