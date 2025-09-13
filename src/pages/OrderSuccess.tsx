@@ -5,11 +5,60 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const OrderSuccess = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('orderId') || 'MNG123456789';
+  const orderDbId = searchParams.get('orderDbId');
+  const hasGST = searchParams.get('gst') === 'true';
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
+  const { toast } = useToast();
+
+  const downloadInvoice = async (isGST = false) => {
+    try {
+      if (!orderDbId) {
+        toast({
+          title: "Error",
+          description: "Order information not available for invoice generation.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const response = await supabase.functions.invoke('generate-invoice', {
+        body: { orderId: orderDbId, isGST }
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      // Create blob from response and download
+      const blob = new Blob([response.data], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${isGST ? 'GST-Invoice' : 'Invoice'}-${orderId}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: `${isGST ? 'GST Invoice' : 'Invoice'} downloaded successfully!`
+      });
+    } catch (error) {
+      console.error('Error downloading invoice:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate invoice. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
 
   useEffect(() => {
     // Calculate estimated delivery date (5-7 days from now)
@@ -129,10 +178,18 @@ const OrderSuccess = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Download Invoice
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => downloadInvoice(false)} className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Download Invoice
+            </Button>
+            {hasGST && (
+              <Button variant="outline" onClick={() => downloadInvoice(true)} className="flex items-center gap-2">
+                <Download className="h-4 w-4" />
+                Download GST Invoice
+              </Button>
+            )}
+          </div>
           <Button asChild className="btn-hero">
             <Link to="/track-order" className="flex items-center gap-2">
               Track Your Order
