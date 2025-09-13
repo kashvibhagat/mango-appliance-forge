@@ -29,16 +29,15 @@ interface Complaint {
   admin_response?: string;
   resolution_notes?: string;
   attachment_url?: string;
-  user_id?: string;
 }
 
 const ComplaintTracking = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [complaints, setComplaints] = useState<any[]>([]);
+  const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchId, setSearchId] = useState('');
-  const [searchResult, setSearchResult] = useState<any>(null);
+  const [searchResult, setSearchResult] = useState<Complaint | null>(null);
   const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
@@ -51,14 +50,14 @@ const ComplaintTracking = () => {
     if (!user) return;
     
     try {
-      const { data, error } = await (supabase as any)
-        .from('complaints')
+      const { data, error } = await supabase
+        .from('complaints' as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setComplaints(data || []);
+      setComplaints((data || []) as unknown as Complaint[]);
     } catch (error) {
       console.error('Error fetching complaints:', error);
       toast({
@@ -76,8 +75,8 @@ const ComplaintTracking = () => {
     
     setSearchLoading(true);
     try {
-      const { data, error } = await (supabase as any)
-        .from('complaints')
+      const { data, error } = await supabase
+        .from('complaints' as any)
         .select('*')
         .eq('complaint_number', searchId.trim())
         .maybeSingle();
@@ -92,7 +91,7 @@ const ComplaintTracking = () => {
         });
         setSearchResult(null);
       } else {
-        setSearchResult(data);
+        setSearchResult(data as unknown as Complaint);
       }
     } catch (error) {
       console.error('Error searching complaint:', error);
@@ -161,7 +160,7 @@ const ComplaintTracking = () => {
     });
   };
 
-  const ComplaintCard = ({ complaint }: { complaint: any }) => (
+  const ComplaintCard = ({ complaint }: { complaint: Complaint }) => (
     <Card className="transition-all hover:shadow-md">
       <CardHeader>
         <div className="flex justify-between items-start">

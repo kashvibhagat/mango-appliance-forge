@@ -100,8 +100,8 @@ const ComplaintBooking = () => {
       }
 
       // Submit complaint
-      const { error } = await (supabase as any)
-        .from('complaints')
+      const { error } = await supabase
+        .from('complaints' as any)
         .insert({
           user_id: user?.id,
           category: data.category,
