@@ -462,24 +462,33 @@ const AdminDashboard = () => {
                             <div className="flex items-start gap-1 mb-1">
                               <MapPin className="h-3 w-3 mt-0.5 text-muted-foreground" />
                               <div className="flex-1">
-                                <strong>Shipping to: </strong>
-                                {order.shipping_address.first_name} {order.shipping_address.last_name}
-                                {order.shipping_address.phone && (
-                                  <span className="ml-2 text-muted-foreground">• {order.shipping_address.phone}</span>
-                                )}
+                                <strong>Delivery Address:</strong>
                               </div>
                             </div>
-                            <div className="ml-4 text-muted-foreground">
-                              {order.shipping_address.address_line_1}
-                              {order.shipping_address.address_line_2 && `, ${order.shipping_address.address_line_2}`}
-                              <br />
-                              {order.shipping_address.city}, {order.shipping_address.state} - {order.shipping_address.postal_code}
-                              <br />
-                              {order.shipping_address.country}
+                            <div className="ml-4 space-y-1">
+                              <div className="font-medium text-foreground">
+                                {order.shipping_address.name}
+                                {order.shipping_address.phone && (
+                                  <span className="ml-2 text-muted-foreground font-normal">• {order.shipping_address.phone}</span>
+                                )}
+                              </div>
+                              <div className="text-muted-foreground leading-relaxed">
+                                {order.shipping_address.address}
+                              </div>
+                              <div className="text-muted-foreground">
+                                <strong className="text-foreground">
+                                  {order.shipping_address.city}, {order.shipping_address.state} - {order.shipping_address.pincode}
+                                </strong>
+                              </div>
+                              {order.shipping_address.email && (
+                                <div className="text-xs text-muted-foreground">
+                                  Email: {order.shipping_address.email}
+                                </div>
+                              )}
                               {order.shipping_address.gst_details && (
-                                <span className="block mt-1 text-xs">
+                                <div className="text-xs text-muted-foreground">
                                   GST: {order.shipping_address.gst_details.gst_number} ({order.shipping_address.gst_details.company_name})
-                                </span>
+                                </div>
                               )}
                             </div>
                           </div>
