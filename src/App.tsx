@@ -96,14 +96,7 @@ const App = () => {
                           </ProtectedRoute>
                         } 
                       />
-                      <Route 
-                        path="/track-order" 
-                        element={
-                          <ProtectedRoute>
-                            <PageTransition><TrackOrder /></PageTransition>
-                          </ProtectedRoute>
-                        } 
-                      />
+                      <Route path="/track-order" element={<PageTransition><TrackOrder /></PageTransition>} />
                       <Route 
                         path="/warranty-registration" 
                         element={
