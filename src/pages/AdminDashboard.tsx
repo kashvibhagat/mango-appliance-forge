@@ -58,6 +58,9 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
+import { AdminStats } from '@/components/admin/AdminStats';
+import { AdminCharts } from '@/components/admin/AdminCharts';
+import { RecentActivity } from '@/components/admin/RecentActivity';
 
 interface Notification {
   id: string;
@@ -189,6 +192,7 @@ const AdminDashboard = () => {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
+  const [selectedWarranty, setSelectedWarranty] = useState<WarrantyRegistration | null>(null);
   const [isEditingProduct, setIsEditingProduct] = useState(false);
   
   // Form states
@@ -207,6 +211,15 @@ const AdminDashboard = () => {
   const [complaintResponse, setComplaintResponse] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('all');
+  
+  // Shipment form state
+  const [shipmentForm, setShipmentForm] = useState({
+    orderId: '',
+    vendorName: '',
+    trackingNumber: '',
+    trackingLink: '',
+    status: 'in_transit'
+  });
 
   useEffect(() => {
     fetchAllData();
@@ -461,6 +474,89 @@ const AdminDashboard = () => {
     }
   };
 
+  const updateWarrantyStatus = async (warrantyId: string, status: string, adminNotes?: string) => {
+    const { error } = await supabase
+      .from('warranty_registrations')
+      .update({ 
+        status,
+        admin_approved: status === 'approved',
+        admin_notes: adminNotes 
+      })
+      .eq('id', warrantyId);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update warranty status',
+        variant: 'destructive'
+      });
+    } else {
+      toast({
+        title: 'Success',
+        description: 'Warranty status updated successfully'
+      });
+      fetchAllData();
+      setSelectedWarranty(null);
+    }
+  };
+
+  const createShipment = async () => {
+    if (!shipmentForm.orderId || !shipmentForm.vendorName || !shipmentForm.trackingNumber) {
+      toast({
+        title: 'Error',
+        description: 'Please fill all required fields',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      // Create shipment record
+      const { error: shipmentError } = await supabase
+        .from('shipment_details')
+        .insert({
+          order_id: shipmentForm.orderId,
+          vendor_name: shipmentForm.vendorName,
+          tracking_number: shipmentForm.trackingNumber,
+          tracking_link: shipmentForm.trackingLink,
+          status: 'in_transit',
+          shipped_at: new Date().toISOString()
+        });
+
+      if (shipmentError) throw shipmentError;
+
+      // Update order status to shipped
+      const { error: orderError } = await supabase
+        .from('orders')
+        .update({ status: 'shipped' })
+        .eq('id', shipmentForm.orderId);
+
+      if (orderError) throw orderError;
+
+      toast({
+        title: 'Success',
+        description: 'Shipment created and order status updated successfully'
+      });
+      
+      setShipmentForm({
+        orderId: '',
+        vendorName: '',
+        trackingNumber: '',
+        trackingLink: '',
+        status: 'in_transit'
+      });
+      
+      fetchAllData();
+
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: `Failed to create shipment: ${error.message}`,
+        variant: 'destructive'
+      });
+    }
+  };
+
   const exportData = async (type: string) => {
     try {
       let data: any[] = [];
@@ -585,105 +681,32 @@ const AdminDashboard = () => {
 
         {/* Dashboard Overview */}
         <TabsContent value="dashboard" className="space-y-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">New Orders (24h)</p>
-                    <p className="text-3xl font-bold">{orders.filter(o => {
-                      const yesterday = new Date();
-                      yesterday.setDate(yesterday.getDate() - 1);
-                      return new Date(o.created_at) > yesterday;
-                    }).length}</p>
-                  </div>
-                  <ShoppingCart className="h-8 w-8 text-blue-600" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Active Customers</p>
-                    <p className="text-3xl font-bold">{customers.filter(c => !c.is_blocked).length}</p>
-                  </div>
-                  <Users className="h-8 w-8 text-green-600" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Pending Complaints</p>
-                    <p className="text-3xl font-bold">{complaints.filter(c => c.status === 'pending').length}</p>
-                  </div>
-                  <MessageSquare className="h-8 w-8 text-orange-600" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                    <p className="text-3xl font-bold">₹{orders.reduce((sum, order) => sum + order.total_amount, 0).toLocaleString()}</p>
-                  </div>
-                  <DollarSign className="h-8 w-8 text-purple-600" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Import and use AdminStats component */}
+          <AdminStats 
+            orders={orders}
+            customers={customers}
+            complaints={complaints}
+            warranties={warranties}
+            shipments={shipments}
+          />
 
-          {/* Recent Activity */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Orders</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {orders.slice(0, 5).map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium">#{order.order_number}</p>
-                        <p className="text-sm text-muted-foreground">₹{order.total_amount}</p>
-                      </div>
-                      <Badge className={getStatusColor(order.status)}>
-                        {order.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+          {/* Import and use AdminCharts component */}
+          <AdminCharts 
+            orders={orders}
+            customers={customers}
+            complaints={complaints}
+            warranties={warranties}
+          />
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Complaints</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {complaints.slice(0, 5).map((complaint) => (
-                    <div key={complaint.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium">#{complaint.complaint_number}</p>
-                        <p className="text-sm text-muted-foreground">{complaint.subject}</p>
-                      </div>
-                      <Badge className={getStatusColor(complaint.status)}>
-                        {complaint.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Import and use RecentActivity component */}
+          <RecentActivity 
+            orders={orders}
+            complaints={complaints}
+            warranties={warranties}
+            customers={customers}
+            onViewOrder={setSelectedOrder}
+            onViewComplaint={setSelectedComplaint}
+          />
         </TabsContent>
 
         {/* Orders Management */}
@@ -1032,47 +1055,382 @@ const AdminDashboard = () => {
           </Card>
         </TabsContent>
 
-        {/* Other tabs continue... */}
-        <TabsContent value="warranties">
+        {/* Warranties Management */}
+        <TabsContent value="warranties" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Warranty Management</h2>
+            <div className="flex gap-2">
+              <Button onClick={() => exportData('warranties')} variant="outline">
+                <Download className="h-4 w-4 mr-2" />
+                Export Warranties
+              </Button>
+              <Button onClick={() => {
+                // Add new warranty functionality
+                toast({
+                  title: 'Feature',
+                  description: 'Add warranty functionality can be implemented'
+                });
+              }}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Warranty
+              </Button>
+            </div>
+          </div>
+
           <Card>
-            <CardHeader>
-              <CardTitle>Warranty Management</CardTitle>
-              <CardDescription>Manage warranty registrations and approvals</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Warranty management functionality continues...</p>
-              </div>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Serial Number</TableHead>
+                    <TableHead>Product</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Purchase Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {warranties.slice(0, 10).map((warranty) => (
+                    <TableRow key={warranty.id}>
+                      <TableCell className="font-medium">{warranty.serial_number}</TableCell>
+                      <TableCell>{warranty.product_model}</TableCell>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium">{warranty.customer_name}</p>
+                          <p className="text-sm text-muted-foreground">{warranty.customer_mobile}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>{new Date(warranty.created_at).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(warranty.status)}>
+                          {warranty.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem onClick={() => updateWarrantyStatus(warranty.id, 'approved')}>
+                              <CheckCircle className="h-4 w-4 mr-2" />
+                              Approve
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => updateWarrantyStatus(warranty.id, 'rejected')}>
+                              <XCircle className="h-4 w-4 mr-2" />
+                              Reject
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setSelectedWarranty(warranty)}>
+                              <Eye className="h-4 w-4 mr-2" />
+                              View Details
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="shipments">
+        {/* Shipments Management */}
+        <TabsContent value="shipments" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Shipment Management</h2>
+            <Button onClick={() => exportData('shipments')} variant="outline">
+              <Download className="h-4 w-4 mr-2" />
+              Export Shipments
+            </Button>
+          </div>
+
+          {/* Create Shipment Form */}
           <Card>
             <CardHeader>
-              <CardTitle>Shipment Tracking</CardTitle>
-              <CardDescription>Manage shipments and tracking information</CardDescription>
+              <CardTitle>Create New Shipment</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <Truck className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Shipment management functionality continues...</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <Label>Order ID</Label>
+                  <Select value={shipmentForm.orderId} onValueChange={(value) => setShipmentForm(prev => ({...prev, orderId: value}))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select order" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {orders.filter(o => o.status === 'processing').map(order => (
+                        <SelectItem key={order.id} value={order.id}>
+                          #{order.order_number}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Vendor Name</Label>
+                  <Input
+                    value={shipmentForm.vendorName}
+                    onChange={(e) => setShipmentForm(prev => ({...prev, vendorName: e.target.value}))}
+                    placeholder="Enter vendor name"
+                  />
+                </div>
+                <div>
+                  <Label>Tracking Number</Label>
+                  <Input
+                    value={shipmentForm.trackingNumber}
+                    onChange={(e) => setShipmentForm(prev => ({...prev, trackingNumber: e.target.value}))}
+                    placeholder="Enter tracking number"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <Button onClick={createShipment} className="w-full">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Shipment
+                  </Button>
+                </div>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Shipments List */}
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Tracking #</TableHead>
+                    <TableHead>Order #</TableHead>
+                    <TableHead>Vendor</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Shipped Date</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {shipments.map((shipment) => (
+                    <TableRow key={shipment.id}>
+                      <TableCell className="font-medium">{shipment.tracking_number}</TableCell>
+                      <TableCell>
+                        {orders.find(o => o.id === shipment.order_id)?.order_number || 'N/A'}
+                      </TableCell>
+                      <TableCell>{shipment.vendor_name}</TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(shipment.status)}>
+                          {shipment.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {shipment.shipped_at ? new Date(shipment.shipped_at).toLocaleDateString() : 'N/A'}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem onClick={() => {
+                              // Update shipment status to delivered
+                              supabase.from('shipment_details')
+                                .update({ status: 'delivered', delivered_at: new Date().toISOString() })
+                                .eq('id', shipment.id)
+                                .then(() => fetchAllData());
+                            }}>
+                              <CheckCircle className="h-4 w-4 mr-2" />
+                              Mark Delivered
+                            </DropdownMenuItem>
+                            {shipment.tracking_link && (
+                              <DropdownMenuItem onClick={() => window.open(shipment.tracking_link, '_blank')}>
+                                <Eye className="h-4 w-4 mr-2" />
+                                Track Package
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="settings">
+        {/* System Settings */}
+        <TabsContent value="settings" className="space-y-6">
+          <h2 className="text-2xl font-bold">System Settings</h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* General Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>General Settings</CardTitle>
+                <CardDescription>Basic site configuration</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Site Title</Label>
+                  <Input 
+                    defaultValue="Mango Appliances" 
+                    placeholder="Enter site title"
+                  />
+                </div>
+                <div>
+                  <Label>Admin Email</Label>
+                  <Input 
+                    defaultValue="admin@mango-appliances.com" 
+                    placeholder="Enter admin email"
+                    type="email"
+                  />
+                </div>
+                <div>
+                  <Label>Currency</Label>
+                  <Select defaultValue="INR">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="INR">Indian Rupee (₹)</SelectItem>
+                      <SelectItem value="USD">US Dollar ($)</SelectItem>
+                      <SelectItem value="EUR">Euro (€)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Tax Rate (%)</Label>
+                  <Input 
+                    type="number" 
+                    defaultValue="18" 
+                    placeholder="Enter tax rate"
+                  />
+                </div>
+                <Button className="w-full">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Update General Settings
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Email Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Email Settings</CardTitle>
+                <CardDescription>Configure email notifications</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>SMTP Host</Label>
+                  <Input placeholder="smtp.example.com" />
+                </div>
+                <div>
+                  <Label>SMTP Port</Label>
+                  <Input type="number" defaultValue="587" />
+                </div>
+                <div>
+                  <Label>SMTP Username</Label>
+                  <Input placeholder="your-email@example.com" />
+                </div>
+                <div>
+                  <Label>SMTP Password</Label>
+                  <Input type="password" placeholder="Your SMTP password" />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="email-notifications" defaultChecked />
+                  <Label htmlFor="email-notifications">Enable email notifications</Label>
+                </div>
+                <Button className="w-full">
+                  <Mail className="h-4 w-4 mr-2" />
+                  Update Email Settings
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Shipping Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Shipping Settings</CardTitle>
+                <CardDescription>Configure shipping zones and costs</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Local Shipping Cost (₹)</Label>
+                  <Input type="number" defaultValue="50" />
+                </div>
+                <div>
+                  <Label>National Shipping Cost (₹)</Label>
+                  <Input type="number" defaultValue="100" />
+                </div>
+                <div>
+                  <Label>Free Shipping Minimum (₹)</Label>
+                  <Input type="number" defaultValue="1000" />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="free-shipping" defaultChecked />
+                  <Label htmlFor="free-shipping">Enable free shipping</Label>
+                </div>
+                <Button className="w-full">
+                  <Truck className="h-4 w-4 mr-2" />
+                  Update Shipping Settings
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Security Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Security Settings</CardTitle>
+                <CardDescription>Manage security and access control</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="two-factor" />
+                  <Label htmlFor="two-factor">Enable Two-Factor Authentication</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="login-attempts" defaultChecked />
+                  <Label htmlFor="login-attempts">Limit failed login attempts</Label>
+                </div>
+                <div>
+                  <Label>Session Timeout (minutes)</Label>
+                  <Input type="number" defaultValue="60" />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="activity-logs" defaultChecked />
+                  <Label htmlFor="activity-logs">Enable activity logging</Label>
+                </div>
+                <Button className="w-full">
+                  <Shield className="h-4 w-4 mr-2" />
+                  Update Security Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* System Status */}
           <Card>
             <CardHeader>
-              <CardTitle>System Settings</CardTitle>
-              <CardDescription>Configure system-wide settings and preferences</CardDescription>
+              <CardTitle>System Status</CardTitle>
+              <CardDescription>Current system health and statistics</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <Settings className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>System settings functionality continues...</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">99.9%</div>
+                  <div className="text-sm text-muted-foreground">Uptime</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">{orders.length}</div>
+                  <div className="text-sm text-muted-foreground">Total Orders</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-600">{customers.length}</div>
+                  <div className="text-sm text-muted-foreground">Total Customers</div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -1165,14 +1523,46 @@ const AdminDashboard = () => {
                   />
                 </div>
               </div>
-              <div>
-                <Label>Description</Label>
-                <Textarea
-                  value={productForm.description}
-                  onChange={(e) => setProductForm(prev => ({...prev, description: e.target.value}))}
-                  placeholder="Enter product description"
-                />
-              </div>
+                <div>
+                  <Label>Description</Label>
+                  <Textarea
+                    value={productForm.description}
+                    onChange={(e) => setProductForm(prev => ({...prev, description: e.target.value}))}
+                    placeholder="Enter product description"
+                  />
+                </div>
+                <div>
+                  <Label>Brand & Model</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      value={productForm.brand}
+                      onChange={(e) => setProductForm(prev => ({...prev, brand: e.target.value}))}
+                      placeholder="Brand"
+                    />
+                    <Input
+                      value={productForm.model}
+                      onChange={(e) => setProductForm(prev => ({...prev, model: e.target.value}))}
+                      placeholder="Model"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label>Warranty Period (months)</Label>
+                  <Input
+                    type="number"
+                    value={productForm.warranty_period}
+                    onChange={(e) => setProductForm(prev => ({...prev, warranty_period: parseInt(e.target.value) || 12}))}
+                    placeholder="Enter warranty period"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="is-active"
+                    checked={productForm.is_active}
+                    onCheckedChange={(checked) => setProductForm(prev => ({...prev, is_active: checked as boolean}))}
+                  />
+                  <Label htmlFor="is-active">Product is active</Label>
+                </div>
             </div>
             <DialogFooter>
               <Button onClick={saveProduct}>
