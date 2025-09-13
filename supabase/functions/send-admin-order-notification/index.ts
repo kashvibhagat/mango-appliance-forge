@@ -32,13 +32,10 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Fetch complete order details with customer info
+    // Fetch complete order details
     const { data: orderData, error: orderError } = await supabase
       .from('orders')
-      .select(`
-        *,
-        profiles(first_name, last_name, phone)
-      `)
+      .select('*')
       .eq('id', orderId)
       .single();
 
@@ -46,6 +43,15 @@ const handler = async (req: Request): Promise<Response> => {
       console.error('Error fetching order:', orderError);
       throw new Error(`Failed to fetch order details: ${orderError.message}`);
     }
+
+    // Fetch customer profile separately
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('first_name, last_name, phone')
+      .eq('user_id', orderData.user_id)
+      .single();
+
+    console.log('Profile data:', profileData, 'Profile error:', profileError);
 
     // Format order items for email
     const formatOrderItems = (items: any[]) => {
@@ -60,16 +66,16 @@ const handler = async (req: Request): Promise<Response> => {
     const formatAddress = (address: any) => {
       if (!address) return 'Address not provided';
       
-      return `${address.first_name} ${address.last_name}
-${address.address_line_1}
-${address.address_line_2 ? address.address_line_2 + '\n' : ''}${address.city}, ${address.state} ${address.postal_code}
-${address.country}
-Phone: ${address.phone}`;
+      return `${address.name || 'Name not provided'}
+${address.address || 'Address not provided'}
+${address.city || ''}, ${address.state || ''} ${address.pincode || ''}
+Email: ${address.email || 'Not provided'}
+Phone: ${address.phone || 'Not provided'}`;
     };
 
-    const customerName = orderData.profiles 
-      ? `${orderData.profiles.first_name} ${orderData.profiles.last_name}`
-      : 'Customer';
+    const customerName = profileData 
+      ? `${profileData.first_name} ${profileData.last_name}`
+      : (orderData.shipping_address?.name || 'Customer');
 
     const emailResponse = await resend.emails.send({
       from: "Mango Appliances <orders@mangoappliances.com>",
@@ -113,7 +119,7 @@ Phone: ${address.phone}`;
               <h2 style="color: #155724; margin: 0 0 15px 0; font-size: 20px;">👤 Customer Information</h2>
               <div style="color: #495057;">
                 <p><strong>Name:</strong> ${customerName}</p>
-                <p><strong>Phone:</strong> ${orderData.profiles?.phone || 'Not provided'}</p>
+                <p><strong>Phone:</strong> ${profileData?.phone || orderData.shipping_address?.phone || 'Not provided'}</p>
                 <p><strong>User ID:</strong> ${orderData.user_id}</p>
               </div>
             </div>
