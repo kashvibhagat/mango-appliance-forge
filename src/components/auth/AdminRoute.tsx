@@ -9,49 +9,35 @@ interface AdminRouteProps {
 }
 
 export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
-  const authContext = useAuth();
-  console.log('AdminRoute: Auth context:', authContext);
-  
-  const { user, loading: authLoading } = authContext;
+  const { user, loading: authLoading } = useAuth();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
 
-  console.log('AdminRoute: Auth loading:', authLoading, 'User:', user?.id, user?.email);
-
   useEffect(() => {
     const checkAdminRole = async () => {
-      console.log('AdminRoute: Checking admin role for user:', user?.id, user?.email);
-      console.log('AdminRoute: Auth loading state:', authLoading);
-      
       // Wait for auth to finish loading
       if (authLoading) {
-        console.log('AdminRoute: Still loading auth, waiting...');
         return;
       }
       
       if (!user) {
-        console.log('AdminRoute: No user found');
         setIsAdmin(false);
         setLoading(false);
         return;
       }
 
       try {
-        console.log('AdminRoute: Making query for user_id:', user.id);
         const { data, error } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', user.id)
           .eq('role', 'admin');
 
-        console.log('AdminRoute: Query result:', { data, error });
-
         // Check if we found at least one admin role record
         const hasAdminRole = !error && data && data.length > 0;
-        console.log('AdminRoute: Has admin role:', hasAdminRole);
         setIsAdmin(hasAdminRole);
       } catch (error) {
-        console.error('AdminRoute: Error checking admin role:', error);
+        console.error('Error checking admin role:', error);
         setIsAdmin(false);
       } finally {
         setLoading(false);

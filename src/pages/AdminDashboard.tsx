@@ -101,16 +101,25 @@ const AdminDashboard = () => {
     try {
       const [notificationsData, ordersData, warrantiesData, shipmentsData] = await Promise.all([
         supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20),
-        supabase.from('orders').select(`
-          *,
-          profiles(first_name, last_name, phone)
-        `).order('created_at', { ascending: false }).limit(50),
+        supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(50),
         supabase.from('warranty_registrations').select('*').order('created_at', { ascending: false }),
         supabase.from('shipment_details').select('*').order('created_at', { ascending: false })
       ]);
 
+      // Fetch profiles for orders separately
+      const userIds = ordersData.data?.map(order => order.user_id) || [];
+      const profilesData = userIds.length > 0 
+        ? await supabase.from('profiles').select('user_id, first_name, last_name, phone').in('user_id', userIds)
+        : { data: [], error: null };
+
+      // Map profiles to orders
+      const ordersWithProfiles = ordersData.data?.map(order => ({
+        ...order,
+        profiles: profilesData.data?.find(profile => profile.user_id === order.user_id) || null
+      })) || [];
+
       setNotifications(notificationsData.data || []);
-      setOrders((ordersData.data as any) || []);
+      setOrders(ordersWithProfiles as any);
       setWarranties(warrantiesData.data || []);
       setShipments(shipmentsData.data || []);
     } catch (error) {
