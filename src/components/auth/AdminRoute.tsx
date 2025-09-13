@@ -26,10 +26,10 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
           .from('user_roles')
           .select('role')
           .eq('user_id', user.id)
-          .eq('role', 'admin')
-          .single();
+          .eq('role', 'admin');
 
-        setIsAdmin(!!data && !error);
+        // Check if we found at least one admin role record
+        setIsAdmin(!error && data && data.length > 0);
       } catch (error) {
         console.error('Error checking admin role:', error);
         setIsAdmin(false);
