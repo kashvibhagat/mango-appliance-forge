@@ -26,6 +26,8 @@ const Header = () => {
     { name: 'Contact Us', href: '/contact' },
     { name: 'Track Order', href: '/track-order' },
     { name: 'Warranty Registration', href: '/warranty-registration' },
+    { name: 'File Complaint', href: '/complaint-booking' },
+    { name: 'Track Complaints', href: '/complaint-tracking' },
   ];
 
   const coolerCategories = [
