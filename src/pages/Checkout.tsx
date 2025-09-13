@@ -231,6 +231,28 @@ const Checkout = () => {
         // Don't fail the order placement if notification fails
       }
 
+      // Send order confirmation email to customer
+      try {
+        await supabase.functions.invoke('send-order-confirmation', {
+          body: {
+            orderNumber: orderNumber,
+            customerEmail: shippingAddress.email,
+            customerName: shippingAddress.name,
+            items: items.map(item => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              price: item.product.price,
+            })),
+            totalAmount: finalTotal,
+            shippingAddress: shippingAddress,
+          }
+        });
+        console.log('Order confirmation email sent for order:', orderNumber);
+      } catch (emailError) {
+        console.error('Failed to send order confirmation email:', emailError);
+        // Don't fail the order placement if email fails
+      }
+
       // Save address if requested
       if (saveAddress && user && !selectedAddressId) {
         await supabase.from('user_addresses').insert({
