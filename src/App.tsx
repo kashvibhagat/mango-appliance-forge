@@ -7,8 +7,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
-import { AdminRoute } from "./components/auth/AdminRoute";
-import { AdminAuthRoute } from "./components/auth/AdminAuthRoute";
 import Layout from "./components/layout/Layout";
 import PageTransition from "./components/layout/PageTransition";
 import FloatingChatbot, { ChatbotRef } from "./components/ui/FloatingChatbot";
@@ -24,8 +22,6 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import WarrantyRegistration from "./pages/WarrantyRegistration";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminLogin from "./pages/AdminLogin";
 import Contact from './pages/Contact';
 import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
@@ -110,15 +106,6 @@ const App = () => {
                         path="/warranty-registration" 
                         element={
                           <PageTransition><WarrantyRegistration /></PageTransition>
-                        } 
-                      />
-                      <Route path="/admin/login" element={<AdminLogin />} />
-                      <Route 
-                        path="/admin" 
-                        element={
-                          <AdminAuthRoute>
-                            <PageTransition><AdminDashboard /></PageTransition>
-                          </AdminAuthRoute>
                         } 
                       />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
