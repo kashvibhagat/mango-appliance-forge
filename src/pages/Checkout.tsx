@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, MapPin, Truck, CreditCard, Shield, Check, Plus } from 'lucide-react';
+import { ChevronLeft, MapPin, Truck, CreditCard, Shield, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,29 +10,15 @@ import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, total, clearCart } = useCart();
-  const { user } = useAuth();
   const { toast } = useToast();
   
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [savedAddresses, setSavedAddresses] = useState([]);
-  const [selectedAddressId, setSelectedAddressId] = useState('');
-  const [saveAddress, setSaveAddress] = useState(false);
-  const [requireGST, setRequireGST] = useState(false);
-  const [gstDetails, setGstDetails] = useState({
-    gstNumber: '',
-    companyName: '',
-    companyAddress: ''
-  });
   
   // Form states
   const [shippingAddress, setShippingAddress] = useState({
@@ -47,65 +33,6 @@ const Checkout = () => {
   
   const [selectedDelivery, setSelectedDelivery] = useState('standard');
   const [selectedPayment, setSelectedPayment] = useState('cod');
-
-  useEffect(() => {
-    if (user) {
-      fetchSavedAddresses();
-      prefillUserData();
-    }
-  }, [user]);
-
-  const fetchSavedAddresses = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('user_addresses')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('is_default', { ascending: false });
-
-      if (error) throw error;
-      setSavedAddresses(data || []);
-    } catch (error) {
-      console.error('Error fetching addresses:', error);
-    }
-  };
-
-  const prefillUserData = async () => {
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user?.id)
-        .single();
-
-      if (profile) {
-        setShippingAddress(prev => ({
-          ...prev,
-          name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim(),
-          email: user?.email || '',
-          phone: profile.phone || ''
-        }));
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    }
-  };
-
-  const handleAddressSelect = (addressId: string) => {
-    const address = savedAddresses.find(addr => addr.id === addressId);
-    if (address) {
-      setShippingAddress({
-        name: `${address.first_name} ${address.last_name}`,
-        email: user?.email || '',
-        phone: address.phone,
-        address: `${address.address_line_1}${address.address_line_2 ? ', ' + address.address_line_2 : ''}`,
-        city: address.city,
-        state: address.state,
-        pincode: address.postal_code,
-      });
-      setSelectedAddressId(addressId);
-    }
-  };
 
   if (items.length === 0) {
     return (
@@ -169,102 +96,26 @@ const Checkout = () => {
       });
       return;
     }
-
-    if (requireGST) {
-      if (!gstDetails.gstNumber || !gstDetails.companyName || !gstDetails.companyAddress) {
-        toast({
-          title: "GST Information Required",
-          description: "Please fill all GST details to proceed",
-          variant: "destructive"
-        });
-        return;
-      }
-    }
-
     setCurrentStep(2);
   };
 
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
     
-    try {
-      const orderNumber = 'MNG' + Math.random().toString(36).substr(2, 9).toUpperCase();
+    // Simulate order processing
+    setTimeout(() => {
+      const orderId = 'MNG' + Math.random().toString(36).substr(2, 9).toUpperCase();
       
-      // Save order to database
-      const { data: orderData, error: orderError } = await supabase
-        .from('orders')
-        .insert({
-          user_id: user?.id,
-          order_number: orderNumber,
-          status: 'pending',
-          total_amount: finalTotal,
-          shipping_cost: deliveryCharge,
-          is_free_shipping: deliveryCharge === 0,
-          shipping_address: {
-            ...shippingAddress,
-            gst_details: requireGST ? gstDetails : null
-          },
-          items: items.map(item => ({
-            product_id: item.product.id,
-            name: item.product.name,
-            price: item.product.price,
-            quantity: item.quantity,
-            total: item.product.price * item.quantity
-          }))
-        })
-        .select()
-        .single();
-
-      if (orderError) throw orderError;
-
-      // Send admin notification about new order
-      try {
-        await supabase.functions.invoke('send-admin-order-notification', {
-          body: {
-            orderId: orderData.id,
-            orderNumber: orderNumber
-          }
-        });
-        console.log('Admin notification sent for order:', orderNumber);
-      } catch (notificationError) {
-        console.error('Failed to send admin notification:', notificationError);
-        // Don't fail the order placement if notification fails
-      }
-
-      // Save address if requested
-      if (saveAddress && user && !selectedAddressId) {
-        await supabase.from('user_addresses').insert({
-          user_id: user.id,
-          title: 'Order Address',
-          first_name: shippingAddress.name.split(' ')[0] || '',
-          last_name: shippingAddress.name.split(' ').slice(1).join(' ') || '',
-          phone: shippingAddress.phone,
-          address_line_1: shippingAddress.address,
-          city: shippingAddress.city,
-          state: shippingAddress.state,
-          postal_code: shippingAddress.pincode,
-          country: 'India'
-        });
-      }
-
       clearCart();
+      setIsProcessing(false);
       
       toast({
         title: "Order placed successfully!",
-        description: `Your order #${orderNumber} has been confirmed.`
+        description: `Your order #${orderId} has been confirmed.`
       });
       
-      navigate(`/order-success?orderId=${orderNumber}&orderDbId=${orderData.id}&gst=${requireGST}`);
-    } catch (error) {
-      console.error('Error placing order:', error);
-      toast({
-        title: "Error placing order",
-        description: "Please try again or contact support.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsProcessing(false);
-    }
+      navigate(`/order-success?orderId=${orderId}`);
+    }, 2000);
   };
 
   return (
@@ -303,26 +154,6 @@ const Checkout = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Saved Addresses */}
-                {savedAddresses.length > 0 && (
-                  <div className="space-y-2">
-                    <Label>Select Saved Address</Label>
-                    <Select onValueChange={handleAddressSelect}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choose from saved addresses" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="new">+ Use New Address</SelectItem>
-                        {savedAddresses.map((address) => (
-                          <SelectItem key={address.id} value={address.id}>
-                            {address.title} - {address.first_name} {address.last_name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="name">Full Name *</Label>
@@ -393,66 +224,6 @@ const Checkout = () => {
                       placeholder="6-digit pincode"
                     />
                   </div>
-                </div>
-
-                {/* Save Address Checkbox */}
-                {user && !selectedAddressId && (
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="saveAddress" 
-                      checked={saveAddress}
-                      onCheckedChange={(checked) => setSaveAddress(checked === true)}
-                    />
-                    <Label htmlFor="saveAddress" className="text-sm">
-                      Save this address for future orders
-                    </Label>
-                  </div>
-                )}
-
-                {/* GST Section */}
-                <div className="space-y-4 pt-4 border-t">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="requireGST" 
-                      checked={requireGST}
-                      onCheckedChange={(checked) => setRequireGST(checked === true)}
-                    />
-                    <Label htmlFor="requireGST" className="text-sm">
-                      I need GST invoice for this order
-                    </Label>
-                  </div>
-                  
-                  {requireGST && (
-                    <div className="space-y-3 ml-6">
-                      <div>
-                        <Label htmlFor="gstNumber">GST Number *</Label>
-                        <Input
-                          id="gstNumber"
-                          value={gstDetails.gstNumber}
-                          onChange={(e) => setGstDetails({...gstDetails, gstNumber: e.target.value})}
-                          placeholder="Enter GST number"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="companyName">Company Name *</Label>
-                        <Input
-                          id="companyName"
-                          value={gstDetails.companyName}
-                          onChange={(e) => setGstDetails({...gstDetails, companyName: e.target.value})}
-                          placeholder="Enter company name"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="companyAddress">Company Address *</Label>
-                        <Input
-                          id="companyAddress"
-                          value={gstDetails.companyAddress}
-                          onChange={(e) => setGstDetails({...gstDetails, companyAddress: e.target.value})}
-                          placeholder="Enter company address"
-                        />
-                      </div>
-                    </div>
-                  )}
                 </div>
                 
                 <Button onClick={handleAddressSubmit} className="w-full btn-hero">

@@ -9,17 +9,12 @@ interface AdminRouteProps {
 }
 
 export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAdminRole = async () => {
-      // Wait for auth to finish loading
-      if (authLoading) {
-        return;
-      }
-      
       if (!user) {
         setIsAdmin(false);
         setLoading(false);
@@ -31,11 +26,10 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
           .from('user_roles')
           .select('role')
           .eq('user_id', user.id)
-          .eq('role', 'admin');
+          .eq('role', 'admin')
+          .single();
 
-        // Check if we found at least one admin role record
-        const hasAdminRole = !error && data && data.length > 0;
-        setIsAdmin(hasAdminRole);
+        setIsAdmin(!!data && !error);
       } catch (error) {
         console.error('Error checking admin role:', error);
         setIsAdmin(false);
@@ -45,7 +39,7 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     };
 
     checkAdminRole();
-  }, [user, authLoading]);
+  }, [user]);
 
   if (loading) {
     return (

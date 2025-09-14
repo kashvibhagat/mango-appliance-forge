@@ -57,13 +57,10 @@ const TrackOrder = () => {
 
     setSearching(true);
     try {
-      // Clean the order number - remove # if present
-      const cleanOrderNumber = orderNumber.trim().replace(/^#/, '');
-      
       const { data, error } = await supabase
         .from('orders')
         .select('*')
-        .eq('order_number', cleanOrderNumber)
+        .eq('order_number', orderNumber.trim())
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
@@ -107,7 +104,7 @@ const TrackOrder = () => {
                   id="orderNumber"
                   value={orderNumber}
                   onChange={(e) => setOrderNumber(e.target.value)}
-                  placeholder="Enter order number (e.g., #MNGPAEUTA0G2 or MNGPAEUTA0G2)"
+                  placeholder="Enter order number (e.g., ORD-2024-001)"
                   className="w-full"
                 />
               </div>
