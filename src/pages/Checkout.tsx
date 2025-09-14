@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -102,20 +103,61 @@ const Checkout = () => {
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
     
-    // Simulate order processing
-    setTimeout(() => {
-      const orderId = 'MNG' + Math.random().toString(36).substr(2, 9).toUpperCase();
-      
+    try {
+      // Build items array from cart
+      const orderItems = items.map(item => ({
+        id: item.product.id,
+        name: item.product.name,
+        price: item.product.price,
+        quantity: item.quantity,
+        selectedVariant: item.selectedVariant
+      }));
+
+      // Build shipping address object
+      const shippingAddressData = {
+        name: shippingAddress.name,
+        phone: shippingAddress.phone,
+        address: shippingAddress.address,
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        pincode: shippingAddress.pincode
+      };
+
+      // Insert order into database
+      const { data: order, error } = await supabase
+        .from('orders')
+        .insert({
+          customer_name: shippingAddress.name,
+          customer_email: shippingAddress.email,
+          items: orderItems,
+          total_amount: finalTotal,
+          shipping_address: shippingAddressData,
+          status: 'pending',
+          user_id: null // Anonymous order
+        } as any) // Cast to avoid type error since order_number will be auto-generated
+        .select()
+        .single();
+
+      if (error) throw error;
+
       clearCart();
       setIsProcessing(false);
       
       toast({
         title: "Order placed successfully!",
-        description: `Your order #${orderId} has been confirmed.`
+        description: `Your order #${order.order_number} has been confirmed.`
       });
       
-      navigate(`/order-success?orderId=${orderId}`);
-    }, 2000);
+      navigate(`/order-success?orderId=${order.order_number}`);
+    } catch (error) {
+      console.error('Error placing order:', error);
+      setIsProcessing(false);
+      toast({
+        title: "Order failed",
+        description: "There was an error placing your order. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
