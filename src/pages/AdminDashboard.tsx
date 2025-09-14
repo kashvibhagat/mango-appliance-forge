@@ -48,9 +48,7 @@ interface Order {
   status: string;
   total_amount: number;
   created_at: string;
-  user_id: string | null;
-  customer_name: string | null;
-  customer_email: string | null;
+  user_id: string;
   items: any;
   shipping_address: any;
   profiles?: {
@@ -167,31 +165,26 @@ const AdminDashboard = () => {
   };
 
   const setupRealtimeSubscriptions = () => {
-    let lastRealtimeUpdate = Date.now();
-    
     // Subscribe to new orders
     const ordersChannel = supabase
       .channel('admin-orders')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, async (payload) => {
-        console.log('New order received:', payload.new);
-        lastRealtimeUpdate = Date.now();
         const newOrder = payload.new as Order;
         setOrders(prev => [newOrder, ...prev]);
-        
-        // Show toast notification for new order
-        toast({
-          title: 'New Order Received! 🎉',
-          description: `Order ${newOrder.order_number || 'N/A'} for ₹${newOrder.total_amount} from ${newOrder.customer_name || 'Customer'}`,
-        });
         
         // Create notification for new order
         createNotification('new_order', 'New Order Received', `Order ${newOrder.order_number} placed`);
         
-        console.log('Attempting to send email notification...');
-        // Email notification will be sent automatically by the database trigger
+        // Send email notification
+        try {
+          await supabase.functions.invoke('send-order-notification', {
+            body: { order: newOrder }
+          });
+        } catch (error) {
+          console.error('Error sending email notification:', error);
+        }
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, (payload) => {
-        lastRealtimeUpdate = Date.now();
         setOrders(prev => 
           prev.map(order => 
             order.id === payload.new.id ? { ...order, ...payload.new } : order
@@ -199,33 +192,6 @@ const AdminDashboard = () => {
         );
       })
       .subscribe();
-
-    // Polling fallback - refetch orders every 10s if no realtime updates for 15s
-    const pollingInterval = setInterval(async () => {
-      const timeSinceLastUpdate = Date.now() - lastRealtimeUpdate;
-      if (timeSinceLastUpdate > 15000) { // 15 seconds
-        console.log('No realtime updates for 15s, polling for new orders...');
-        try {
-          const { data: latestOrders } = await supabase
-            .from('orders')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(50);
-          
-          if (latestOrders) {
-            setOrders(latestOrders as Order[]);
-            lastRealtimeUpdate = Date.now(); // Reset timer after successful poll
-          }
-        } catch (error) {
-          console.error('Error during polling fallback:', error);
-        }
-      }
-    }, 10000); // Check every 10 seconds
-
-    return () => {
-      ordersChannel.unsubscribe();
-      clearInterval(pollingInterval);
-    };
 
     // Subscribe to warranty registrations
     const warrantyChannel = supabase

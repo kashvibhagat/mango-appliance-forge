@@ -68,12 +68,6 @@ const Home = () => {
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
-                <Link to="/order">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto">
-                    Place Order
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
                 <Link to="/shop?category=spare-parts">
                   <Button variant="outline-glow" size="lg" className="w-full sm:w-auto">
                     View Spare Parts

@@ -11,11 +11,9 @@ interface OrderData {
   status: string;
   total_amount: number;
   created_at: string;
-  user_id?: string;
-  customer_name?: string;
-  customer_email?: string;
+  user_id: string;
   items: any[];
-  shipping_address?: any;
+  shipping_address: any;
   profiles?: {
     first_name: string;
     last_name: string;
@@ -33,11 +31,9 @@ serve(async (req) => {
     const { order }: { order: OrderData } = await req.json();
     
     // Prepare email content
-    const customerName = order.customer_name || 
-      (order.profiles ? `${order.profiles.first_name} ${order.profiles.last_name}` : 'Customer');
-    
-    const customerEmail = order.customer_email || 'Not provided';
-    const customerPhone = order.profiles?.phone || 'Not provided';
+    const customerName = order.profiles 
+      ? `${order.profiles.first_name} ${order.profiles.last_name}` 
+      : 'Customer';
     
     const orderDate = new Date(order.created_at).toLocaleString('en-IN', {
       year: 'numeric',
@@ -83,8 +79,7 @@ serve(async (req) => {
               <h3>📋 Order Details</h3>
               <p><strong>Order ID:</strong> ${order.order_number}</p>
               <p><strong>Customer Name:</strong> ${customerName}</p>
-              <p><strong>Customer Email:</strong> ${customerEmail}</p>
-              <p><strong>Phone:</strong> ${customerPhone}</p>
+              <p><strong>Phone:</strong> ${order.profiles?.phone || 'Not provided'}</p>
               <p><strong>Order Date/Time:</strong> ${orderDate}</p>
               <p><strong>Total Amount:</strong> ₹${order.total_amount.toLocaleString('en-IN')}</p>
               <p><strong>Status:</strong> ${order.status.toUpperCase()}</p>
@@ -92,7 +87,7 @@ serve(async (req) => {
 
             <div class="order-info">
               <h3>📍 Shipping Address</h3>
-              <p>${address || 'Pickup or address will be provided later'}</p>
+              <p>${address}</p>
             </div>
 
             <div class="order-info">
