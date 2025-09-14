@@ -48,7 +48,9 @@ interface Order {
   status: string;
   total_amount: number;
   created_at: string;
-  user_id: string;
+  user_id: string | null;
+  customer_name: string | null;
+  customer_email: string | null;
   items: any;
   shipping_address: any;
   profiles?: {
@@ -169,20 +171,21 @@ const AdminDashboard = () => {
     const ordersChannel = supabase
       .channel('admin-orders')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, async (payload) => {
+        console.log('New order received:', payload.new);
         const newOrder = payload.new as Order;
         setOrders(prev => [newOrder, ...prev]);
+        
+        // Show toast notification for new order
+        toast({
+          title: 'New Order Received! 🎉',
+          description: `Order ${newOrder.order_number || 'N/A'} for ₹${newOrder.total_amount} from ${newOrder.customer_name || 'Customer'}`,
+        });
         
         // Create notification for new order
         createNotification('new_order', 'New Order Received', `Order ${newOrder.order_number} placed`);
         
-        // Send email notification
-        try {
-          await supabase.functions.invoke('send-order-notification', {
-            body: { order: newOrder }
-          });
-        } catch (error) {
-          console.error('Error sending email notification:', error);
-        }
+        console.log('Attempting to send email notification...');
+        // Email notification will be sent automatically by the database trigger
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, (payload) => {
         setOrders(prev => 
