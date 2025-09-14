@@ -63,6 +63,8 @@ interface Customer {
   email: string;
   total_orders: number;
   first_order_date: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 interface WarrantyRegistration {
@@ -111,10 +113,7 @@ const AdminDashboard = () => {
     try {
       const [notificationsData, ordersData, warrantiesData, shipmentsData] = await Promise.all([
         supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20),
-        supabase.from('orders').select(`
-          *,
-          profiles(first_name, last_name, phone)
-        `).order('created_at', { ascending: false }).limit(50),
+        supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(50),
         supabase.from('warranty_registrations').select('*').order('created_at', { ascending: false }),
         supabase.from('shipment_details').select('*').order('created_at', { ascending: false })
       ]);
@@ -124,17 +123,27 @@ const AdminDashboard = () => {
       setWarranties(warrantiesData.data || []);
       setShipments(shipmentsData.data || []);
 
-      // Get customer data by aggregating orders
-      if (ordersData.data) {
+      // Get customer data by fetching user profiles for each order
+      if (ordersData.data && ordersData.data.length > 0) {
+        const userIds = [...new Set(ordersData.data.map((order: any) => order.user_id))];
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('user_id, first_name, last_name, phone')
+          .in('user_id', userIds);
+        
+        // Create customer map with profile data
         const customerMap = new Map();
         ordersData.data.forEach((order: any) => {
+          const profile = profilesData?.find(p => p.user_id === order.user_id);
           const userId = order.user_id;
           if (!customerMap.has(userId)) {
             customerMap.set(userId, {
               user_id: userId,
-              email: order.profiles?.email || 'N/A',
+              email: profile ? `customer_${profile.first_name}@example.com` : 'customer@example.com',
               total_orders: 1,
-              created_at: order.created_at
+              created_at: order.created_at,
+              first_name: profile?.first_name || 'Customer',
+              last_name: profile?.last_name || ''
             });
           } else {
             const existing = customerMap.get(userId);
@@ -221,9 +230,13 @@ const AdminDashboard = () => {
   };
 
   const getCustomerEmail = (userId: string) => {
-    // For now, we'll get email from auth users or use a placeholder
-    // In a production system, you'd typically have this in a profiles table
-    return 'customer@example.com'; // Placeholder - should be fetched from user profile
+    const customer = customers.find(c => c.user_id === userId);
+    return customer?.email || 'customer@example.com';
+  };
+
+  const getCustomerName = (userId: string) => {
+    const customer = customers.find(c => c.user_id === userId);
+    return customer ? `${customer.first_name} ${customer.last_name}` : 'Customer';
   };
 
   const handleLogout = () => {
@@ -495,6 +508,7 @@ const AdminDashboard = () => {
                       <th className="text-left p-2 font-medium">Status</th>
                       <th className="text-left p-2 font-medium">Order Date</th>
                       <th className="text-left p-2 font-medium">Order ID</th>
+                      <th className="text-left p-2 font-medium">Customer Name</th>
                       <th className="text-left p-2 font-medium">Customer Email</th>
                       <th className="text-left p-2 font-medium">Customer Type</th>
                       <th className="text-left p-2 font-medium">Actions</th>
@@ -532,6 +546,7 @@ const AdminDashboard = () => {
                           })}
                         </td>
                         <td className="p-2 font-mono text-sm">{order.order_number}</td>
+                        <td className="p-2 text-sm">{getCustomerName(order.user_id)}</td>
                         <td className="p-2 text-sm">{getCustomerEmail(order.user_id)}</td>
                         <td className="p-2">
                           <Badge variant={getCustomerType(order.user_id) === 'New' ? 'default' : 'secondary'}>
