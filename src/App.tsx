@@ -24,7 +24,6 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import WarrantyRegistration from "./pages/WarrantyRegistration";
 import AdminDashboard from "./pages/AdminDashboard";
-import AdminLogin from "./pages/AdminLogin";
 import Contact from './pages/Contact';
 import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
@@ -110,7 +109,6 @@ const App = () => {
                           <PageTransition><WarrantyRegistration /></PageTransition>
                         } 
                       />
-                      <Route path="/admin/login" element={<PageTransition><AdminLogin /></PageTransition>} />
                       <Route 
                         path="/admin" 
                         element={
