@@ -30,6 +30,8 @@ import Contact from './pages/Contact';
 import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
 import Comparison from './pages/Comparison';
+import { OrderForm } from './pages/OrderForm';
+import { SimpleAdminDashboard } from './pages/SimpleAdminDashboard';
 
 const queryClient = new QueryClient();
 
@@ -66,6 +68,8 @@ const App = () => {
                       <Route path="/product/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
                       <Route path="/cart" element={<PageTransition><Cart /></PageTransition>} />
                       <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
+                      <Route path="/order" element={<PageTransition><OrderForm /></PageTransition>} />
+                      <Route path="/orders" element={<PageTransition><SimpleAdminDashboard /></PageTransition>} />
                       <Route 
                         path="/checkout" 
                         element={
