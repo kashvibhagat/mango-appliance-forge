@@ -106,7 +106,12 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
-    setupRealtimeSubscriptions();
+    const cleanup = setupRealtimeSubscriptions();
+    
+    // Cleanup function
+    return () => {
+      if (cleanup) cleanup();
+    };
   }, []);
 
   const fetchDashboardData = async () => {

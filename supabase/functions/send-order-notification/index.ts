@@ -131,7 +131,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Mango Appliances <noreply@mangoappliances.com>',
+        from: 'Mango Appliances Admin <noreply@resend.dev>',
         to: ['DoNotReply@mangoappliances.com'],
         subject: `🚨 URGENT: New Order #${order.order_number} - ₹${order.total_amount.toLocaleString('en-IN')}`,
         html: emailContent,
