@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -40,7 +42,8 @@ import {
   PieChart,
   FileText,
   Trash2,
-  MoreHorizontal
+  MoreHorizontal,
+  LogOut
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { 
@@ -174,6 +177,9 @@ interface SystemSetting {
 }
 
 const AdminDashboard = () => {
+  const { signOut, user } = useAuth();
+  const navigate = useNavigate();
+  
   // State variables
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -225,6 +231,15 @@ const AdminDashboard = () => {
     fetchAllData();
     setupRealtimeSubscriptions();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate('/admin/login', { replace: true });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const fetchAllData = async () => {
     setLoading(true);
@@ -662,9 +677,27 @@ const AdminDashboard = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
-        <p className="text-muted-foreground">Comprehensive management system for Mango Appliances</p>
+      {/* Admin Header */}
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2 text-primary">Mango Appliances Admin</h1>
+          <p className="text-muted-foreground">Comprehensive management system for real-time monitoring</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-sm font-medium text-foreground">{user?.email}</p>
+            <p className="text-xs text-muted-foreground">Administrator</p>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleLogout}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
