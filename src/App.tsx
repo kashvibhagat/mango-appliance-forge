@@ -28,9 +28,6 @@ import Contact from './pages/Contact';
 import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
 import Comparison from './pages/Comparison';
-import ResetPassword from './pages/ResetPassword';
-import ComplaintBooking from './pages/ComplaintBooking';
-import ComplaintTracking from './pages/ComplaintTracking';
 
 const queryClient = new QueryClient();
 
@@ -67,7 +64,6 @@ const App = () => {
                       <Route path="/product/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
                       <Route path="/cart" element={<PageTransition><Cart /></PageTransition>} />
                       <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
-                      <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
                       <Route 
                         path="/checkout" 
                         element={
@@ -101,8 +97,6 @@ const App = () => {
                         } 
                       />
                       <Route path="/track-order" element={<PageTransition><TrackOrder /></PageTransition>} />
-                      <Route path="/complaint-booking" element={<PageTransition><ComplaintBooking /></PageTransition>} />
-                      <Route path="/complaint-tracking" element={<PageTransition><ComplaintTracking /></PageTransition>} />
                       <Route 
                         path="/warranty-registration" 
                         element={
