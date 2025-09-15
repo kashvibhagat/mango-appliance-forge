@@ -7,8 +7,8 @@ const corsHeaders = {
 };
 
 // Initialize Supabase client with environment variables
-const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!; // Use service role key for full access
+const supabaseUrl = Deno.env.get("'https://ccgvldazqlyvptschjkl.supabase.co'")!;
+const supabaseKey = Deno.env.get("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjZ3ZsZGF6cWx5dnB0c2NoamtsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzE3NTk1NywiZXhwIjoyMDcyNzUxOTU3fQ.nI5OQPPcv1u99YstNaKIDV6RJoxB2h-04WnNHZiDSb4")!; // Use service role key for full access
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface OrderData {
