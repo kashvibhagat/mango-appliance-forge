@@ -31,6 +31,8 @@ interface Order {
   customer_email: string
   created_at: string
   user_id?: string
+  items: any
+  shipping_address: any
 }
 
 interface Customer {
@@ -271,6 +273,8 @@ const AdminDashboard = () => {
                         <TableHead>Order Number</TableHead>
                         <TableHead>Customer</TableHead>
                         <TableHead>Email</TableHead>
+                        <TableHead>Products</TableHead>
+                        <TableHead>Address</TableHead>
                         <TableHead>Amount</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Date</TableHead>
@@ -288,6 +292,22 @@ const AdminDashboard = () => {
                           </TableCell>
                           <TableCell>
                             {order.customer_email || 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <div className="max-w-xs">
+                              {Array.isArray(order.items) ? order.items.map((item: any, idx: number) => (
+                                <div key={idx} className="text-sm">
+                                  {item.name} (x{item.quantity})
+                                </div>
+                              )) : 'N/A'}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="max-w-xs text-sm">
+                              {order.shipping_address ? 
+                                `${order.shipping_address.address_line_1}, ${order.shipping_address.city}, ${order.shipping_address.state} ${order.shipping_address.postal_code}` 
+                                : 'N/A'}
+                            </div>
                           </TableCell>
                           <TableCell>
                             ₹{Number(order.total_amount).toLocaleString()}
