@@ -13,12 +13,24 @@ const Auth = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (!loading && user) {
+      // Special redirect for specific user
+      if (user.email === 'DoNotReply@mangoappliances.com') {
+        navigate('/blank', { replace: true })
+        return
+      }
+      
       const from = (location.state as any)?.from?.pathname || '/'
       navigate(from, { replace: true })
     }
   }, [user, loading, navigate, location])
 
   const handleSuccess = () => {
+    // Special redirect for specific user
+    if (user?.email === 'DoNotReply@mangoappliances.com') {
+      navigate('/blank', { replace: true })
+      return
+    }
+    
     const from = (location.state as any)?.from?.pathname || '/'
     navigate(from, { replace: true })
   }

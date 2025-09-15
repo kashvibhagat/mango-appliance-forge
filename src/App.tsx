@@ -26,6 +26,7 @@ import Contact from './pages/Contact';
 import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
 import Comparison from './pages/Comparison';
+import BlankPage from './pages/BlankPage';
 
 const queryClient = new QueryClient();
 
@@ -108,6 +109,7 @@ const App = () => {
                           <PageTransition><WarrantyRegistration /></PageTransition>
                         } 
                       />
+                      <Route path="/blank" element={<BlankPage />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
                     </Routes>
