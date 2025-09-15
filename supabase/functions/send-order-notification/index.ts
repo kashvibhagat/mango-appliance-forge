@@ -1,9 +1,15 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Initialize Supabase client with environment variables
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!; // Use service role key for full access
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface OrderData {
   id: string;
@@ -23,34 +29,65 @@ interface OrderData {
 
 serve(async (req) => {
   // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { order }: { order: OrderData } = await req.json();
-    
-    // Prepare email content
-    const customerName = order.profiles 
-      ? `${order.profiles.first_name} ${order.profiles.last_name}` 
-      : 'Customer';
-    
-    const orderDate = new Date(order.created_at).toLocaleString('en-IN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZone: 'Asia/Kolkata'
+
+    // 1. Insert order into Supabase database
+    const { data, error } = await supabase.from("orders").insert([
+      {
+        id: order.id,
+        order_number: order.order_number,
+        status: order.status,
+        total_amount: order.total_amount,
+        created_at: order.created_at,
+        user_id: order.user_id,
+        items: order.items,
+        shipping_address: order.shipping_address,
+      },
+    ]);
+
+    if (error) {
+      console.error("Error inserting order:", error);
+      return new Response(
+        JSON.stringify({ error: "Failed to insert order", details: error }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // 2. Prepare email content
+    const customerName = order.profiles
+      ? `${order.profiles.first_name} ${order.profiles.last_name}`
+      : "Customer";
+
+    const orderDate = new Date(order.created_at).toLocaleString("en-IN", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Asia/Kolkata",
     });
 
-    const itemsList = Array.isArray(order.items) 
-      ? order.items.map(item => `• ${item.name || 'Product'} (Qty: ${item.quantity || 1})`).join('<br>')
-      : 'Order items information available in dashboard';
+    const itemsList = Array.isArray(order.items)
+      ? order.items
+          .map(
+            (item) =>
+              `• ${item.name || "Product"} (Qty: ${item.quantity || 1})`
+          )
+          .join("<br>")
+      : "Order items information available in dashboard";
 
-    const address = order.shipping_address 
-      ? `${order.shipping_address.address_line_1 || ''}, ${order.shipping_address.city || ''}, ${order.shipping_address.state || ''} - ${order.shipping_address.postal_code || ''}`
-      : 'Address information available in dashboard';
+    const address = order.shipping_address
+      ? `${order.shipping_address.address_line_1 || ""}, ${
+          order.shipping_address.city || ""
+        }, ${order.shipping_address.state || ""} - ${
+          order.shipping_address.postal_code || ""
+        }`
+      : "Address information available in dashboard";
 
     const emailContent = `
       <!DOCTYPE html>
@@ -79,9 +116,11 @@ serve(async (req) => {
               <h3>📋 Order Details</h3>
               <p><strong>Order ID:</strong> ${order.order_number}</p>
               <p><strong>Customer Name:</strong> ${customerName}</p>
-              <p><strong>Phone:</strong> ${order.profiles?.phone || 'Not provided'}</p>
+              <p><strong>Phone:</strong> ${order.profiles?.phone || "Not provided"}</p>
               <p><strong>Order Date/Time:</strong> ${orderDate}</p>
-              <p><strong>Total Amount:</strong> ₹${order.total_amount.toLocaleString('en-IN')}</p>
+              <p><strong>Total Amount:</strong> ₹${order.total_amount.toLocaleString(
+                "en-IN"
+              )}</p>
               <p><strong>Status:</strong> ${order.status.toUpperCase()}</p>
             </div>
 
@@ -113,53 +152,55 @@ serve(async (req) => {
       </html>
     `;
 
-    // Use Resend to send email
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    
+    // 3. Send email notification with Resend API
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+
     if (!resendApiKey) {
-      console.error('RESEND_API_KEY not found');
+      console.error("RESEND_API_KEY not found");
       return new Response(
-        JSON.stringify({ error: 'Email service not configured' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "Email service not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const emailResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
+    const emailResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: 'Mango Appliances Admin <noreply@resend.dev>',
-        to: ['DoNotReply@mangoappliances.com'],
-        subject: `🚨 URGENT: New Order #${order.order_number} - ₹${order.total_amount.toLocaleString('en-IN')}`,
+        from: "Mango Appliances Admin <noreply@resend.dev>",
+        to: ["DoNotReply@mangoappliances.com"],
+        subject: `🚨 URGENT: New Order #${order.order_number} - ₹${order.total_amount.toLocaleString(
+          "en-IN"
+        )}`,
         html: emailContent,
       }),
     });
 
     const emailResult = await emailResponse.json();
-    
+
     if (!emailResponse.ok) {
-      console.error('Failed to send email:', emailResult);
+      console.error("Failed to send email:", emailResult);
       return new Response(
-        JSON.stringify({ error: 'Failed to send email', details: emailResult }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "Failed to send email", details: emailResult }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log('Order notification sent successfully:', emailResult);
-    
+    console.log("Order notification sent successfully:", emailResult);
+
+    // 4. Return success response
     return new Response(
       JSON.stringify({ success: true, emailId: emailResult.id }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-    
   } catch (error) {
-    console.error('Error in send-order-notification:', error);
+    console.error("Error in send-order-notification:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
