@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { 
   Package, 
   Users, 
@@ -17,7 +19,14 @@ import {
   ShoppingCart,
   DollarSign,
   Clock,
-  CheckCircle
+  CheckCircle,
+  MapPin,
+  ChevronDown,
+  ChevronRight,
+  Phone,
+  Mail,
+  Calendar,
+  Hash
 } from 'lucide-react'
 import { toast } from '@/components/ui/use-toast'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -27,10 +36,11 @@ interface Order {
   order_number: string
   status: string
   total_amount: number
-  customer_name: string
-  customer_email: string
+  customer_name?: string
+  customer_email?: string
   created_at: string
   user_id?: string
+  items?: any // Using any for now to handle Json from Supabase
 }
 
 interface Customer {
@@ -44,6 +54,36 @@ interface Customer {
   total_spent: number
   last_order_date: string
   is_blocked: boolean
+  addresses?: Address[]
+  orders?: Order[]
+  profiles?: {
+    first_name: string
+    last_name: string
+    phone: string
+  } | null
+}
+
+interface Address {
+  id: string
+  title: string
+  first_name: string
+  last_name: string
+  phone: string
+  address_line_1: string
+  address_line_2?: string
+  city: string
+  state: string
+  postal_code: string
+  country: string
+  is_default: boolean
+}
+
+interface OrderItem {
+  id: string
+  name: string
+  price: number
+  quantity: number
+  image?: string
 }
 
 interface Stats {
@@ -56,6 +96,8 @@ interface Stats {
 const AdminDashboard = () => {
   const [orders, setOrders] = useState<Order[]>([])
   const [customers, setCustomers] = useState<Customer[]>([])
+  const [expandedCustomers, setExpandedCustomers] = useState<Set<string>>(new Set())
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [stats, setStats] = useState<Stats>({
     totalOrders: 0,
     totalRevenue: 0,
@@ -81,16 +123,27 @@ const AdminDashboard = () => {
 
       if (ordersError) throw ordersError
 
-      // Fetch all customers
+      // Fetch customers with their profiles (handle optional profiles)
       const { data: customersData, error: customersError } = await supabase
         .from('customers')
-        .select('*')
+        .select(`
+          *,
+          profiles(first_name, last_name, phone)
+        `)
         .order('created_at', { ascending: false })
 
       if (customersError) throw customersError
 
-      setOrders(ordersData || [])
-      setCustomers(customersData || [])
+      setOrders((ordersData || []).map(order => ({
+        ...order,
+        items: order.items || []
+      })))
+      setCustomers((customersData || []).map(customer => ({
+        ...customer,
+        profiles: Array.isArray(customer.profiles) && customer.profiles.length > 0 
+          ? customer.profiles[0] 
+          : null
+      })))
 
       // Calculate stats
       if (ordersData) {
@@ -145,6 +198,65 @@ const AdminDashboard = () => {
     }
   }
 
+  const fetchCustomerDetails = async (customerId: string) => {
+    try {
+      // Fetch customer addresses
+      const { data: addresses, error: addressError } = await supabase
+        .from('user_addresses')
+        .select('*')
+        .eq('user_id', customerId)
+        .order('is_default', { ascending: false })
+
+      if (addressError) throw addressError
+
+      // Fetch customer orders
+      const { data: customerOrders, error: ordersError } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', customerId)
+        .order('created_at', { ascending: false })
+
+      if (ordersError) throw ordersError
+
+      // Update customer data
+      setCustomers(prev => prev.map(customer => 
+        customer.user_id === customerId 
+          ? { 
+              ...customer, 
+              addresses, 
+              orders: (customerOrders || []).map(order => ({
+                ...order,
+                items: order.items || []
+              }))
+            }
+          : customer
+      ))
+
+    } catch (error) {
+      console.error('Error fetching customer details:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to load customer details',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const toggleCustomerExpansion = (customerId: string) => {
+    const newExpanded = new Set(expandedCustomers)
+    if (newExpanded.has(customerId)) {
+      newExpanded.delete(customerId)
+    } else {
+      newExpanded.add(customerId)
+      // Fetch customer details if not already loaded
+      const customer = customers.find(c => c.user_id === customerId)
+      if (customer && !customer.addresses) {
+        fetchCustomerDetails(customerId)
+      }
+    }
+    setExpandedCustomers(newExpanded)
+  }
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-warning/10 text-warning border-warning/20'
@@ -154,6 +266,21 @@ const AdminDashboard = () => {
       case 'cancelled': return 'bg-destructive/10 text-destructive border-destructive/20'
       default: return 'bg-muted text-muted-foreground'
     }
+  }
+
+  const renderOrderItems = (items: any) => {
+    if (!items || !Array.isArray(items)) return 'No items'
+    
+    return (
+      <div className="space-y-2">
+        {items.map((item: OrderItem, index: number) => (
+          <div key={index} className="flex justify-between text-sm">
+            <span>{item.name} x{item.quantity}</span>
+            <span>₹{(item.price * item.quantity).toLocaleString()}</span>
+          </div>
+        ))}
+      </div>
+    )
   }
 
   if (loading) {
@@ -349,6 +476,7 @@ const AdminDashboard = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-[50px]"></TableHead>
                         <TableHead>Customer Name</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Phone</TableHead>
@@ -356,33 +484,276 @@ const AdminDashboard = () => {
                         <TableHead>Total Spent</TableHead>
                         <TableHead>Last Order</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {customers.map((customer) => (
-                        <TableRow key={customer.id}>
-                          <TableCell className="font-medium">
-                            {customer.first_name && customer.last_name 
-                              ? `${customer.first_name} ${customer.last_name}` 
-                              : 'N/A'}
-                          </TableCell>
-                          <TableCell>{customer.email}</TableCell>
-                          <TableCell>{customer.phone || 'N/A'}</TableCell>
-                          <TableCell>{customer.total_orders || 0}</TableCell>
-                          <TableCell>
-                            ₹{Number(customer.total_spent || 0).toLocaleString()}
-                          </TableCell>
-                          <TableCell>
-                            {customer.last_order_date 
-                              ? new Date(customer.last_order_date).toLocaleDateString()
-                              : 'Never'}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={customer.is_blocked ? 'destructive' : 'default'}>
-                              {customer.is_blocked ? 'Blocked' : 'Active'}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
+                        <>
+                          <TableRow key={customer.id} className="hover:bg-muted/50">
+                            <TableCell>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => toggleCustomerExpansion(customer.user_id)}
+                              >
+                                {expandedCustomers.has(customer.user_id) ? (
+                                  <ChevronDown className="h-4 w-4" />
+                                ) : (
+                                  <ChevronRight className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {customer.profiles?.first_name && customer.profiles?.last_name 
+                                ? `${customer.profiles.first_name} ${customer.profiles.last_name}` 
+                                : customer.first_name && customer.last_name
+                                ? `${customer.first_name} ${customer.last_name}`
+                                : 'N/A'}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Mail className="h-4 w-4 text-muted-foreground" />
+                                {customer.email}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                {customer.profiles?.phone || customer.phone || 'N/A'}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline">{customer.total_orders || 0}</Badge>
+                            </TableCell>
+                            <TableCell className="font-semibold">
+                              ₹{Number(customer.total_spent || 0).toLocaleString()}
+                            </TableCell>
+                            <TableCell>
+                              {customer.last_order_date ? (
+                                <div className="flex items-center gap-2">
+                                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                                  {new Date(customer.last_order_date).toLocaleDateString()}
+                                </div>
+                              ) : (
+                                'Never'
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={customer.is_blocked ? 'destructive' : 'default'}>
+                                {customer.is_blocked ? 'Blocked' : 'Active'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedCustomer(customer)
+                                      if (!customer.addresses) {
+                                        fetchCustomerDetails(customer.user_id)
+                                      }
+                                    }}
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle className="flex items-center gap-2">
+                                      <Users className="h-5 w-5" />
+                                      Customer Details: {customer.profiles?.first_name} {customer.profiles?.last_name}
+                                    </DialogTitle>
+                                  </DialogHeader>
+                                  {selectedCustomer && selectedCustomer.user_id === customer.user_id && (
+                                    <div className="space-y-6">
+                                      {/* Customer Info */}
+                                      <Card>
+                                        <CardHeader>
+                                          <CardTitle className="text-lg">Contact Information</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="grid grid-cols-2 gap-4">
+                                          <div>
+                                            <p className="text-sm text-muted-foreground">Email</p>
+                                            <p className="font-medium">{customer.email}</p>
+                                          </div>
+                                          <div>
+                                            <p className="text-sm text-muted-foreground">Phone</p>
+                                            <p className="font-medium">{customer.profiles?.phone || 'N/A'}</p>
+                                          </div>
+                                          <div>
+                                            <p className="text-sm text-muted-foreground">Total Orders</p>
+                                            <p className="font-medium">{customer.total_orders}</p>
+                                          </div>
+                                          <div>
+                                            <p className="text-sm text-muted-foreground">Total Spent</p>
+                                            <p className="font-medium">₹{Number(customer.total_spent).toLocaleString()}</p>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+
+                                      {/* Addresses */}
+                                      <Card>
+                                        <CardHeader>
+                                          <CardTitle className="text-lg flex items-center gap-2">
+                                            <MapPin className="h-5 w-5" />
+                                            Saved Addresses ({customer.addresses?.length || 0})
+                                          </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                          {customer.addresses && customer.addresses.length > 0 ? (
+                                            <div className="space-y-4">
+                                              {customer.addresses.map((address) => (
+                                                <div key={address.id} className="border rounded-lg p-4">
+                                                  <div className="flex items-center justify-between mb-2">
+                                                    <h4 className="font-medium">{address.title}</h4>
+                                                    {address.is_default && (
+                                                      <Badge variant="outline">Default</Badge>
+                                                    )}
+                                                  </div>
+                                                  <div className="text-sm text-muted-foreground space-y-1">
+                                                    <p>{address.first_name} {address.last_name}</p>
+                                                    <p>{address.phone}</p>
+                                                    <p>{address.address_line_1}</p>
+                                                    {address.address_line_2 && <p>{address.address_line_2}</p>}
+                                                    <p>{address.city}, {address.state} {address.postal_code}</p>
+                                                    <p>{address.country}</p>
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          ) : (
+                                            <p className="text-muted-foreground">No addresses saved</p>
+                                          )}
+                                        </CardContent>
+                                      </Card>
+
+                                      {/* Order History */}
+                                      <Card>
+                                        <CardHeader>
+                                          <CardTitle className="text-lg flex items-center gap-2">
+                                            <Package className="h-5 w-5" />
+                                            Order History ({customer.orders?.length || 0})
+                                          </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                          {customer.orders && customer.orders.length > 0 ? (
+                                            <div className="space-y-4">
+                                              {customer.orders.map((order) => (
+                                                <div key={order.id} className="border rounded-lg p-4">
+                                                  <div className="flex items-center justify-between mb-3">
+                                                    <div className="flex items-center gap-2">
+                                                      <Hash className="h-4 w-4 text-muted-foreground" />
+                                                      <span className="font-medium">{order.order_number}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                      <Badge className={getStatusColor(order.status)}>
+                                                        {order.status}
+                                                      </Badge>
+                                                      <span className="text-sm text-muted-foreground">
+                                                        {new Date(order.created_at).toLocaleDateString()}
+                                                      </span>
+                                                    </div>
+                                                  </div>
+                                                  
+                                                  <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                      <p className="text-sm text-muted-foreground mb-2">Items Purchased:</p>
+                                                      {renderOrderItems(order.items)}
+                                                    </div>
+                                                    <div>
+                                                      <div className="text-right">
+                                                        <p className="text-sm text-muted-foreground">Total Amount</p>
+                                                        <p className="text-lg font-bold">₹{Number(order.total_amount).toLocaleString()}</p>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          ) : (
+                                            <p className="text-muted-foreground">No orders found</p>
+                                          )}
+                                        </CardContent>
+                                      </Card>
+                                    </div>
+                                  )}
+                                </DialogContent>
+                              </Dialog>
+                            </TableCell>
+                          </TableRow>
+                          
+                          {/* Expanded Row Content */}
+                          {expandedCustomers.has(customer.user_id) && (
+                            <TableRow>
+                              <TableCell colSpan={9} className="p-0">
+                                <div className="bg-muted/30 p-6 space-y-4">
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Quick Stats */}
+                                    <Card>
+                                      <CardHeader className="pb-3">
+                                        <CardTitle className="text-base">Quick Overview</CardTitle>
+                                      </CardHeader>
+                                      <CardContent className="space-y-2">
+                                        <div className="flex justify-between">
+                                          <span className="text-muted-foreground">Total Orders:</span>
+                                          <span className="font-medium">{customer.total_orders || 0}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span className="text-muted-foreground">Total Spent:</span>
+                                          <span className="font-medium">₹{Number(customer.total_spent || 0).toLocaleString()}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span className="text-muted-foreground">Addresses Saved:</span>
+                                          <span className="font-medium">{customer.addresses?.length || 0}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span className="text-muted-foreground">Account Status:</span>
+                                          <Badge variant={customer.is_blocked ? 'destructive' : 'default'} className="text-xs">
+                                            {customer.is_blocked ? 'Blocked' : 'Active'}
+                                          </Badge>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+
+                                    {/* Recent Orders Preview */}
+                                    <Card>
+                                      <CardHeader className="pb-3">
+                                        <CardTitle className="text-base">Recent Orders</CardTitle>
+                                      </CardHeader>
+                                      <CardContent>
+                                        {customer.orders && customer.orders.length > 0 ? (
+                                          <div className="space-y-2">
+                                            {customer.orders.slice(0, 3).map((order) => (
+                                              <div key={order.id} className="flex justify-between items-center text-sm">
+                                                <div className="flex items-center gap-2">
+                                                  <span className="font-medium">{order.order_number}</span>
+                                                  <Badge className={`${getStatusColor(order.status)} text-xs`}>
+                                                    {order.status}
+                                                  </Badge>
+                                                </div>
+                                                <span className="font-medium">₹{Number(order.total_amount).toLocaleString()}</span>
+                                              </div>
+                                            ))}
+                                            {customer.orders.length > 3 && (
+                                              <p className="text-xs text-muted-foreground mt-2">
+                                                +{customer.orders.length - 3} more orders
+                                              </p>
+                                            )}
+                                          </div>
+                                        ) : (
+                                          <p className="text-muted-foreground text-sm">No orders yet</p>
+                                        )}
+                                      </CardContent>
+                                    </Card>
+                                  </div>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </>
                       ))}
                     </TableBody>
                   </Table>
