@@ -336,11 +336,25 @@ const AdminDashboard = () => {
                           {order.shipping_address ? (
                             <div className="space-y-1">
                               <div className="font-medium text-foreground">
+                                {order.shipping_address.first_name} {order.shipping_address.last_name}
+                              </div>
+                              <div className="text-xs">
                                 {order.shipping_address.address_line_1}
+                                {order.shipping_address.address_line_2 && (
+                                  <>, {order.shipping_address.address_line_2}</>
+                                )}
                               </div>
-                              <div>
-                                {order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}
+                              <div className="text-xs">
+                                {order.shipping_address.city}, {order.shipping_address.state}
                               </div>
+                              <div className="text-xs">
+                                {order.shipping_address.postal_code}, {order.shipping_address.country || 'India'}
+                              </div>
+                              {order.shipping_address.phone && (
+                                <div className="text-xs font-medium">
+                                  📞 {order.shipping_address.phone}
+                                </div>
+                              )}
                             </div>
                           ) : (
                             'No address'
