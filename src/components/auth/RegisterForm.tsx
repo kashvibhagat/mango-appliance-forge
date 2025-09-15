@@ -35,7 +35,7 @@ type RegisterData = z.infer<typeof registerSchema>
 
 interface RegisterFormProps {
   onToggleMode: () => void
-  onSuccess?: () => void
+  onSuccess?: (email?: string) => void
 }
 
 export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => {
@@ -64,7 +64,7 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
         phone: data.phone,
         full_name: `${data.firstName} ${data.lastName}`,
       })
-      onSuccess?.()
+      onSuccess?.(data.email)
     } catch (error) {
       // Error is handled in the auth context
     } finally {

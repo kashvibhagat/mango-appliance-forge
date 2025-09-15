@@ -20,7 +20,7 @@ type LoginData = z.infer<typeof loginSchema>
 
 interface LoginFormProps {
   onToggleMode: () => void
-  onSuccess?: () => void
+  onSuccess?: (email?: string) => void
 }
 
 export const LoginForm = ({ onToggleMode, onSuccess }: LoginFormProps) => {
@@ -45,7 +45,7 @@ export const LoginForm = ({ onToggleMode, onSuccess }: LoginFormProps) => {
     setLoading(true)
     try {
       await signIn(data.email, data.password)
-      onSuccess?.()
+      onSuccess?.(data.email)
     } catch (error) {
       // Error is handled in the auth context
     } finally {
