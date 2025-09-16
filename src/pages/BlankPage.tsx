@@ -334,39 +334,56 @@ const AdminDashboard = () => {
                       <TableCell>
                         <div className="max-w-xs text-sm text-muted-foreground">
                           {order.shipping_address ? (
-                            <div className="space-y-1">
-                              <div className="font-medium text-foreground">
+                            <div className="space-y-1 p-2 bg-muted/30 rounded-lg border">
+                              {/* Customer Name with Title */}
+                              <div className="font-medium text-foreground border-b border-muted pb-1">
                                 {order.shipping_address.title && (
-                                  <span className="text-xs text-muted-foreground">{order.shipping_address.title} </span>
+                                  <span className="text-xs bg-primary/10 px-1 rounded mr-1">{order.shipping_address.title}</span>
                                 )}
                                 {order.shipping_address.first_name} {order.shipping_address.last_name}
                               </div>
-                              <div className="text-xs">
-                                <strong>Address:</strong> {order.shipping_address.address_line_1}
+                              
+                              {/* Complete Address */}
+                              <div className="space-y-0.5">
+                                {order.shipping_address.address_line_1 && (
+                                  <div className="text-xs">
+                                    <span className="font-medium text-foreground">Address 1:</span> {order.shipping_address.address_line_1}
+                                  </div>
+                                )}
                                 {order.shipping_address.address_line_2 && (
-                                  <>, {order.shipping_address.address_line_2}</>
+                                  <div className="text-xs">
+                                    <span className="font-medium text-foreground">Address 2:</span> {order.shipping_address.address_line_2}
+                                  </div>
+                                )}
+                                {order.shipping_address.city && (
+                                  <div className="text-xs">
+                                    <span className="font-medium text-foreground">City:</span> {order.shipping_address.city}
+                                  </div>
+                                )}
+                                {order.shipping_address.state && (
+                                  <div className="text-xs">
+                                    <span className="font-medium text-foreground">State:</span> {order.shipping_address.state}
+                                  </div>
+                                )}
+                                {order.shipping_address.postal_code && (
+                                  <div className="text-xs">
+                                    <span className="font-medium text-foreground">PIN Code:</span> {order.shipping_address.postal_code}
+                                  </div>
+                                )}
+                                <div className="text-xs">
+                                  <span className="font-medium text-foreground">Country:</span> {order.shipping_address.country || 'India'}
+                                </div>
+                                {order.shipping_address.phone && (
+                                  <div className="text-xs font-medium text-primary border-t border-muted pt-1">
+                                    <span className="font-medium text-foreground">📞 Phone:</span> {order.shipping_address.phone}
+                                  </div>
                                 )}
                               </div>
-                              <div className="text-xs">
-                                <strong>City:</strong> {order.shipping_address.city}
-                              </div>
-                              <div className="text-xs">
-                                <strong>State:</strong> {order.shipping_address.state}
-                              </div>
-                              <div className="text-xs">
-                                <strong>PIN:</strong> {order.shipping_address.postal_code}
-                              </div>
-                              <div className="text-xs">
-                                <strong>Country:</strong> {order.shipping_address.country || 'India'}
-                              </div>
-                              {order.shipping_address.phone && (
-                                <div className="text-xs font-medium">
-                                  <strong>Phone:</strong> {order.shipping_address.phone}
-                                </div>
-                              )}
                             </div>
                           ) : (
-                            'No address'
+                            <div className="text-center py-2 px-3 bg-muted/20 rounded border border-dashed">
+                              <span className="text-xs text-muted-foreground">No address provided</span>
+                            </div>
                           )}
                         </div>
                       </TableCell>
