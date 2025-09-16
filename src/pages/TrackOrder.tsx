@@ -104,7 +104,7 @@ const TrackOrder = () => {
                   id="orderNumber"
                   value={orderNumber}
                   onChange={(e) => setOrderNumber(e.target.value)}
-                  placeholder="Enter order number (e.g., ORD-2024-001)"
+                  placeholder="Enter order number (e.g., MNG-ORD-ABLAUOURL)"
                   className="w-full"
                 />
               </div>
