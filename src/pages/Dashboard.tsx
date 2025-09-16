@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import ProductCard from '@/components/ui/ProductCard'
 import { User, Package, Heart, MapPin, Settings, LogOut, ShoppingBag, Phone, Mail, Edit, Trash2, Plus, Eye } from 'lucide-react'
-import { toast } from '@/components/ui/use-toast'
+import { toast } from '@/hooks/use-toast'
 import { featuredProducts } from '@/data/products'
 import { spareProducts } from '@/data/spareProducts'
 
