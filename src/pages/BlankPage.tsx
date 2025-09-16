@@ -343,18 +343,19 @@ const AdminDashboard = () => {
                                 {order.shipping_address.first_name} {order.shipping_address.last_name}
                               </div>
                               
-                              {/* Complete Address */}
-                              <div className="space-y-0.5">
-                                {order.shipping_address.address_line_1 && (
-                                  <div className="text-xs">
-                                    <span className="font-medium text-foreground">Address 1:</span> {order.shipping_address.address_line_1}
-                                  </div>
-                                )}
-                                {order.shipping_address.address_line_2 && (
-                                  <div className="text-xs">
-                                    <span className="font-medium text-foreground">Address 2:</span> {order.shipping_address.address_line_2}
-                                  </div>
-                                )}
+                               {/* Complete Address */}
+                               <div className="space-y-0.5">
+                                 {/* Check both address field formats */}
+                                 {(order.shipping_address.address || order.shipping_address.address_line_1) && (
+                                   <div className="text-xs">
+                                     <span className="font-medium text-foreground">Address:</span> {order.shipping_address.address || order.shipping_address.address_line_1}
+                                   </div>
+                                 )}
+                                 {order.shipping_address.address_line_2 && (
+                                   <div className="text-xs">
+                                     <span className="font-medium text-foreground">Address 2:</span> {order.shipping_address.address_line_2}
+                                   </div>
+                                 )}
                                 {order.shipping_address.city && (
                                   <div className="text-xs">
                                     <span className="font-medium text-foreground">City:</span> {order.shipping_address.city}
