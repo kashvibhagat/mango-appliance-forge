@@ -55,12 +55,15 @@ const TrackOrder = () => {
     e.preventDefault();
     if (!orderNumber.trim()) return;
 
+    // Clean the order number by removing # prefix if present
+    const cleanOrderNumber = orderNumber.trim().replace(/^#/, '');
+
     setSearching(true);
     try {
       const { data, error } = await supabase
         .from('orders')
         .select('*')
-        .eq('order_number', orderNumber.trim())
+        .eq('order_number', cleanOrderNumber)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
