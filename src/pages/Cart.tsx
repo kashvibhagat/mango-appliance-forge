@@ -78,9 +78,9 @@ const Cart = () => {
                               {item.product.name}
                             </Link>
                           </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {item.product.category.name}
-                          </p>
+                         <p className="text-sm text-muted-foreground">
+                           {item.product.category.name}
+                         </p>
                           {item.selectedVariant && (
                             <Badge variant="secondary" className="mt-1">
                               {item.selectedVariant}

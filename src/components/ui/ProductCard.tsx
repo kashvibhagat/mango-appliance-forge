@@ -59,7 +59,7 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
               -{discountPercentage}%
             </Badge>
           )}
-          {product.tags.includes('bestseller') && (
+          {product.tags && product.tags.includes('bestseller') && (
             <Badge className="bg-accent text-accent-foreground text-xs">
               <Zap className="h-3 w-3 mr-1" />
               Bestseller
@@ -95,7 +95,7 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
       <CardContent className="p-4 space-y-3">
         {/* Brand & Category */}
         <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>{product.brand}</span>
+          <span>{product.brand || 'Mango'}</span>
           <span>{product.category.name}</span>
         </div>
 

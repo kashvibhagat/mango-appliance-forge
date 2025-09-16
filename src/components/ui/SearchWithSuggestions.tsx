@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { featuredProducts } from '@/data/products';
-import { spareProducts } from '@/data/spareProducts';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SearchSuggestion {
   id: string;
@@ -29,9 +28,30 @@ const SearchWithSuggestions = ({
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [recentSearches] = useState<string[]>(['Cool Master', 'Desert Cooler', 'Spare Parts']);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  // Fetch products from Supabase for search suggestions
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, name, brand, model, category')
+          .eq('is_active', true)
+          .limit(20);
+
+        if (error) throw error;
+        setProducts(data || []);
+      } catch (error) {
+        console.error('Error fetching products for search:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const trendingSearches = [
     'Arctic TC Series',
@@ -58,44 +78,44 @@ const SearchWithSuggestions = ({
 
       setSuggestions([...recentSuggestions, ...trendingSuggestions]);
     } else {
-      // Filter products and categories based on query
-      const allProducts = [...featuredProducts, ...spareProducts];
-      const productSuggestions = allProducts
+      // Filter products based on query
+      const productSuggestions = products
         .filter(product => 
           product.name.toLowerCase().includes(query.toLowerCase()) ||
-          product.brand.toLowerCase().includes(query.toLowerCase())
+          (product.brand && product.brand.toLowerCase().includes(query.toLowerCase())) ||
+          (product.model && product.model.toLowerCase().includes(query.toLowerCase()))
         )
         .slice(0, 4)
         .map(product => ({
           id: product.id,
           text: product.name,
           type: 'product' as const,
-          url: `/product/${product.slug}`
+          url: `/product/${product.name.toLowerCase().replace(/\s+/g, '-')}`
         }));
 
       const categories = [
-        'Personal Coolers',
-        'Desert Coolers', 
-        'Tower Coolers',
-        'Industrial Coolers',
-        'Spare Parts'
+        { name: 'Personal Coolers', slug: 'personal-coolers' },
+        { name: 'Desert Coolers', slug: 'desert-coolers' },
+        { name: 'Tower Coolers', slug: 'tower-coolers' },
+        { name: 'Industrial Coolers', slug: 'industrial-coolers' },
+        { name: 'Spare Parts', slug: 'spare-parts' }
       ];
 
       const categorySuggestions = categories
         .filter(category => 
-          category.toLowerCase().includes(query.toLowerCase())
+          category.name.toLowerCase().includes(query.toLowerCase())
         )
         .slice(0, 2)
         .map((category, index) => ({
           id: `category-${index}`,
-          text: category,
+          text: category.name,
           type: 'category' as const,
-          url: `/shop?category=${category.toLowerCase().replace(/\s+/g, '-')}`
+          url: `/shop?category=${category.slug}`
         }));
 
       setSuggestions([...productSuggestions, ...categorySuggestions]);
     }
-  }, [query]);
+  }, [query, products]);
 
   const handleSearch = (searchQuery: string = query) => {
     if (searchQuery.trim()) {

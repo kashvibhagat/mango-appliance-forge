@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import ProductCard from '@/components/ui/ProductCard';
+import SearchWithSuggestions from '@/components/ui/SearchWithSuggestions';
 import { supabase } from '@/integrations/supabase/client';
 
 // Define categories locally since we're moving away from TypeScript data
@@ -70,7 +71,14 @@ const Shop = () => {
           createdAt: product.created_at,
           updatedAt: product.updated_at,
           dimensions: { length: 0, width: 0, height: 0, weight: 0 },
-          variants: []
+          variants: [],
+          // Transform category to match expected structure
+          category: {
+            id: product.category || 'unknown',
+            name: product.category ? product.category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unknown',
+            slug: product.category || 'unknown',
+            filters: []
+          }
         }));
         
         setProducts(transformedProducts);
@@ -93,14 +101,27 @@ const Shop = () => {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(product => 
         product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query) ||
-        product.brand.toLowerCase().includes(query)
+        (product.description && product.description.toLowerCase().includes(query)) ||
+        (product.brand && product.brand.toLowerCase().includes(query)) ||
+        (product.model && product.model.toLowerCase().includes(query))
       );
     }
 
     // Filter by category
     if (selectedCategory) {
-      filtered = filtered.filter(product => product.category === selectedCategory.slug);
+      // Map category slugs to match database values
+      const categoryMap: Record<string, string> = {
+        'personal-coolers': 'personal-coolers',
+        'tower-coolers': 'tower-coolers', 
+        'desert-coolers': 'desert-coolers',
+        'industrial-coolers': 'industrial-coolers',
+        'spare-parts': 'spare-parts'
+      };
+      
+      const dbCategory = categoryMap[selectedCategory.slug];
+      if (dbCategory) {
+        filtered = filtered.filter(product => product.category.slug === dbCategory);
+      }
     }
 
     // Filter by price range
@@ -168,7 +189,7 @@ const Shop = () => {
               variant="outline" 
               size="sm" 
               onClick={() => setPriceRange([0, 10000])}
-              className={priceRange[1] === 10000 ? 'bg-accent text-accent-foreground' : ''}
+              className={priceRange[1] === 10000 && priceRange[0] === 0 ? 'bg-accent text-accent-foreground' : ''}
             >
               Under ₹10K
             </Button>
@@ -179,6 +200,22 @@ const Shop = () => {
               className={priceRange[0] === 10000 && priceRange[1] === 25000 ? 'bg-accent text-accent-foreground' : ''}
             >
               ₹10K - ₹25K
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setPriceRange([25000, 50000])}
+              className={priceRange[0] === 25000 && priceRange[1] === 50000 ? 'bg-accent text-accent-foreground' : ''}
+            >
+              ₹25K - ₹50K
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setPriceRange([50000, 100000])}
+              className={priceRange[0] === 50000 && priceRange[1] === 100000 ? 'bg-accent text-accent-foreground' : ''}
+            >
+              Above ₹50K
             </Button>
           </div>
         </CardContent>
@@ -266,6 +303,23 @@ const Shop = () => {
           </div>
 
           <div className="flex items-center space-x-4">
+            {/* Search Bar */}
+            <div className="flex-1 max-w-sm">
+              <SearchWithSuggestions 
+                placeholder="Search products..."
+                onSearch={(query) => {
+                  const newParams = new URLSearchParams(searchParams);
+                  if (query) {
+                    newParams.set('search', query);
+                  } else {
+                    newParams.delete('search');
+                  }
+                  setSearchParams(newParams);
+                }}
+                className="w-full"
+              />
+            </div>
+            
             {/* Sort */}
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-48">
