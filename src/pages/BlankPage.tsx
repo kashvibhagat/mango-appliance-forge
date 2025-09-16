@@ -174,126 +174,133 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
-      <div className="container mx-auto max-w-7xl p-6 space-y-8 animate-fade-in">
-        {/* Header Section */}
-        <div className="text-center space-y-4 animate-slide-up">
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-brand rounded-full shadow-brand mb-4">
-            <Package className="w-6 h-6 text-white" />
-            <span className="text-white font-semibold">Admin Portal</span>
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+      {/* Professional Header Bar */}
+      <div className="border-b border-border/60 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="container mx-auto max-w-7xl px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-gradient-brand rounded-lg shadow-sm">
+                <Package className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-foreground">Admin Dashboard</h1>
+                <p className="text-sm text-muted-foreground">Business Operations Center</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="border-success/20 text-success bg-success/5">
+                <div className="w-2 h-2 bg-success rounded-full mr-2 animate-pulse"></div>
+                Live
+              </Badge>
+              <div className="text-right">
+                <p className="text-sm font-medium text-foreground">{new Date().toLocaleDateString()}</p>
+                <p className="text-xs text-muted-foreground">{new Date().toLocaleTimeString()}</p>
+              </div>
+            </div>
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-brand bg-clip-text text-transparent float-animation">
-            Admin Dashboard
-          </h1>
-          <p className="text-muted-foreground text-xl max-w-2xl mx-auto">
-            Monitor and manage your business operations with comprehensive insights
-          </p>
         </div>
+      </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-animation">
-          <Card className="card-hover card-glass relative overflow-hidden border-0 shadow-card bg-gradient-to-br from-mango-orange/5 to-mango-orange/10 group">
-            <CardContent className="p-6 relative z-10">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-muted-foreground tracking-wide uppercase">Total Orders</p>
-                  <p className="text-4xl font-bold text-foreground animate-pulse-glow">{stats.totalOrders}</p>
-                  <div className="flex items-center gap-2 text-xs text-success">
+      <div className="container mx-auto max-w-7xl px-6 py-8 space-y-8">
+
+        {/* Professional Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <Card className="bg-white border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Orders</p>
+                  <p className="text-3xl font-bold text-foreground">{stats.totalOrders}</p>
+                  <div className="flex items-center gap-1 text-xs text-success font-medium">
                     <TrendingUp className="w-3 h-3" />
-                    <span>Active</span>
+                    <span>+12% from last month</span>
                   </div>
                 </div>
-                <div className="p-4 bg-gradient-brand rounded-2xl shadow-brand group-hover:scale-110 transition-transform duration-300">
-                  <ShoppingCart className="w-7 h-7 text-white" />
+                <div className="p-3 bg-primary/10 rounded-xl group-hover:bg-primary/15 transition-colors duration-200">
+                  <ShoppingCart className="w-5 h-5 text-primary" />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-mango-orange/10 via-transparent to-mango-orange/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </CardContent>
           </Card>
 
-          <Card className="card-hover card-glass relative overflow-hidden border-0 shadow-card bg-gradient-to-br from-success/5 to-success/10 group">
-            <CardContent className="p-6 relative z-10">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-muted-foreground tracking-wide uppercase">Total Revenue</p>
-                  <p className="text-4xl font-bold text-foreground">₹{stats.totalRevenue.toLocaleString()}</p>
-                  <div className="flex items-center gap-2 text-xs text-success">
+          <Card className="bg-white border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Revenue</p>
+                  <p className="text-3xl font-bold text-foreground">₹{stats.totalRevenue.toLocaleString()}</p>
+                  <div className="flex items-center gap-1 text-xs text-success font-medium">
                     <TrendingUp className="w-3 h-3" />
-                    <span>Growing</span>
+                    <span>+8.5% from last month</span>
                   </div>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-success to-success/80 rounded-2xl shadow-accent group-hover:scale-110 transition-transform duration-300">
-                  <DollarSign className="w-7 h-7 text-white" />
+                <div className="p-3 bg-success/10 rounded-xl group-hover:bg-success/15 transition-colors duration-200">
+                  <DollarSign className="w-5 h-5 text-success" />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-success/10 via-transparent to-success/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </CardContent>
           </Card>
 
-          <Card className="card-hover card-glass relative overflow-hidden border-0 shadow-card bg-gradient-to-br from-warning/5 to-warning/10 group">
-            <CardContent className="p-6 relative z-10">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-muted-foreground tracking-wide uppercase">Pending Orders</p>
-                  <p className="text-4xl font-bold text-foreground animate-bounce-gentle">{stats.pendingOrders}</p>
-                  <div className="flex items-center gap-2 text-xs text-warning">
+          <Card className="bg-white border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Pending Orders</p>
+                  <p className="text-3xl font-bold text-foreground">{stats.pendingOrders}</p>
+                  <div className="flex items-center gap-1 text-xs text-warning font-medium">
                     <Clock className="w-3 h-3" />
-                    <span>Requires Action</span>
+                    <span>Requires attention</span>
                   </div>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-warning to-warning/80 rounded-2xl shadow-brand group-hover:scale-110 transition-transform duration-300">
-                  <Clock className="w-7 h-7 text-white" />
+                <div className="p-3 bg-warning/10 rounded-xl group-hover:bg-warning/15 transition-colors duration-200">
+                  <Clock className="w-5 h-5 text-warning" />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-warning/10 via-transparent to-warning/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </CardContent>
           </Card>
 
-          <Card className="card-hover card-glass relative overflow-hidden border-0 shadow-card bg-gradient-to-br from-accent/5 to-accent/10 group">
-            <CardContent className="p-6 relative z-10">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-muted-foreground tracking-wide uppercase">Completed Orders</p>
-                  <p className="text-4xl font-bold text-foreground">{stats.completedOrders}</p>
-                  <div className="flex items-center gap-2 text-xs text-accent">
+          <Card className="bg-white border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Completed Orders</p>
+                  <p className="text-3xl font-bold text-foreground">{stats.completedOrders}</p>
+                  <div className="flex items-center gap-1 text-xs text-success font-medium">
                     <CheckCircle className="w-3 h-3" />
-                    <span>Delivered</span>
+                    <span>Successfully delivered</span>
                   </div>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-accent to-accent/80 rounded-2xl shadow-accent group-hover:scale-110 transition-transform duration-300">
-                  <CheckCircle className="w-7 h-7 text-white" />
+                <div className="p-3 bg-success/10 rounded-xl group-hover:bg-success/15 transition-colors duration-200">
+                  <CheckCircle className="w-5 h-5 text-success" />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-accent/10 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Orders Management Section */}
-        <Card className="card-glass border-0 shadow-brand bg-gradient-card backdrop-blur-lg animate-scale-in">
-          <CardHeader className="border-b border-border/50 bg-gradient-to-r from-mango-orange/5 via-primary/5 to-transparent backdrop-blur-sm">
+        {/* Professional Orders Management Section */}
+        <Card className="bg-white border border-border/60 shadow-sm">
+          <CardHeader className="border-b border-border/40 bg-muted/20">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-gradient-brand rounded-2xl shadow-brand">
-                  <Package className="w-6 h-6 text-white" />
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Package className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-2">
+                  <CardTitle className="text-xl font-semibold text-foreground">
                     Orders Management
-                    <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
-                      Live
-                    </Badge>
                   </CardTitle>
-                  <CardDescription className="text-muted-foreground text-base">
-                    Track and manage all customer orders in real-time
+                  <CardDescription className="text-muted-foreground">
+                    Monitor and manage all customer orders
                   </CardDescription>
                 </div>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2 hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all duration-300 hover:shadow-brand btn-micro">
+                  <Button variant="outline" size="sm" className="gap-2 border-border/60 hover:border-primary/30 hover:bg-primary/5">
                     <Filter className="w-4 h-4" />
-                    Filter: {statusFilter === 'all' ? 'All Orders' : statusFilter}
+                    {statusFilter === 'all' ? 'All Orders' : statusFilter.replace(/^\w/, c => c.toUpperCase())}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -320,35 +327,41 @@ const AdminDashboard = () => {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/10">
-                    <TableHead className="font-bold text-foreground">Order #</TableHead>
-                    <TableHead className="font-bold text-foreground">Customer</TableHead>
-                    <TableHead className="font-bold text-foreground">Contact</TableHead>
-                    <TableHead className="font-bold text-foreground">Products</TableHead>
-                    <TableHead className="font-bold text-foreground">Shipping Address</TableHead>
-                    <TableHead className="font-bold text-foreground">Amount</TableHead>
-                    <TableHead className="font-bold text-foreground">Status</TableHead>
-                    <TableHead className="font-bold text-foreground">Date</TableHead>
-                    <TableHead className="font-bold text-foreground text-center">Actions</TableHead>
+                  <TableRow className="bg-muted/30 border-b">
+                    <TableHead className="font-semibold text-foreground py-4">Order #</TableHead>
+                    <TableHead className="font-semibold text-foreground py-4">Customer</TableHead>
+                    <TableHead className="font-semibold text-foreground py-4">Contact</TableHead>
+                    <TableHead className="font-semibold text-foreground py-4">Products</TableHead>
+                    <TableHead className="font-semibold text-foreground py-4">Shipping Address</TableHead>
+                    <TableHead className="font-semibold text-foreground py-4">Amount</TableHead>
+                    <TableHead className="font-semibold text-foreground py-4">Status</TableHead>
+                    <TableHead className="font-semibold text-foreground py-4">Date</TableHead>
+                    <TableHead className="font-semibold text-foreground py-4 text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredOrders.map((order, index) => (
-                    <TableRow key={order.id} className="hover:bg-gradient-to-r hover:from-primary/5 hover:to-transparent transition-all duration-300 hover:shadow-sm border-b border-border/50">
-                      <TableCell className="font-mono text-sm font-medium">
-                        {order.order_number}
+                    <TableRow key={order.id} className="hover:bg-muted/20 border-b border-border/30 transition-colors duration-150">
+                      <TableCell className="py-4">
+                        <code className="bg-muted/50 px-2 py-1 rounded text-sm font-mono">
+                          {order.order_number}
+                        </code>
                       </TableCell>
-                      <TableCell className="font-medium">
-                        {order.customer_name || 'N/A'}
+                      <TableCell className="py-4">
+                        <div className="font-medium text-foreground">
+                          {order.customer_name || 'N/A'}
+                        </div>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {order.customer_email || 'N/A'}
+                      <TableCell className="py-4">
+                        <div className="text-sm text-muted-foreground">
+                          {order.customer_email || 'N/A'}
+                        </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="max-w-xs space-y-2">
+                      <TableCell className="py-4">
+                        <div className="max-w-xs space-y-1">
                           {Array.isArray(order.items) ? order.items.map((item: any, idx: number) => (
-                            <div key={idx} className="text-sm bg-gradient-to-r from-primary/5 to-primary/10 px-3 py-2 rounded-lg border border-primary/20 text-foreground hover:shadow-brand/20 hover:shadow-sm transition-all duration-200">
-                              <span className="font-semibold">{item.name}</span>
+                            <div key={idx} className="text-sm bg-muted/40 px-2 py-1 rounded border text-foreground">
+                              <span className="font-medium">{item.name}</span>
                               <span className="text-muted-foreground"> × {item.quantity}</span>
                             </div>
                           )) : (
@@ -356,10 +369,10 @@ const AdminDashboard = () => {
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="py-4">
                         <div className="max-w-xs text-sm text-muted-foreground">
                           {order.shipping_address ? (
-                            <div className="space-y-1 p-3 bg-gradient-to-br from-muted/20 to-muted/10 rounded-xl border border-border/50 hover:shadow-card hover:border-primary/20 transition-all duration-300">
+                            <div className="space-y-1 p-2 bg-muted/30 rounded border border-border/40">
                               {/* Customer Name with Title */}
                               <div className="font-medium text-foreground border-b border-muted pb-1">
                                 {order.shipping_address.title && (
@@ -413,30 +426,30 @@ const AdminDashboard = () => {
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-xl text-foreground bg-gradient-to-r from-success to-success/80 bg-clip-text text-transparent">
-                            ₹{Number(order.total_amount).toLocaleString()}
-                          </span>
+                      <TableCell className="py-4">
+                        <div className="font-semibold text-lg text-foreground">
+                          ₹{Number(order.total_amount).toLocaleString()}
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge className={`${getStatusColor(order.status)} gap-2 capitalize px-3 py-1 font-semibold hover:scale-105 transition-transform duration-200`}>
+                      <TableCell className="py-4">
+                        <Badge className={`${getStatusColor(order.status)} gap-1 capitalize font-medium`}>
                           {getStatusIcon(order.status)}
                           {order.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {new Date(order.created_at).toLocaleDateString('en-IN', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric'
-                        })}
+                      <TableCell className="py-4">
+                        <div className="text-sm text-muted-foreground">
+                          {new Date(order.created_at).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="py-4">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary transition-all duration-300 hover:scale-110 btn-micro">
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -478,12 +491,12 @@ const AdminDashboard = () => {
               </Table>
             </div>
             {filteredOrders.length === 0 && (
-              <div className="text-center py-16 animate-fade-in">
-                <div className="inline-flex p-6 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl mb-6">
-                  <Package className="w-16 h-16 text-muted-foreground animate-bounce-gentle" />
+              <div className="text-center py-12">
+                <div className="inline-flex p-4 bg-muted/30 rounded-lg mb-4">
+                  <Package className="w-12 h-12 text-muted-foreground" />
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2">No orders found</h3>
-                <p className="text-muted-foreground text-lg">
+                <h3 className="text-lg font-semibold text-foreground mb-2">No orders found</h3>
+                <p className="text-sm text-muted-foreground">
                   {statusFilter === 'all' ? 'No orders have been placed yet.' : `No ${statusFilter} orders found.`}
                 </p>
               </div>
