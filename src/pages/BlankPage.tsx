@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -386,7 +387,55 @@ const AdminDashboard = () => {
             </div>
           </CardHeader>
           
-[120px]">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-slate-50/50 dark:bg-slate-800/50">
+                    <TableHead className="font-semibold">Order</TableHead>
+                    <TableHead className="font-semibold">Customer</TableHead>
+                    <TableHead className="font-semibold">Items</TableHead>
+                    <TableHead className="font-semibold">Address</TableHead>
+                    <TableHead className="font-semibold">Amount</TableHead>
+                    <TableHead className="font-semibold">Status</TableHead>
+                    <TableHead className="font-semibold">Date</TableHead>
+                    <TableHead className="font-semibold">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredOrders.map((order) => {
+                    const statusConfig = getStatusConfig(order.status)
+                    const StatusIcon = statusConfig.icon
+                    
+                    return (
+                      <TableRow key={order.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="font-mono text-sm font-medium text-slate-900 dark:text-white">
+                              {order.order_number}
+                            </div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400">
+                              ID: {order.id}
+                            </div>
+                          </div>
+                        </TableCell>
+                        
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="font-medium text-slate-900 dark:text-white text-sm">
+                              {order.customer_name}
+                            </div>
+                            <div className="text-xs text-slate-600 dark:text-slate-400">
+                              {order.customer_email}
+                            </div>
+                          </div>
+                        </TableCell>
+                        
+                        <TableCell>
+                          <div className="space-y-2">
+                            {order.items.map((item, index) => (
+                              <div key={index} className="flex items-center justify-between text-sm">
+                                <span className="text-slate-900 dark:text-white truncate max-w-[120px]">
                                   {item.name}
                                 </span>
                                 <span className="text-slate-500 dark:text-slate-400 ml-2 flex-shrink-0">
