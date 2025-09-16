@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Filter, Grid, List, SlidersHorizontal, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,9 +10,16 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import ProductCard from '@/components/ui/ProductCard';
-import { featuredProducts, categories } from '@/data/products';
-import { spareProducts } from '@/data/spareProducts';
-import { Product } from '@/types/product';
+import { supabase } from '@/integrations/supabase/client';
+
+// Define categories locally since we're moving away from TypeScript data
+const categories = [
+  { id: '1', name: 'Personal Coolers', slug: 'personal-coolers', filters: [] },
+  { id: '2', name: 'Tower Coolers', slug: 'tower-coolers', filters: [] },
+  { id: '3', name: 'Desert Coolers', slug: 'desert-coolers', filters: [] },
+  { id: '4', name: 'Industrial Coolers', slug: 'industrial-coolers', filters: [] },
+  { id: '5', name: 'Spare Parts', slug: 'spare-parts', filters: [] },
+];
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,15 +27,66 @@ const Shop = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const categorySlug = searchParams.get('category');
   const searchQuery = searchParams.get('search') || '';
   const selectedCategory = categories.find(cat => cat.slug === categorySlug);
 
+  // Fetch products from Supabase
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .order('name');
+
+        if (error) throw error;
+        
+        // Transform Supabase products to match our expected structure
+        const transformedProducts = (data || []).map(product => ({
+          ...product,
+          images: Array.isArray(product.images) ? product.images : [product.images].filter(Boolean),
+          specifications: product.specifications || {},
+          rating: 4.5, // Default rating since it's not in DB yet
+          reviewCount: Math.floor(Math.random() * 100) + 10, // Mock review count
+          inStock: product.stock_quantity > 0,
+          stockQuantity: product.stock_quantity,
+          originalPrice: product.price + Math.floor(product.price * 0.2), // Mock original price
+          shortDescription: product.description?.substring(0, 100) + '...' || '',
+          features: [], // Empty for now
+          tags: [], // Empty for now
+          slug: product.name.toLowerCase().replace(/\s+/g, '-'),
+          sku: product.model,
+          warranty: `${product.warranty_period || 12} months warranty`,
+          powerConsumption: product.specifications?.['Power Consumption'] || '',
+          tankCapacity: product.specifications?.['Tank Capacity'] || '',
+          airThrow: product.specifications?.['Air Throw'] || '',
+          coolingArea: product.specifications?.['Room Size'] || '',
+          createdAt: product.created_at,
+          updatedAt: product.updated_at,
+          dimensions: { length: 0, width: 0, height: 0, weight: 0 },
+          variants: []
+        }));
+        
+        setProducts(transformedProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   // Filter and sort products
   const filteredProducts = useMemo(() => {
-    const allProducts = [...featuredProducts, ...spareProducts];
-    let filtered = allProducts;
+    let filtered = [...products];
 
     // Filter by search query
     if (searchQuery) {
@@ -36,77 +94,19 @@ const Shop = () => {
       filtered = filtered.filter(product => 
         product.name.toLowerCase().includes(query) ||
         product.description.toLowerCase().includes(query) ||
-        product.shortDescription.toLowerCase().includes(query) ||
-        product.brand.toLowerCase().includes(query) ||
-        product.features.some(feature => feature.toLowerCase().includes(query)) ||
-        product.tags.some(tag => tag.toLowerCase().includes(query)) ||
-        Object.values(product.specifications).some(spec => spec.toLowerCase().includes(query))
+        product.brand.toLowerCase().includes(query)
       );
     }
 
     // Filter by category
     if (selectedCategory) {
-      filtered = filtered.filter(product => product.category.id === selectedCategory.id);
+      filtered = filtered.filter(product => product.category === selectedCategory.slug);
     }
 
     // Filter by price range
     filtered = filtered.filter(product => 
       product.price >= priceRange[0] && product.price <= priceRange[1]
     );
-
-    // Apply other filters
-    Object.entries(selectedFilters).forEach(([filterId, values]) => {
-      if (values.length > 0) {
-        filtered = filtered.filter(product => {
-          const filter = selectedCategory?.filters.find(f => f.id === filterId);
-          if (!filter) return true;
-
-          switch (filter.id) {
-            case 'cooling-area':
-              return values.some(value => {
-                if (value === 'small') return product.coolingArea && product.coolingArea.includes('150-300');
-                if (value === 'medium') return product.coolingArea && product.coolingArea.includes('300-600');
-                if (value === 'large') return product.coolingArea && product.coolingArea.includes('600+');
-                return false;
-              });
-            case 'tank-capacity':
-              return values.some(value => {
-                if (value === '20-30') return product.tankCapacity && parseInt(product.tankCapacity) >= 20 && parseInt(product.tankCapacity) <= 30;
-                if (value === '30-50') return product.tankCapacity && parseInt(product.tankCapacity) >= 30 && parseInt(product.tankCapacity) <= 50;
-                if (value === '50+') return product.tankCapacity && parseInt(product.tankCapacity) >= 50;
-                return false;
-              });
-            case 'part-type':
-              return values.some(value => {
-                if (value === 'cooling-pads') return product.tags.includes('cooling-pads') || product.name.toLowerCase().includes('pad');
-                if (value === 'motors') return product.tags.includes('motors') || product.name.toLowerCase().includes('motor');  
-                if (value === 'pumps') return product.tags.includes('pumps') || product.name.toLowerCase().includes('pump');
-                if (value === 'remote') return product.tags.includes('remote') || product.name.toLowerCase().includes('remote');
-                if (value === 'filters') return product.tags.includes('filters') || product.name.toLowerCase().includes('filter');
-                return product.tags.includes(value);
-              });
-            case 'compatibility':
-              return values.some(value => {
-                if (value === 'personal') return product.specifications['Compatibility']?.includes('Personal') || product.description.toLowerCase().includes('personal');
-                if (value === 'tower') return product.specifications['Compatibility']?.includes('Tower') || product.description.toLowerCase().includes('tower');
-                if (value === 'desert') return product.specifications['Compatibility']?.includes('Desert') || product.description.toLowerCase().includes('desert');
-                if (value === 'industrial') return product.specifications['Compatibility']?.includes('Industrial') || product.description.toLowerCase().includes('industrial');
-                return false;
-              });
-            case 'price-range':
-              return values.some(value => {
-                if (value === 'under-1000') return product.price < 1000;
-                if (value === '1000-2500') return product.price >= 1000 && product.price <= 2500;
-                if (value === '2500-5000') return product.price >= 2500 && product.price <= 5000;
-                if (value === 'above-5000') return product.price > 5000;
-                return false;
-              });
-            default:
-              return true;
-          }
-        });
-      }
-    });
 
     // Sort products
     switch (sortBy) {
@@ -121,7 +121,7 @@ const Shop = () => {
       default:
         return filtered;
     }
-  }, [featuredProducts, spareProducts, selectedCategory, searchQuery, priceRange, selectedFilters, sortBy]);
+  }, [products, selectedCategory, searchQuery, priceRange, sortBy]);
 
   const handleFilterChange = (filterId: string, value: string, checked: boolean) => {
     setSelectedFilters(prev => {
@@ -183,39 +183,19 @@ const Shop = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Category Filters */}
-      {selectedCategory?.filters.map((filter) => (
-        <Card key={filter.id}>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">{filter.name}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {filter.options?.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`${filter.id}-${option.value}`}
-                  checked={selectedFilters[filter.id]?.includes(option.value) || false}
-                  onCheckedChange={(checked) => 
-                    handleFilterChange(filter.id, option.value, checked as boolean)
-                  }
-                />
-                <Label 
-                  htmlFor={`${filter.id}-${option.value}`}
-                  className="text-sm font-normal cursor-pointer flex-1"
-                >
-                  {option.label}
-                  {option.count && (
-                    <span className="text-muted-foreground ml-1">({option.count})</span>
-                  )}
-                </Label>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      ))}
     </div>
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading products...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -240,7 +220,7 @@ const Shop = () => {
           </div>
 
           {/* Category Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
             {categories.map((category) => (
               <button
                 key={category.id}
@@ -248,11 +228,7 @@ const Shop = () => {
                 className="group flex flex-col items-center p-6 bg-card rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105"
               >
                 <div className="w-16 h-16 md:w-20 md:h-20 mb-4 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <img 
-                    src={category.image || '/placeholder.svg'} 
-                    alt={category.name}
-                    className="w-10 h-10 md:w-12 md:h-12 object-contain"
-                  />
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/20 rounded-full"></div>
                 </div>
                 <h3 className="text-sm md:text-base font-medium text-foreground text-center group-hover:text-primary transition-colors">
                   {category.name}
@@ -353,25 +329,6 @@ const Shop = () => {
         {activeFilterCount > 0 && (
           <div className="flex items-center space-x-2 mb-6">
             <span className="text-sm text-muted-foreground">Active filters:</span>
-            {Object.entries(selectedFilters).map(([filterId, values]) =>
-              values.map((value) => {
-                const filter = selectedCategory?.filters.find(f => f.id === filterId);
-                const option = filter?.options?.find(o => o.value === value);
-                return (
-                  <Badge key={`${filterId}-${value}`} variant="secondary" className="gap-1">
-                    {option?.label || value}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-auto p-0 text-muted-foreground hover:text-foreground"
-                      onClick={() => handleFilterChange(filterId, value, false)}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </Badge>
-                );
-              })
-            )}
             <Button variant="ghost" size="sm" onClick={clearFilters}>
               Clear all
             </Button>
@@ -410,7 +367,11 @@ const Shop = () => {
             ) : (
               <div className={viewMode === 'grid' ? 'product-grid stagger-animation' : 'space-y-6 stagger-animation'}>
                 {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard 
+                    key={product.id} 
+                    product={product}
+                    className={viewMode === 'list' ? 'flex-row' : ''}
+                  />
                 ))}
               </div>
             )}
