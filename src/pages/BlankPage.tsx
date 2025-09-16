@@ -125,12 +125,12 @@ const AdminDashboard = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-gradient-to-r from-warning/15 to-warning/10 text-warning border-warning/30 shadow-lg shadow-warning/20'
-      case 'confirmed': return 'bg-gradient-to-r from-blue-500/15 to-blue-500/10 text-blue-600 border-blue-500/30 shadow-lg shadow-blue-500/20'
-      case 'shipped': return 'bg-gradient-to-r from-purple-500/15 to-purple-500/10 text-purple-600 border-purple-500/30 shadow-lg shadow-purple-500/20'
-      case 'delivered': return 'bg-gradient-to-r from-success/15 to-success/10 text-success border-success/30 shadow-lg shadow-success/20'
-      case 'cancelled': return 'bg-gradient-to-r from-destructive/15 to-destructive/10 text-destructive border-destructive/30 shadow-lg shadow-destructive/20'
-      default: return 'bg-gradient-to-r from-muted/50 to-muted/30 text-muted-foreground border-muted/50'
+      case 'pending': return 'bg-warning/10 text-warning border-warning/20'
+      case 'confirmed': return 'bg-blue-500/10 text-blue-600 border-blue-200'
+      case 'shipped': return 'bg-purple-500/10 text-purple-600 border-purple-200'
+      case 'delivered': return 'bg-success/10 text-success border-success/20'
+      case 'cancelled': return 'bg-destructive/10 text-destructive border-destructive/20'
+      default: return 'bg-muted/50 text-muted-foreground'
     }
   }
 
@@ -151,50 +151,21 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-6">
         <div className="container mx-auto max-w-7xl">
-          {/* Loading Header */}
-          <div className="text-center space-y-4 py-8 mb-8">
-            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 rounded-full border border-primary/20">
-              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-              <div className="h-8 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold text-3xl">
-                Loading Dashboard...
-              </div>
-            </div>
-            <p className="text-muted-foreground animate-pulse">Fetching real-time business data</p>
-          </div>
-
-          {/* Loading Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {[1, 2, 3, 4].map((i) => (
-              <Card key={i} className="relative overflow-hidden border-0 shadow-lg animate-pulse">
-                <CardContent className="p-8">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-3">
-                      <div className="h-4 bg-gradient-to-r from-muted to-muted/50 rounded-full w-24"></div>
-                      <div className="h-10 bg-gradient-to-r from-muted to-muted/50 rounded-full w-20"></div>
-                      <div className="h-3 bg-gradient-to-r from-muted to-muted/50 rounded-full w-16"></div>
-                    </div>
-                    <div className="w-16 h-16 bg-gradient-to-br from-muted to-muted/50 rounded-2xl"></div>
-                  </div>
-                  <div className="absolute -right-8 -bottom-8 w-24 h-24 bg-muted/20 rounded-full"></div>
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-6">
+                  <div className="h-4 bg-muted rounded w-20 mb-2"></div>
+                  <div className="h-8 bg-muted rounded w-16"></div>
                 </CardContent>
               </Card>
             ))}
           </div>
-
-          {/* Loading Table */}
-          <Card className="border-0 shadow-2xl bg-card/80 backdrop-blur-lg animate-pulse">
-            <CardContent className="p-8">
-              <div className="space-y-4">
-                <div className="h-8 bg-gradient-to-r from-muted to-muted/50 rounded-full w-64"></div>
-                <div className="h-4 bg-gradient-to-r from-muted to-muted/50 rounded-full w-96"></div>
-                <div className="space-y-3 mt-8">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="h-16 bg-gradient-to-r from-muted/50 to-muted/20 rounded-lg"></div>
-                  ))}
-                </div>
-              </div>
+          <Card className="animate-pulse">
+            <CardContent className="h-96 p-6">
+              <div className="h-full bg-muted rounded"></div>
             </CardContent>
           </Card>
         </div>
@@ -203,152 +174,117 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
       <div className="container mx-auto max-w-7xl p-6 space-y-8">
         {/* Header Section */}
-        <div className="text-center space-y-4 py-8">
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 rounded-full border border-primary/20">
-            <Package className="w-6 h-6 text-primary" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
-              Admin Dashboard
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
-            Comprehensive business intelligence and order management system
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Admin Dashboard
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Monitor and manage your business operations
           </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-            <span>Real-time data updates</span>
-          </div>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="group relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-primary/5 via-primary/3 to-primary/10 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.02]">
-            <CardContent className="p-8">
+          <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-primary/5 to-primary/10 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Orders</p>
-                  <p className="text-4xl font-bold text-foreground tabular-nums">{stats.totalOrders}</p>
-                  <div className="flex items-center gap-2 text-xs text-primary">
-                    <TrendingUp className="w-3 h-3" />
-                    <span>All time</span>
-                  </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
+                  <p className="text-3xl font-bold text-foreground">{stats.totalOrders}</p>
                 </div>
-                <div className="p-4 bg-primary/15 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                  <ShoppingCart className="w-8 h-8 text-primary" />
+                <div className="p-3 bg-primary/10 rounded-xl">
+                  <ShoppingCart className="w-6 h-6 text-primary" />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-50 group-hover:opacity-70 transition-opacity"></div>
-              <div className="absolute -right-8 -bottom-8 w-24 h-24 bg-primary/5 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-50"></div>
             </CardContent>
           </Card>
 
-          <Card className="group relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-success/5 via-success/3 to-success/10 hover:shadow-2xl hover:shadow-success/10 transition-all duration-500 hover:scale-[1.02]">
-            <CardContent className="p-8">
+          <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-success/5 to-success/10 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Revenue</p>
-                  <p className="text-4xl font-bold text-foreground tabular-nums">₹{stats.totalRevenue.toLocaleString()}</p>
-                  <div className="flex items-center gap-2 text-xs text-success">
-                    <TrendingUp className="w-3 h-3" />
-                    <span>Net revenue</span>
-                  </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                  <p className="text-3xl font-bold text-foreground">₹{stats.totalRevenue.toLocaleString()}</p>
                 </div>
-                <div className="p-4 bg-success/15 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                  <DollarSign className="w-8 h-8 text-success" />
+                <div className="p-3 bg-success/10 rounded-xl">
+                  <DollarSign className="w-6 h-6 text-success" />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-success/5 to-transparent opacity-50 group-hover:opacity-70 transition-opacity"></div>
-              <div className="absolute -right-8 -bottom-8 w-24 h-24 bg-success/5 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-success/5 to-transparent opacity-50"></div>
             </CardContent>
           </Card>
 
-          <Card className="group relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-warning/5 via-warning/3 to-warning/10 hover:shadow-2xl hover:shadow-warning/10 transition-all duration-500 hover:scale-[1.02]">
-            <CardContent className="p-8">
+          <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-warning/5 to-warning/10 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Pending Orders</p>
-                  <p className="text-4xl font-bold text-foreground tabular-nums">{stats.pendingOrders}</p>
-                  <div className="flex items-center gap-2 text-xs text-warning">
-                    <Clock className="w-3 h-3" />
-                    <span>Awaiting action</span>
-                  </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Pending Orders</p>
+                  <p className="text-3xl font-bold text-foreground">{stats.pendingOrders}</p>
                 </div>
-                <div className="p-4 bg-warning/15 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                  <Clock className="w-8 h-8 text-warning" />
+                <div className="p-3 bg-warning/10 rounded-xl">
+                  <Clock className="w-6 h-6 text-warning" />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-warning/5 to-transparent opacity-50 group-hover:opacity-70 transition-opacity"></div>
-              <div className="absolute -right-8 -bottom-8 w-24 h-24 bg-warning/5 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-warning/5 to-transparent opacity-50"></div>
             </CardContent>
           </Card>
 
-          <Card className="group relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-accent/5 via-accent/3 to-accent/10 hover:shadow-2xl hover:shadow-accent/10 transition-all duration-500 hover:scale-[1.02]">
-            <CardContent className="p-8">
+          <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-accent/5 to-accent/10 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Completed Orders</p>
-                  <p className="text-4xl font-bold text-foreground tabular-nums">{stats.completedOrders}</p>
-                  <div className="flex items-center gap-2 text-xs text-accent">
-                    <CheckCircle className="w-3 h-3" />
-                    <span>Successfully delivered</span>
-                  </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Completed Orders</p>
+                  <p className="text-3xl font-bold text-foreground">{stats.completedOrders}</p>
                 </div>
-                <div className="p-4 bg-accent/15 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                  <CheckCircle className="w-8 h-8 text-accent" />
+                <div className="p-3 bg-accent/10 rounded-xl">
+                  <CheckCircle className="w-6 h-6 text-accent" />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-accent/5 to-transparent opacity-50 group-hover:opacity-70 transition-opacity"></div>
-              <div className="absolute -right-8 -bottom-8 w-24 h-24 bg-accent/5 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-accent/5 to-transparent opacity-50"></div>
             </CardContent>
           </Card>
         </div>
 
         {/* Orders Management Section */}
-        <Card className="border-0 shadow-2xl bg-card/80 backdrop-blur-lg">
-          <CardHeader className="border-b bg-gradient-to-r from-primary/5 via-primary/3 to-accent/5 p-8">
+        <Card className="border-0 shadow-xl bg-card/50 backdrop-blur-sm">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-transparent">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/15 rounded-2xl">
-                  <Package className="w-6 h-6 text-primary" />
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Package className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl text-foreground font-bold">Orders Management</CardTitle>
-                  <CardDescription className="text-muted-foreground text-base mt-1">
-                    Track and manage all customer orders with real-time updates
+                  <CardTitle className="text-xl text-foreground">Orders Management</CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    Track and manage all customer orders
                   </CardDescription>
                 </div>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="lg" className="gap-3 px-6 py-3 bg-background/50 backdrop-blur-sm border-primary/20 hover:bg-primary/5 hover:border-primary/30 transition-all duration-300">
+                  <Button variant="outline" size="sm" className="gap-2">
                     <Filter className="w-4 h-4" />
-                    <span className="font-medium">Filter: {statusFilter === 'all' ? 'All Orders' : statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}</span>
-                    <Badge variant="secondary" className="ml-2 bg-primary/10 text-primary">
-                      {filteredOrders.length}
-                    </Badge>
+                    Filter: {statusFilter === 'all' ? 'All Orders' : statusFilter}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 p-2">
-                  <DropdownMenuItem onClick={() => setStatusFilter('all')} className="gap-2 p-3 cursor-pointer">
-                    <div className="w-2 h-2 bg-muted rounded-full"></div>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setStatusFilter('all')}>
                     All Orders
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatusFilter('pending')} className="gap-2 p-3 cursor-pointer">
-                    <div className="w-2 h-2 bg-warning rounded-full"></div>
+                  <DropdownMenuItem onClick={() => setStatusFilter('pending')}>
                     Pending
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatusFilter('confirmed')} className="gap-2 p-3 cursor-pointer">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <DropdownMenuItem onClick={() => setStatusFilter('confirmed')}>
                     Confirmed
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatusFilter('shipped')} className="gap-2 p-3 cursor-pointer">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <DropdownMenuItem onClick={() => setStatusFilter('shipped')}>
                     Shipped
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatusFilter('delivered')} className="gap-2 p-3 cursor-pointer">
-                    <div className="w-2 h-2 bg-success rounded-full"></div>
+                  <DropdownMenuItem onClick={() => setStatusFilter('delivered')}>
                     Delivered
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -359,43 +295,29 @@ const AdminDashboard = () => {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/10">
-                    <TableHead className="font-bold text-foreground px-6 py-4">Order #</TableHead>
-                    <TableHead className="font-bold text-foreground px-6 py-4">Customer</TableHead>
-                    <TableHead className="font-bold text-foreground px-6 py-4">Contact</TableHead>
-                    <TableHead className="font-bold text-foreground px-6 py-4">Products</TableHead>
-                    <TableHead className="font-bold text-foreground px-6 py-4">Shipping Address</TableHead>
-                    <TableHead className="font-bold text-foreground px-6 py-4">Amount</TableHead>
-                    <TableHead className="font-bold text-foreground px-6 py-4">Status</TableHead>
-                    <TableHead className="font-bold text-foreground px-6 py-4">Date</TableHead>
-                    <TableHead className="font-bold text-foreground text-center px-6 py-4">Actions</TableHead>
+                  <TableRow className="bg-muted/30">
+                    <TableHead className="font-semibold">Order #</TableHead>
+                    <TableHead className="font-semibold">Customer</TableHead>
+                    <TableHead className="font-semibold">Contact</TableHead>
+                    <TableHead className="font-semibold">Products</TableHead>
+                    <TableHead className="font-semibold">Shipping Address</TableHead>
+                    <TableHead className="font-semibold">Amount</TableHead>
+                    <TableHead className="font-semibold">Status</TableHead>
+                    <TableHead className="font-semibold">Date</TableHead>
+                    <TableHead className="font-semibold text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredOrders.map((order, index) => (
-                    <TableRow key={order.id} className="hover:bg-gradient-to-r hover:from-primary/5 hover:to-accent/5 transition-all duration-300 border-b border-muted/30">
-                      <TableCell className="font-mono text-sm font-bold px-6 py-6">
-                        <div className="px-3 py-1 bg-primary/10 rounded-full text-primary text-center">
-                          {order.order_number}
-                        </div>
+                    <TableRow key={order.id} className="hover:bg-muted/20 transition-colors">
+                      <TableCell className="font-mono text-sm font-medium">
+                        {order.order_number}
                       </TableCell>
-                      <TableCell className="font-semibold px-6 py-6">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center">
-                            <span className="text-sm font-bold text-primary">
-                              {(order.customer_name || 'N/A').charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                          <span className="text-foreground">{order.customer_name || 'N/A'}</span>
-                        </div>
+                      <TableCell className="font-medium">
+                        {order.customer_name || 'N/A'}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground px-6 py-6">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-success rounded-full"></div>
-                            <span>{order.customer_email || 'N/A'}</span>
-                          </div>
-                        </div>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {order.customer_email || 'N/A'}
                       </TableCell>
                       <TableCell>
                         <div className="max-w-xs space-y-1">
