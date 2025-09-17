@@ -304,7 +304,7 @@ const Home = () => {
               </p>
             </div>
             <Link to="/shop">
-              <Button variant="outline" className="btn-secondary">
+              <Button variant="outline-glow" size="lg" className="hover-scale">
                 View All Products
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -404,12 +404,6 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <Link to="/about">
-                <Button variant="outline" className="btn-secondary">
-                  Learn More About Us
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
             </div>
             <div className="relative">
               <img
