@@ -13,13 +13,20 @@ import ProductCard from '@/components/ui/ProductCard';
 import SearchWithSuggestions from '@/components/ui/SearchWithSuggestions';
 import { supabase } from '@/integrations/supabase/client';
 
+// Import category images
+import personalCoolerImg from '@/assets/category-personal-cooler.jpg';
+import towerCoolerImg from '@/assets/category-tower-cooler.jpg';
+import desertCoolerImg from '@/assets/category-desert-cooler.jpg';
+import industrialCoolerImg from '@/assets/category-industrial-cooler.jpg';
+import sparePartsImg from '@/assets/category-spare-parts.jpg';
+
 // Define categories locally since we're moving away from TypeScript data
 const categories = [
-  { id: '1', name: 'Personal Coolers', slug: 'personal-coolers', filters: [] },
-  { id: '2', name: 'Tower Coolers', slug: 'tower-coolers', filters: [] },
-  { id: '3', name: 'Desert Coolers', slug: 'desert-coolers', filters: [] },
-  { id: '4', name: 'Industrial Coolers', slug: 'industrial-coolers', filters: [] },
-  { id: '5', name: 'Spare Parts', slug: 'spare-parts', filters: [] },
+  { id: '1', name: 'Personal Coolers', slug: 'personal-coolers', filters: [], image: personalCoolerImg },
+  { id: '2', name: 'Tower Coolers', slug: 'tower-coolers', filters: [], image: towerCoolerImg },
+  { id: '3', name: 'Desert Coolers', slug: 'desert-coolers', filters: [], image: desertCoolerImg },
+  { id: '4', name: 'Industrial Coolers', slug: 'industrial-coolers', filters: [], image: industrialCoolerImg },
+  { id: '5', name: 'Spare Parts', slug: 'spare-parts', filters: [], image: sparePartsImg },
 ];
 
 const Shop = () => {
@@ -264,8 +271,12 @@ const Shop = () => {
                 onClick={() => setSearchParams({ category: category.slug })}
                 className="group flex flex-col items-center p-6 bg-card rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105"
               >
-                <div className="w-16 h-16 md:w-20 md:h-20 mb-4 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/20 rounded-full"></div>
+                <div className="w-16 h-16 md:w-20 md:h-20 mb-4 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors overflow-hidden">
+                  <img 
+                    src={category.image} 
+                    alt={category.name}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover"
+                  />
                 </div>
                 <h3 className="text-sm md:text-base font-medium text-foreground text-center group-hover:text-primary transition-colors">
                   {category.name}
