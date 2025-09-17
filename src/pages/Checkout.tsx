@@ -182,21 +182,21 @@ const Checkout = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
       {/* Progress Steps */}
-      <div className="flex items-center justify-center mb-8">
-        <div className="flex items-center space-x-4">
+      <div className="flex items-center justify-center mb-6 sm:mb-8">
+        <div className="flex items-center space-x-2 sm:space-x-4">
           {[1, 2, 3].map((step) => (
             <div key={step} className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
                 currentStep >= step 
                   ? 'bg-accent text-accent-foreground' 
                   : 'bg-muted text-muted-foreground'
               }`}>
-                {currentStep > step ? <Check className="h-4 w-4" /> : step}
+                {currentStep > step ? <Check className="h-3 w-3 sm:h-4 sm:w-4" /> : step}
               </div>
               {step < 3 && (
-                <div className={`w-12 h-0.5 mx-2 ${
+                <div className={`w-6 sm:w-12 h-0.5 mx-1 sm:mx-2 ${
                   currentStep > step ? 'bg-accent' : 'bg-muted'
                 }`} />
               )}
@@ -205,7 +205,7 @@ const Checkout = () => {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Main Content */}
         <div className="lg:col-span-2">
           {currentStep === 1 && (
@@ -217,79 +217,86 @@ const Checkout = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="name">Full Name *</Label>
+                    <Label htmlFor="name" className="text-sm">Full Name *</Label>
                     <Input
                       id="name"
                       value={shippingAddress.name}
                       onChange={(e) => setShippingAddress({...shippingAddress, name: e.target.value})}
                       placeholder="Enter your full name"
+                      className="mt-1"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">Email Address *</Label>
+                    <Label htmlFor="email" className="text-sm">Email Address *</Label>
                     <Input
                       id="email"
                       type="email"
                       value={shippingAddress.email}
                       onChange={(e) => setShippingAddress({...shippingAddress, email: e.target.value})}
                       placeholder="your@email.com"
+                      className="mt-1"
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Label htmlFor="phone" className="text-sm">Phone Number *</Label>
                   <Input
                     id="phone"
                     value={shippingAddress.phone}
                     onChange={(e) => setShippingAddress({...shippingAddress, phone: e.target.value})}
                     placeholder="Enter 10-digit mobile number"
+                    className="mt-1"
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="address">Address *</Label>
+                  <Label htmlFor="address" className="text-sm">Address *</Label>
                   <Input
                     id="address"
                     value={shippingAddress.address}
                     onChange={(e) => setShippingAddress({...shippingAddress, address: e.target.value})}
                     placeholder="House no, Building name, Street name"
+                    className="mt-1"
                   />
                 </div>
                 
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="city">City *</Label>
+                    <Label htmlFor="city" className="text-sm">City *</Label>
                     <Input
                       id="city"
                       value={shippingAddress.city}
                       onChange={(e) => setShippingAddress({...shippingAddress, city: e.target.value})}
                       placeholder="City"
+                      className="mt-1"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="state">State</Label>
+                    <Label htmlFor="state" className="text-sm">State</Label>
                     <Input
                       id="state"
                       value={shippingAddress.state}
                       onChange={(e) => setShippingAddress({...shippingAddress, state: e.target.value})}
                       placeholder="State"
+                      className="mt-1"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="pincode">Pincode *</Label>
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="pincode" className="text-sm">Pincode *</Label>
                     <Input
                       id="pincode"
                       value={shippingAddress.pincode}
                       onChange={(e) => setShippingAddress({...shippingAddress, pincode: e.target.value})}
                       placeholder="6-digit pincode"
+                      className="mt-1"
                     />
                   </div>
                 </div>
                 
-                <Button onClick={handleAddressSubmit} className="w-full btn-hero">
+                <Button onClick={handleAddressSubmit} className="w-full btn-hero text-sm sm:text-base py-3">
                   Continue to Delivery Options
                 </Button>
               </CardContent>
@@ -361,21 +368,26 @@ const Checkout = () => {
                 </CardContent>
               </Card>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Button 
                   variant="outline" 
                   onClick={() => setCurrentStep(1)}
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-2 text-sm sm:text-base py-3 sm:w-auto"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Back to Address
                 </Button>
                 <Button 
                   onClick={handlePlaceOrder} 
-                  className="flex-1 btn-hero"
+                  className="flex-1 btn-hero text-sm sm:text-base py-3"
                   disabled={isProcessing}
                 >
-                  {isProcessing ? 'Processing...' : `Place Order - ₹${finalTotal.toLocaleString()}`}
+                  {isProcessing ? 'Processing...' : 
+                    <>
+                      <span className="hidden sm:inline">Place Order - ₹{finalTotal.toLocaleString()}</span>
+                      <span className="sm:hidden">Place Order</span>
+                    </>
+                  }
                 </Button>
               </div>
             </div>
@@ -384,25 +396,25 @@ const Checkout = () => {
 
         {/* Order Summary */}
         <div className="lg:col-span-1">
-          <Card className="sticky top-4">
-            <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
+          <Card className="lg:sticky lg:top-4">
+            <CardHeader className="pb-4 sm:pb-6">
+              <CardTitle className="text-lg sm:text-xl">Order Summary</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 p-3 sm:p-6">
               {/* Items */}
               <div className="space-y-3">
                 {items.map((item) => (
-                  <div key={item.id} className="flex gap-3">
+                  <div key={item.id} className="flex gap-2 sm:gap-3">
                     <img
                       src={item.product.images[0]}
                       alt={item.product.name}
-                      className="w-12 h-12 object-cover rounded bg-muted"
+                      className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded bg-muted flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{item.product.name}</p>
+                      <p className="text-xs sm:text-sm font-medium truncate">{item.product.name}</p>
                       <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
                     </div>
-                    <div className="text-sm font-medium">
+                    <div className="text-xs sm:text-sm font-medium">
                       ₹{(item.product.price * item.quantity).toLocaleString()}
                     </div>
                   </div>
@@ -413,36 +425,36 @@ const Checkout = () => {
 
               {/* Pricing */}
               <div className="space-y-2">
-                <div className="flex justify-between">
+                <div className="flex justify-between text-sm">
                   <span>Subtotal</span>
                   <span>₹{total.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between text-sm">
                   <span>Delivery</span>
                   <span>
                     {deliveryCharge === 0 ? (
-                      <Badge variant="secondary">Free</Badge>
+                      <Badge variant="secondary" className="text-xs">Free</Badge>
                     ) : (
                       `₹${deliveryCharge.toLocaleString()}`
                     )}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="flex justify-between text-xs sm:text-sm text-muted-foreground">
                   <span>GST (18%)</span>
                   <span>₹{gst.toLocaleString()}</span>
                 </div>
                 
                 <Separator />
                 
-                <div className="flex justify-between text-lg font-semibold">
+                <div className="flex justify-between text-base sm:text-lg font-semibold">
                   <span>Total</span>
                   <span>₹{finalTotal.toLocaleString()}</span>
                 </div>
               </div>
 
               {/* Security Badge */}
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-4 border-t">
-                <Shield className="h-4 w-4" />
+              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-muted-foreground pt-3 sm:pt-4 border-t">
+                <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span>Secure & encrypted checkout</span>
               </div>
             </CardContent>
