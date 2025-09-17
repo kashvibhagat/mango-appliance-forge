@@ -5,9 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { 
   Package, 
   TrendingUp, 
@@ -17,9 +14,7 @@ import {
   CheckCircle,
   AlertCircle,
   MoreHorizontal,
-  Filter,
-  Plus,
-  Edit
+  Filter
 } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -54,19 +49,6 @@ const AdminDashboard = () => {
   })
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false)
-  const [editingOrder, setEditingOrder] = useState<Order | null>(null)
-  const [addressForm, setAddressForm] = useState({
-    first_name: '',
-    last_name: '',
-    address_line_1: '',
-    address_line_2: '',
-    city: '',
-    state: '',
-    postal_code: '',
-    country: 'India',
-    phone: ''
-  })
   const { user } = useAuth()
 
   useEffect(() => {
@@ -139,66 +121,6 @@ const AdminDashboard = () => {
         variant: 'destructive',
       })
     }
-  }
-
-  const updateShippingAddress = async (orderId: string) => {
-    try {
-      const { error } = await supabase
-        .from('orders')
-        .update({ shipping_address: addressForm })
-        .eq('id', orderId)
-
-      if (error) throw error
-
-      // Update local state
-      setOrders(orders.map(order => 
-        order.id === orderId ? { ...order, shipping_address: addressForm } : order
-      ))
-
-      setIsAddressDialogOpen(false)
-      setEditingOrder(null)
-      setAddressForm({
-        first_name: '',
-        last_name: '',
-        address_line_1: '',
-        address_line_2: '',
-        city: '',
-        state: '',
-        postal_code: '',
-        country: 'India',
-        phone: ''
-      })
-
-      toast({
-        title: 'Success',
-        description: 'Shipping address updated successfully',
-      })
-    } catch (error) {
-      console.error('Error updating shipping address:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to update shipping address',
-        variant: 'destructive',
-      })
-    }
-  }
-
-  const openEditAddress = (order: Order) => {
-    setEditingOrder(order)
-    if (order.shipping_address) {
-      setAddressForm({
-        first_name: order.shipping_address.first_name || '',
-        last_name: order.shipping_address.last_name || '',
-        address_line_1: order.shipping_address.address_line_1 || order.shipping_address.address || '',
-        address_line_2: order.shipping_address.address_line_2 || '',
-        city: order.shipping_address.city || '',
-        state: order.shipping_address.state || '',
-        postal_code: order.shipping_address.postal_code || '',
-        country: order.shipping_address.country || 'India',
-        phone: order.shipping_address.phone || ''
-      })
-    }
-    setIsAddressDialogOpen(true)
   }
 
   const getStatusColor = (status: string) => {
@@ -448,77 +370,61 @@ const AdminDashboard = () => {
                         </div>
                       </TableCell>
                       <TableCell className="py-4">
-                         <div className="max-w-xs text-sm text-muted-foreground">
-                           {order.shipping_address ? (
-                             <div className="space-y-1 p-2 bg-muted/30 rounded border border-border/40 relative group">
-                               <Button 
-                                 variant="ghost" 
-                                 size="sm" 
-                                 onClick={() => openEditAddress(order)}
-                                 className="absolute -top-1 -right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 hover:bg-primary/20"
-                               >
-                                 <Edit className="w-3 h-3" />
-                               </Button>
-                               {/* Customer Name with Title */}
-                               <div className="font-medium text-foreground border-b border-muted pb-1">
-                                 {order.shipping_address.title && (
-                                   <span className="text-xs bg-primary/10 px-1 rounded mr-1">{order.shipping_address.title}</span>
-                                 )}
-                                 {order.shipping_address.first_name} {order.shipping_address.last_name}
-                               </div>
-                               
-                                {/* Complete Address */}
-                                <div className="space-y-0.5">
-                                  {/* Check both address field formats */}
-                                  {(order.shipping_address.address || order.shipping_address.address_line_1) && (
-                                    <div className="text-xs">
-                                      <span className="font-medium text-foreground">Address:</span> {order.shipping_address.address || order.shipping_address.address_line_1}
-                                    </div>
-                                  )}
-                                  {order.shipping_address.address_line_2 && (
-                                    <div className="text-xs">
-                                      <span className="font-medium text-foreground">Address 2:</span> {order.shipping_address.address_line_2}
-                                    </div>
-                                  )}
-                                 {order.shipping_address.city && (
+                        <div className="max-w-xs text-sm text-muted-foreground">
+                          {order.shipping_address ? (
+                            <div className="space-y-1 p-2 bg-muted/30 rounded border border-border/40">
+                              {/* Customer Name with Title */}
+                              <div className="font-medium text-foreground border-b border-muted pb-1">
+                                {order.shipping_address.title && (
+                                  <span className="text-xs bg-primary/10 px-1 rounded mr-1">{order.shipping_address.title}</span>
+                                )}
+                                {order.shipping_address.first_name} {order.shipping_address.last_name}
+                              </div>
+                              
+                               {/* Complete Address */}
+                               <div className="space-y-0.5">
+                                 {/* Check both address field formats */}
+                                 {(order.shipping_address.address || order.shipping_address.address_line_1) && (
                                    <div className="text-xs">
-                                     <span className="font-medium text-foreground">City:</span> {order.shipping_address.city}
+                                     <span className="font-medium text-foreground">Address:</span> {order.shipping_address.address || order.shipping_address.address_line_1}
                                    </div>
                                  )}
-                                 {order.shipping_address.state && (
+                                 {order.shipping_address.address_line_2 && (
                                    <div className="text-xs">
-                                     <span className="font-medium text-foreground">State:</span> {order.shipping_address.state}
+                                     <span className="font-medium text-foreground">Address 2:</span> {order.shipping_address.address_line_2}
                                    </div>
                                  )}
-                                 {order.shipping_address.postal_code && (
-                                   <div className="text-xs">
-                                     <span className="font-medium text-foreground">PIN Code:</span> {order.shipping_address.postal_code}
-                                   </div>
-                                 )}
-                                 <div className="text-xs">
-                                   <span className="font-medium text-foreground">Country:</span> {order.shipping_address.country || 'India'}
-                                 </div>
-                                 {order.shipping_address.phone && (
-                                   <div className="text-xs font-medium text-primary border-t border-muted pt-1">
-                                     <span className="font-medium text-foreground">📞 Phone:</span> {order.shipping_address.phone}
-                                   </div>
-                                 )}
-                               </div>
-                             </div>
-                           ) : (
-                             <div className="text-center py-2 px-3 bg-muted/20 rounded border border-dashed">
-                               <span className="text-xs text-muted-foreground">No address provided</span>
-                               <Button 
-                                 variant="ghost" 
-                                 size="sm" 
-                                 onClick={() => openEditAddress(order)}
-                                 className="ml-2 h-6 w-6 p-0"
-                               >
-                                 <Plus className="w-3 h-3" />
-                               </Button>
-                             </div>
-                           )}
-                         </div>
+                                {order.shipping_address.city && (
+                                  <div className="text-xs">
+                                    <span className="font-medium text-foreground">City:</span> {order.shipping_address.city}
+                                  </div>
+                                )}
+                                {order.shipping_address.state && (
+                                  <div className="text-xs">
+                                    <span className="font-medium text-foreground">State:</span> {order.shipping_address.state}
+                                  </div>
+                                )}
+                                {order.shipping_address.postal_code && (
+                                  <div className="text-xs">
+                                    <span className="font-medium text-foreground">PIN Code:</span> {order.shipping_address.postal_code}
+                                  </div>
+                                )}
+                                <div className="text-xs">
+                                  <span className="font-medium text-foreground">Country:</span> {order.shipping_address.country || 'India'}
+                                </div>
+                                {order.shipping_address.phone && (
+                                  <div className="text-xs font-medium text-primary border-t border-muted pt-1">
+                                    <span className="font-medium text-foreground">📞 Phone:</span> {order.shipping_address.phone}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-center py-2 px-3 bg-muted/20 rounded border border-dashed">
+                              <span className="text-xs text-muted-foreground">No address provided</span>
+                            </div>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className="py-4">
                         <div className="font-semibold text-lg text-foreground">
@@ -597,122 +503,6 @@ const AdminDashboard = () => {
             )}
           </CardContent>
         </Card>
-
-        {/* Address Edit Dialog */}
-        <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle>Edit Shipping Address</DialogTitle>
-              <DialogDescription>
-                Update the shipping address with separate fields for each component.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="first_name">First Name</Label>
-                  <Input
-                    id="first_name"
-                    value={addressForm.first_name}
-                    onChange={(e) => setAddressForm(prev => ({ ...prev, first_name: e.target.value }))}
-                    placeholder="Enter first name"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="last_name">Last Name</Label>
-                  <Input
-                    id="last_name"
-                    value={addressForm.last_name}
-                    onChange={(e) => setAddressForm(prev => ({ ...prev, last_name: e.target.value }))}
-                    placeholder="Enter last name"
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="address_line_1">Address Line 1</Label>
-                <Input
-                  id="address_line_1"
-                  value={addressForm.address_line_1}
-                  onChange={(e) => setAddressForm(prev => ({ ...prev, address_line_1: e.target.value }))}
-                  placeholder="House number, street name"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="address_line_2">Address Line 2 (Optional)</Label>
-                <Input
-                  id="address_line_2"
-                  value={addressForm.address_line_2}
-                  onChange={(e) => setAddressForm(prev => ({ ...prev, address_line_2: e.target.value }))}
-                  placeholder="Apartment, suite, building"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="city">City</Label>
-                  <Input
-                    id="city"
-                    value={addressForm.city}
-                    onChange={(e) => setAddressForm(prev => ({ ...prev, city: e.target.value }))}
-                    placeholder="Enter city"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="state">State</Label>
-                  <Input
-                    id="state"
-                    value={addressForm.state}
-                    onChange={(e) => setAddressForm(prev => ({ ...prev, state: e.target.value }))}
-                    placeholder="Enter state"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="postal_code">PIN Code</Label>
-                  <Input
-                    id="postal_code"
-                    value={addressForm.postal_code}
-                    onChange={(e) => setAddressForm(prev => ({ ...prev, postal_code: e.target.value }))}
-                    placeholder="6-digit PIN code"
-                    maxLength={6}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="country">Country</Label>
-                  <Input
-                    id="country"
-                    value={addressForm.country}
-                    onChange={(e) => setAddressForm(prev => ({ ...prev, country: e.target.value }))}
-                    placeholder="Enter country"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  value={addressForm.phone}
-                  onChange={(e) => setAddressForm(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="10-digit phone number"
-                  maxLength={10}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddressDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={() => editingOrder && updateShippingAddress(editingOrder.id)}>
-                Update Address
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   )
