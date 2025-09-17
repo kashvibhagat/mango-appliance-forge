@@ -382,42 +382,36 @@ const AdminDashboard = () => {
                               </div>
                               
                                {/* Complete Address */}
-                               <div className="space-y-0.5">
-                                 {/* Check both address field formats */}
-                                 {(order.shipping_address.address || order.shipping_address.address_line_1) && (
-                                   <div className="text-xs">
-                                     <span className="font-medium text-foreground">Address:</span> {order.shipping_address.address || order.shipping_address.address_line_1}
-                                   </div>
-                                 )}
+                               <div className="space-y-1.5">
+                                 {/* Address Lines */}
+                                 <div className="text-xs">
+                                   <span className="font-bold text-foreground">Address:</span> {order.shipping_address.address || order.shipping_address.address_line_1 || 'N/A'}
+                                 </div>
                                  {order.shipping_address.address_line_2 && (
                                    <div className="text-xs">
-                                     <span className="font-medium text-foreground">Address 2:</span> {order.shipping_address.address_line_2}
+                                     <span className="font-bold text-foreground">Address 2:</span> {order.shipping_address.address_line_2}
                                    </div>
                                  )}
-                                {order.shipping_address.city && (
-                                  <div className="text-xs">
-                                    <span className="font-medium text-foreground">City:</span> {order.shipping_address.city}
-                                  </div>
-                                )}
-                                {order.shipping_address.state && (
-                                  <div className="text-xs">
-                                    <span className="font-medium text-foreground">State:</span> {order.shipping_address.state}
-                                  </div>
-                                )}
-                                {order.shipping_address.postal_code && (
-                                  <div className="text-xs">
-                                    <span className="font-medium text-foreground">PIN Code:</span> {order.shipping_address.postal_code}
-                                  </div>
-                                )}
-                                <div className="text-xs">
-                                  <span className="font-medium text-foreground">Country:</span> {order.shipping_address.country || 'India'}
-                                </div>
-                                {order.shipping_address.phone && (
-                                  <div className="text-xs font-medium text-primary border-t border-muted pt-1">
-                                    <span className="font-medium text-foreground">📞 Phone:</span> {order.shipping_address.phone}
-                                  </div>
-                                )}
-                              </div>
+                                 <div className="text-xs">
+                                   <span className="font-bold text-foreground">City:</span> {order.shipping_address.city || 'N/A'}
+                                 </div>
+                                 
+                                 {/* Required fields each on separate lines */}
+                                 <div className="text-xs border-t border-muted/50 pt-1.5 space-y-1">
+                                   <div>
+                                     <span className="font-bold text-foreground">PIN Code:</span> {order.shipping_address.postal_code || 'N/A'}
+                                   </div>
+                                   <div>
+                                     <span className="font-bold text-foreground">State:</span> {order.shipping_address.state || 'N/A'}
+                                   </div>
+                                   <div>
+                                     <span className="font-bold text-foreground">Country:</span> {order.shipping_address.country || 'N/A'}
+                                   </div>
+                                   <div>
+                                     <span className="font-bold text-foreground">Phone Number:</span> {order.shipping_address.phone || 'N/A'}
+                                   </div>
+                                 </div>
+                               </div>
                             </div>
                           ) : (
                             <div className="text-center py-2 px-3 bg-muted/20 rounded border border-dashed">
