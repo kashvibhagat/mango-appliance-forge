@@ -22,7 +22,6 @@ const Header = () => {
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
-    { name: 'Comparison', href: '/comparison' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'Track Order', href: '/track-order' },
     { name: 'Warranty Registration', href: '/warranty-registration' },
@@ -184,7 +183,7 @@ const Header = () => {
         {/* Navigation - desktop */}
         <nav className="hidden md:flex border-t border-border py-4">
           <div className="flex items-center space-x-8">
-            {navigation.map((item) => (
+            {navigation.slice(0, 2).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
@@ -222,6 +221,32 @@ const Header = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+
+            {/* Comparison Link */}
+            <Link
+              to="/comparison"
+              className={`text-sm font-medium transition-colors hover:text-accent ${
+                isActive('/comparison')
+                  ? 'text-accent border-b-2 border-accent pb-1'
+                  : 'text-muted-foreground'
+              }`}
+            >
+              Comparison
+            </Link>
+
+            {navigation.slice(2).map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`text-sm font-medium transition-colors hover:text-accent ${
+                  isActive(item.href)
+                    ? 'text-accent border-b-2 border-accent pb-1'
+                    : 'text-muted-foreground'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
         </nav>
 
@@ -241,7 +266,7 @@ const Header = () => {
             {/* Mobile navigation */}
             <nav>
               <ul className="space-y-2">
-                {navigation.map((item) => (
+                {navigation.slice(0, 2).map((item) => (
                   <li key={item.name}>
                     <Link
                       to={item.href}
@@ -276,6 +301,37 @@ const Header = () => {
                     </ul>
                   </div>
                 </li>
+
+                {/* Comparison Link for mobile */}
+                <li>
+                  <Link
+                    to="/comparison"
+                    className={`block py-2 text-sm font-medium transition-colors ${
+                      isActive('/comparison')
+                        ? 'text-accent'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Comparison
+                  </Link>
+                </li>
+
+                {navigation.slice(2).map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      to={item.href}
+                      className={`block py-2 text-sm font-medium transition-colors ${
+                        isActive(item.href)
+                          ? 'text-accent'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </nav>
           </div>
