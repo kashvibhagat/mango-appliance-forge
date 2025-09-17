@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
@@ -41,83 +41,178 @@ export const useChatbot = () => {
   return context;
 };
 
+// Create router with future flags to avoid deprecation warnings
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <Layout>
+        <PageTransition><Home /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/shop",
+    element: (
+      <Layout>
+        <PageTransition><Shop /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/comparison",
+    element: (
+      <Layout>
+        <PageTransition><Comparison /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/contact",
+    element: (
+      <Layout>
+        <PageTransition><Contact /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/wishlist",
+    element: (
+      <Layout>
+        <PageTransition><Wishlist /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/product/:slug",
+    element: (
+      <Layout>
+        <PageTransition><ProductDetail /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/cart",
+    element: (
+      <Layout>
+        <PageTransition><Cart /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/auth",
+    element: (
+      <Layout>
+        <PageTransition><Auth /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/checkout",
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <PageTransition><Checkout /></PageTransition>
+          <FloatingChatbot hideFloatingButton={true} />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <PageTransition><Dashboard /></PageTransition>
+          <FloatingChatbot hideFloatingButton={true} />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <PageTransition><Profile /></PageTransition>
+          <FloatingChatbot hideFloatingButton={true} />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/order-success",
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <PageTransition><OrderSuccess /></PageTransition>
+          <FloatingChatbot hideFloatingButton={true} />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/track-order",
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <PageTransition><TrackOrder /></PageTransition>
+          <FloatingChatbot hideFloatingButton={true} />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/warranty-registration",
+    element: (
+      <Layout>
+        <PageTransition><WarrantyRegistration /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/blank",
+    element: <BlankPage />,
+  },
+  {
+    path: "*",
+    element: (
+      <Layout>
+        <PageTransition><NotFound /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+], {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true,
+  },
+});
+
 const App = () => {
   const chatbotRef = useRef<ChatbotRef>(null);
+  const contextValue = useMemo(() => chatbotRef.current, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              <ChatbotContext.Provider value={null}>
+              <ChatbotContext.Provider value={contextValue}>
                 <Toaster />
                 <Sonner />
-                <BrowserRouter>
-                  <Layout>
-                    <Routes>
-                      <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-                      <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-                      <Route path="/comparison" element={<PageTransition><Comparison /></PageTransition>} />
-                      <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-                      <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
-                      <Route path="/product/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
-                      <Route path="/cart" element={<PageTransition><Cart /></PageTransition>} />
-                      <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
-                      <Route 
-                        path="/checkout" 
-                        element={
-                          <ProtectedRoute>
-                            <PageTransition><Checkout /></PageTransition>
-                          </ProtectedRoute>
-                        } 
-                      />
-                      <Route 
-                        path="/dashboard" 
-                        element={
-                          <ProtectedRoute>
-                            <PageTransition><Dashboard /></PageTransition>
-                          </ProtectedRoute>
-                        } 
-                      />
-                      <Route 
-                        path="/profile" 
-                        element={
-                          <ProtectedRoute>
-                            <PageTransition><Profile /></PageTransition>
-                          </ProtectedRoute>
-                        } 
-                      />
-                      <Route 
-                        path="/order-success" 
-                        element={
-                          <ProtectedRoute>
-                            <PageTransition><OrderSuccess /></PageTransition>
-                          </ProtectedRoute>
-                        } 
-                      />
-                      <Route 
-                        path="/track-order" 
-                        element={
-                          <ProtectedRoute>
-                            <PageTransition><TrackOrder /></PageTransition>
-                          </ProtectedRoute>
-                        } 
-                      />
-                      <Route 
-                        path="/warranty-registration" 
-                        element={
-                          <PageTransition><WarrantyRegistration /></PageTransition>
-                        } 
-                      />
-                      <Route path="/blank" element={<BlankPage />} />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                      <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-                    </Routes>
-                    
-                    {/* Floating Chatbot - hide the default floating button since we have header button */}
-                    <FloatingChatbot ref={chatbotRef} hideFloatingButton={true} />
-                  </Layout>
-                </BrowserRouter>
+                <RouterProvider router={router} />
               </ChatbotContext.Provider>
             </WishlistProvider>
           </CartProvider>
