@@ -27,6 +27,11 @@ import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
 import Comparison from './pages/Comparison';
 import BlankPage from './pages/BlankPage';
+import Help from './pages/Help';
+import Shipping from './pages/Shipping';
+import Returns from './pages/Returns';
+import Installation from './pages/Installation';
+import BulkOrders from './pages/BulkOrders';
 
 const queryClient = new QueryClient();
 
@@ -182,6 +187,60 @@ const router = createBrowserRouter([
   {
     path: "/blank",
     element: <BlankPage />,
+  },
+  {
+    path: "/help",
+    element: (
+      <Layout>
+        <PageTransition><Help /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/shipping",
+    element: (
+      <Layout>
+        <PageTransition><Shipping /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/returns",
+    element: (
+      <Layout>
+        <PageTransition><Returns /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/warranty",
+    element: (
+      <Layout>
+        <PageTransition><WarrantyRegistration /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/installation",
+    element: (
+      <Layout>
+        <PageTransition><Installation /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/bulk-orders",
+    element: (
+      <Layout>
+        <PageTransition><BulkOrders /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
   },
   {
     path: "*",
