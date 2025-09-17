@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { toast } from '@/hooks/use-toast';
 import OrderTrackingCard from '@/components/ui/OrderTrackingCard';
 import { Search, Package } from 'lucide-react';
 
@@ -19,6 +20,7 @@ interface Order {
 
 const TrackOrder = () => {
   const [orderNumber, setOrderNumber] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
   const [searchedOrder, setSearchedOrder] = useState<Order | null>(null);
   const [userOrders, setUserOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
@@ -60,19 +62,48 @@ const TrackOrder = () => {
 
     setSearching(true);
     try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('order_number', cleanOrderNumber)
-        .maybeSingle();
+      let query = supabase.from('orders').select('*');
+      
+      if (user) {
+        // Authenticated users can search by order number only
+        query = query.eq('order_number', cleanOrderNumber);
+      } else {
+        // Anonymous users must provide both order number and email for security
+        if (!customerEmail.trim()) {
+          toast({
+            title: "Email required",
+            description: "Please provide both order number and email address to track your order.",
+            variant: "destructive"
+          });
+          return;
+        }
+        query = query
+          .eq('order_number', cleanOrderNumber)
+          .eq('customer_email', customerEmail.trim());
+      }
+
+      const { data, error } = await query.maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         throw error;
       }
 
+      if (!data) {
+        toast({
+          title: "Order not found",
+          description: "No order found with the provided details. Please check your order number" + (user ? "" : " and email address") + ".",
+          variant: "destructive"
+        });
+      }
+
       setSearchedOrder(data);
     } catch (error) {
       console.error('Error searching order:', error);
+      toast({
+        title: "Search failed",
+        description: "There was an error searching for your order. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setSearching(false);
     }
@@ -100,18 +131,38 @@ const TrackOrder = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSearch} className="flex gap-2">
-              <div className="flex-1">
-                <Label htmlFor="orderNumber" className="sr-only">Order Number</Label>
-                <Input
-                  id="orderNumber"
-                  value={orderNumber}
-                  onChange={(e) => setOrderNumber(e.target.value)}
-                  placeholder="Enter order number (e.g., MNG-ORD-ABLAUOURL)"
-                  className="w-full"
-                />
+            <form onSubmit={handleSearch} className="space-y-4">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="orderNumber">Order Number</Label>
+                  <Input
+                    id="orderNumber"
+                    value={orderNumber}
+                    onChange={(e) => setOrderNumber(e.target.value)}
+                    placeholder="Enter order number (e.g., MNG-ORD-ABLAUOURL)"
+                    required
+                  />
+                </div>
+                
+                {!user && (
+                  <div>
+                    <Label htmlFor="customerEmail">Email Address</Label>
+                    <Input
+                      id="customerEmail"
+                      type="email"
+                      value={customerEmail}
+                      onChange={(e) => setCustomerEmail(e.target.value)}
+                      placeholder="Enter your email address"
+                      required
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      For security, we need both order number and email to track anonymous orders.
+                    </p>
+                  </div>
+                )}
               </div>
-              <Button type="submit" disabled={searching || !orderNumber.trim()}>
+              
+              <Button type="submit" disabled={searching || !orderNumber.trim()} className="w-full">
                 {searching ? 'Searching...' : 'Track Order'}
               </Button>
             </form>
