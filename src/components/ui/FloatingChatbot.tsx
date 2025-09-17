@@ -201,10 +201,10 @@ const FloatingChatbot = forwardRef<ChatbotRef, FloatingChatbotProps>(({ hideFloa
       {!hideFloatingButton && (
         <Button
           onClick={() => setIsOpen(!isOpen)}
-          className="btn-floating animate-bounce-gentle hover:scale-110 btn-ripple"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-40 bg-gradient-brand hover:bg-gradient-brand/90"
           size="icon"
         >
-          <MessageCircle className="h-6 w-6" />
+          <Bot className="h-6 w-6 text-white" />
         </Button>
       )}
     </>
