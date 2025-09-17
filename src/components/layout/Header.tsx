@@ -87,6 +87,16 @@ const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-2">
+            {/* AI Assistant */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="relative hover:bg-accent/10" 
+              onClick={() => window.dispatchEvent(new Event('mango-chat-toggle'))}
+              title="AI Assistant"
+            >
+              <Bot className="h-5 w-5 text-primary" />
+            </Button>
 
             {/* Wishlist */}
             <Button variant="ghost" size="sm" className="relative" asChild>
