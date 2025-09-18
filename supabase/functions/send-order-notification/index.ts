@@ -155,14 +155,13 @@ const resendApiKey = Deno.env.get("RESEND_API_KEY");
         Authorization: `Bearer ${resendApiKey}`,
         "Content-Type": "application/json",
       },
-   body: JSON.stringify({
+      body: JSON.stringify({
   from: "Acme <onboarding@resend.dev>", // sandbox sender
-  to: ["your_email@gmail.com"],         // replace with your test email
-  subject: `New Order Confirmation - Order ID: ${order.order_number}`,
-  html: emailContent,
-}),
-
-  
+        to: ["donotreply@mangoappliances.com"],
+        subject: `New Order Confirmation - Order ID: ${order.order_number}`,
+        html: emailContent,
+      }),
+    });
 
     const emailResult = await emailResponse.json();
 
