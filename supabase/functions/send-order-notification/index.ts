@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -138,47 +139,56 @@ serve(async (req) => {
       </html>
     `;
 
-    // Send email notification with Resend API
-const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    // Send email notification with SMTP
+    const smtpEmail = Deno.env.get("SMTP_EMAIL");
+    const smtpPassword = Deno.env.get("SMTP_PASSWORD");
 
-    if (!resendApiKey) {
-      console.error("RESEND_API_KEY not found in environment variables");
+    if (!smtpEmail || !smtpPassword) {
+      console.error("SMTP credentials not found in environment variables");
       return new Response(
         JSON.stringify({ error: "Email service not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const emailResponse = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
+    // Initialize SMTP client (works with Gmail, Outlook, etc.)
+    const client = new SMTPClient({
+      connection: {
+        hostname: smtpEmail.includes("gmail") ? "smtp.gmail.com" : "smtp-mail.outlook.com",
+        port: 587,
+        tls: true,
+        auth: {
+          username: smtpEmail,
+          password: smtpPassword,
+        },
       },
-      body: JSON.stringify({
-  from: "Mango Appliances <onboarding@resend.dev>", // sandbox sender - upgrade to custom domain when available
-        to: ["donotreply@mangoappliances.com"],
-        subject: `New Order Confirmation - Order ID: ${order.order_number}`,
-        html: emailContent,
-      }),
     });
 
-    const emailResult = await emailResponse.json();
+    try {
+      await client.send({
+        from: `Mango Appliances <${smtpEmail}>`,
+        to: "donotreply@mangoappliances.com",
+        subject: `New Order Confirmation - Order ID: ${order.order_number}`,
+        html: emailContent,
+      });
 
-    if (!emailResponse.ok) {
-      console.error("Failed to send email:", emailResult);
+      console.log("Order notification email sent successfully via SMTP");
+
+      await client.close();
+
       return new Response(
-        JSON.stringify({ error: "Failed to send email", details: emailResult }),
+        JSON.stringify({ success: true, message: "Email sent via SMTP" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } catch (smtpError) {
+      console.error("Failed to send email via SMTP:", smtpError);
+      await client.close();
+      
+      return new Response(
+        JSON.stringify({ error: "Failed to send email", details: smtpError.message }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
-    console.log("Order notification email sent successfully:", emailResult);
-
-    return new Response(
-      JSON.stringify({ success: true, emailId: emailResult.id }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   } catch (error) {
     console.error("Error in send-order-notification function:", error);
     return new Response(
