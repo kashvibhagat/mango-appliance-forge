@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import nodemailer from "npm:nodemailer"; // ✅ add nodemailer
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -51,19 +51,24 @@ serve(async (req) => {
     });
 
     // Format customer name
-    const customerName = order.customer_name || 
-      (order.profiles ? `${order.profiles.first_name} ${order.profiles.last_name}` : "Customer");
+    const customerName =
+      order.customer_name ||
+      (order.profiles
+        ? `${order.profiles.first_name} ${order.profiles.last_name}`
+        : "Customer");
 
     // Format shipping address
     let shippingDetails = "Address not provided";
     if (order.shipping_address) {
       const addr = order.shipping_address;
       shippingDetails = `
-        <strong>Name:</strong> ${addr.first_name || ''} ${addr.last_name || ''}<br>
-        <strong>Address:</strong> ${addr.address_line_1 || ''}<br>
-        ${addr.address_line_2 ? `${addr.address_line_2}<br>` : ''}
-        ${addr.city || ''}, ${addr.state || ''} - ${addr.postal_code || ''}<br>
-        <strong>Phone:</strong> ${addr.phone || order.profiles?.phone || 'Not provided'}
+        <strong>Name:</strong> ${addr.first_name || ""} ${addr.last_name || ""}<br>
+        <strong>Address:</strong> ${addr.address_line_1 || ""}<br>
+        ${addr.address_line_2 ? `${addr.address_line_2}<br>` : ""}
+        ${addr.city || ""}, ${addr.state || ""} - ${addr.postal_code || ""}<br>
+        <strong>Phone:</strong> ${
+          addr.phone || order.profiles?.phone || "Not provided"
+        }
       `;
     }
 
@@ -71,11 +76,19 @@ serve(async (req) => {
     let itemsList = "Order items information available in dashboard";
     if (Array.isArray(order.items) && order.items.length > 0) {
       itemsList = order.items
-        .map((item, index) => `
-          <strong>${index + 1}. Item Name:</strong> ${item.name || "Product"}<br>
-          &nbsp;&nbsp;&nbsp;<strong>Quantity:</strong> ${item.quantity || 1}<br>
-          &nbsp;&nbsp;&nbsp;<strong>Price:</strong> ₹${(item.price || 0).toLocaleString("en-IN")}<br>
-        `)
+        .map(
+          (item, index) => `
+          <strong>${index + 1}. Item Name:</strong> ${
+            item.name || "Product"
+          }<br>
+          &nbsp;&nbsp;&nbsp;<strong>Quantity:</strong> ${
+            item.quantity || 1
+          }<br>
+          &nbsp;&nbsp;&nbsp;<strong>Price:</strong> ₹${(
+            item.price || 0
+          ).toLocaleString("en-IN")}<br>
+        `
+        )
         .join("<br>");
     }
 
@@ -105,9 +118,13 @@ serve(async (req) => {
             <h3>📋 Order Details</h3>
             <p><strong>Order ID:</strong> ${order.order_number}</p>
             <p><strong>Customer Name:</strong> ${customerName}</p>
-            <p><strong>Customer Phone:</strong> ${order.profiles?.phone || 'Not provided'}</p>
+            <p><strong>Customer Phone:</strong> ${
+              order.profiles?.phone || "Not provided"
+            }</p>
             <p><strong>Order Date:</strong> ${orderDate}</p>
-            <p><strong>Order Amount:</strong> ₹${order.total_amount.toLocaleString("en-IN")}</p>
+            <p><strong>Order Amount:</strong> ₹${order.total_amount.toLocaleString(
+              "en-IN"
+            )}</p>
             <p><strong>Order Status:</strong> ${order.status.toUpperCase()}</p>
           </div>
 
@@ -139,56 +156,32 @@ serve(async (req) => {
       </html>
     `;
 
-    // Send email notification with SMTP
-    const smtpEmail = Deno.env.get("SMTP_EMAIL");
-    const smtpPassword = Deno.env.get("SMTP_PASSWORD");
-
-    if (!smtpEmail || !smtpPassword) {
-      console.error("SMTP credentials not found in environment variables");
-      return new Response(
-        JSON.stringify({ error: "Email service not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Initialize SMTP client (works with Gmail, Outlook, etc.)
-    const client = new SMTPClient({
-      connection: {
-        hostname: smtpEmail.includes("gmail") ? "smtp.gmail.com" : "smtp-mail.outlook.com",
-        port: 587,
-        tls: true,
-        auth: {
-          username: smtpEmail,
-          password: smtpPassword,
-        },
+    // ✅ Setup SMTP with Gmail
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: Deno.env.get("SMTP_USER"), // donotreply@mangoappliances.com
+        pass: Deno.env.get("SMTP_PASS"), // 16-char App Password
       },
     });
 
-    try {
-      await client.send({
-        from: `Mango Appliances <${smtpEmail}>`,
-        to: "donotreply@mangoappliances.com",
-        subject: `New Order Confirmation - Order ID: ${order.order_number}`,
-        html: emailContent,
-      });
+    // ✅ Send mail
+    const info = await transporter.sendMail({
+      from: Deno.env.get("SMTP_FROM") ||
+        "Mango Appliances <donotreply@mangoappliances.com>",
+      to: "donotreply@mangoappliances.com", // send to your admin inbox
+      subject: `New Order Confirmation - Order ID: ${order.order_number}`,
+      html: emailContent,
+    });
 
-      console.log("Order notification email sent successfully via SMTP");
+    console.log("Email sent:", info.messageId);
 
-      await client.close();
-
-      return new Response(
-        JSON.stringify({ success: true, message: "Email sent via SMTP" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    } catch (smtpError) {
-      console.error("Failed to send email via SMTP:", smtpError);
-      await client.close();
-      
-      return new Response(
-        JSON.stringify({ error: "Failed to send email", details: smtpError.message }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    return new Response(
+      JSON.stringify({ success: true, emailId: info.messageId }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   } catch (error) {
     console.error("Error in send-order-notification function:", error);
     return new Response(
