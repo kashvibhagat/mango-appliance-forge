@@ -139,7 +139,7 @@ serve(async (req) => {
     `;
 
     // Send email notification with Resend API
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+const resendApiKey = Deno.env.get("RESEND_API_KEY");
 
     if (!resendApiKey) {
       console.error("RESEND_API_KEY not found in environment variables");
@@ -155,13 +155,14 @@ serve(async (req) => {
         Authorization: `Bearer ${resendApiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        from: "Mango Appliances <noreply@resend.dev>",
-        to: ["donotreply@mangoappliances.com"],
-        subject: `New Order Confirmation - Order ID: ${order.order_number}`,
-        html: emailContent,
-      }),
-    });
+   body: JSON.stringify({
+  from: "Acme <onboarding@resend.dev>", // sandbox sender
+  to: ["your_email@gmail.com"],         // replace with your test email
+  subject: `New Order Confirmation - Order ID: ${order.order_number}`,
+  html: emailContent,
+}),
+
+  
 
     const emailResult = await emailResponse.json();
 
