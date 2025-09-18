@@ -157,7 +157,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         from: "Mango Appliances <noreply@resend.dev>",
-        to: ["DoNotReply@mangoappliances.com"],
+        to: ["donotreply@mangoappliances.com"],
         subject: `New Order Confirmation - Order ID: ${order.order_number}`,
         html: emailContent,
       }),
