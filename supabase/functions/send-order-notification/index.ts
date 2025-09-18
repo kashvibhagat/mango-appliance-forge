@@ -156,7 +156,7 @@ const resendApiKey = Deno.env.get("RESEND_API_KEY");
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-  from: "Acme <onboarding@resend.dev>", // sandbox sender
+  from: "Mango Appliances <onboarding@resend.dev>", // sandbox sender - upgrade to custom domain when available
         to: ["donotreply@mangoappliances.com"],
         subject: `New Order Confirmation - Order ID: ${order.order_number}`,
         html: emailContent,
