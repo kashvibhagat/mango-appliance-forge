@@ -10,6 +10,7 @@ import SearchWithSuggestions from '@/components/ui/SearchWithSuggestions';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSuccessNotificationContext } from '@/contexts/SuccessNotificationContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,6 +20,7 @@ const Header = () => {
   const { itemCount } = useCart();
   const { wishlistItems } = useWishlist();
   const { user, signOut } = useAuth();
+  const { showAuthSuccess } = useSuccessNotificationContext();
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
@@ -153,7 +155,13 @@ const Header = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="flex items-center text-destructive">
+                  <DropdownMenuItem 
+                    onClick={async () => {
+                      await signOut();
+                      showAuthSuccess('signout');
+                    }} 
+                    className="flex items-center text-destructive"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign Out</span>
                   </DropdownMenuItem>

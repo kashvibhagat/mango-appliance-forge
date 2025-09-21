@@ -5,13 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useSuccessNotificationContext } from '@/contexts/SuccessNotificationContext';
 
 const OrderSuccess = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('orderId') || 'MNG123456789';
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
+  const { showOrderSuccess } = useSuccessNotificationContext();
 
   useEffect(() => {
+    // Show success notification when component mounts
+    showOrderSuccess(orderId);
+    
     // Calculate estimated delivery date (5-7 days from now)
     const deliveryDate = new Date();
     deliveryDate.setDate(deliveryDate.getDate() + 6);
@@ -21,7 +26,7 @@ const OrderSuccess = () => {
       month: 'long',
       day: 'numeric'
     }));
-  }, []);
+  }, [orderId, showOrderSuccess]);
 
   return (
     <div className="container mx-auto px-4 py-16">

@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
+import { SuccessNotificationProvider } from './contexts/SuccessNotificationContext';
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import Layout from "./components/layout/Layout";
 import PageTransition from "./components/layout/PageTransition";
@@ -267,11 +268,13 @@ const App = () => {
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              <ChatbotContext.Provider value={contextValue}>
-                <Toaster />
-                <Sonner />
-                <RouterProvider router={router} />
-              </ChatbotContext.Provider>
+              <SuccessNotificationProvider>
+                <ChatbotContext.Provider value={contextValue}>
+                  <Toaster />
+                  <Sonner />
+                  <RouterProvider router={router} />
+                </ChatbotContext.Provider>
+              </SuccessNotificationProvider>
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>
