@@ -37,7 +37,7 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
   };
 
   return (
-    <Card className={`group card-interactive overflow-hidden card-3d ${className}`}>
+    <Card className={`group card-interactive card-morph overflow-hidden card-3d transition-all duration-500 ${className}`}>
       <div className="relative">
         {/* Product Image */}
         <Link to={`/product/${product.slug}`}>
@@ -48,7 +48,10 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
               className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-1 product-image-3d"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+            
+            {/* Morphing overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-brand/20 opacity-0 group-hover:opacity-100 transition-all duration-700 animate-morph"></div>
           </div>
         </Link>
 
@@ -86,12 +89,15 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
           <Button 
             variant="hero"
             size="sm"
-            className="w-full animate-shimmer min-h-[44px] touch-manipulation active:scale-95"
+            className="w-full animate-shimmer min-h-[44px] touch-manipulation active:scale-95 relative overflow-hidden group/btn"
             onClick={handleAddToCart}
             disabled={!product.inStock}
           >
-            <ShoppingCart className="h-4 w-4 mr-2 transition-transform group-hover:scale-110" />
-            {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+            <span className="relative z-10 flex items-center">
+              <ShoppingCart className="h-4 w-4 mr-2 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12" />
+              {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-brand/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Button>
         </div>
       </div>
@@ -105,7 +111,7 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
 
         {/* Product Name */}
         <Link to={`/product/${product.slug}`}>
-          <h3 className="font-medium text-foreground line-clamp-2 hover:text-accent transition-colors">
+          <h3 className="font-medium text-foreground line-clamp-2 hover:text-accent transition-all duration-300 hover:animate-text-glow cursor-pointer">
             {product.name}
           </h3>
         </Link>

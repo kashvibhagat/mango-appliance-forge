@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Truck, Shield, Headphones, Star, Zap, ThermometerSun, ChevronLeft, ChevronRight, Award, Globe, Factory, Users, CheckCircle, MapPin, Quote, Calendar, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,8 +17,51 @@ import industrialCoolersCategory from '@/assets/industrial-coolers-category.jpg'
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isVisible, setIsVisible] = useState({});
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const elementsRef = useRef<Map<string, HTMLElement>>(new Map());
 
   const totalSlides = Math.ceil(mangoFeaturedProducts.length / 4);
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = entry.target.getAttribute('data-animate-id');
+          if (id) {
+            setIsVisible(prev => ({
+              ...prev,
+              [id]: entry.isIntersecting
+            }));
+          }
+        });
+      },
+      { 
+        threshold: 0.1,
+        rootMargin: '-50px 0px'
+      }
+    );
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  const setElementRef = (id: string) => (element: HTMLElement | null) => {
+    if (element) {
+      elementsRef.current.set(id, element);
+      observerRef.current?.observe(element);
+    } else {
+      const existingElement = elementsRef.current.get(id);
+      if (existingElement) {
+        observerRef.current?.unobserve(existingElement);
+        elementsRef.current.delete(id);
+      }
+    }
+  };
 
   // Auto-play carousel
   useEffect(() => {
@@ -138,20 +181,43 @@ const Home = () => {
   ];
 
   return (
-    <div className="animate-fade-in">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-hero py-20 lg:py-32 overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8 animate-slide-up">
+    <div className="relative">
+      {/* Floating Elements Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-accent/5 rounded-full blur-xl animate-float" style={{ animationDelay: '0s' }} />
+        <div className="absolute top-40 right-20 w-24 h-24 bg-brand/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-32 left-32 w-40 h-40 bg-accent/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+        <div className="absolute bottom-20 right-10 w-28 h-28 bg-brand/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '6s' }} />
+      </div>
+
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <section className="relative bg-gradient-hero py-20 lg:py-32 overflow-hidden">
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-radial from-accent/10 to-transparent rounded-full animate-pulse-glow" />
+            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-radial from-brand/10 to-transparent rounded-full animate-pulse-glow" style={{ animationDelay: '2s' }} />
+          </div>
+
+          <div className="container mx-auto px-4 relative">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div 
+                ref={setElementRef('hero-content')}
+                data-animate-id="hero-content"
+                className={`space-y-8 transition-all duration-1000 ${
+                  isVisible['hero-content'] 
+                    ? 'animate-in slide-in-from-left-12 fade-in duration-1000' 
+                    : 'opacity-0 translate-x-12'
+                }`}
+              >
               <div className="space-y-4">
                 <Badge className="bg-accent/20 text-accent border-accent/30">
                   <Zap className="h-3 w-3 mr-1" />
                   {companyInfo.philosophy}
                 </Badge>
                 <h1 className="text-4xl lg:text-6xl font-bold text-foreground leading-tight">
-                  Beat the Heat with{' '}
-                  <span className="bg-gradient-brand bg-clip-text text-transparent">
+                  <span className="inline-block animate-in slide-in-from-top-4 fade-in duration-700">Beat the Heat with</span>{' '}
+                  <span className="inline-block bg-gradient-brand bg-clip-text text-transparent animate-in slide-in-from-top-4 fade-in duration-700 delay-300 hover:scale-105 transition-transform cursor-default">
                     {companyInfo.brand}
                   </span>
                 </h1>
@@ -161,43 +227,56 @@ const Home = () => {
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 animate-in slide-in-from-bottom-4 fade-in duration-700 delay-500">
                 <Link to="/shop">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto group">
-                    Shop Air Coolers
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  <Button variant="hero" size="lg" className="w-full sm:w-auto group relative overflow-hidden">
+                    <span className="relative z-10 flex items-center">
+                      Shop Air Coolers
+                      <ArrowRight className="ml-2 h-5 w-5 transition-all duration-300 group-hover:translate-x-1 group-hover:scale-110" />
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-brand/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </Button>
                 </Link>
                 <Link to="/shop?category=spare-parts">
-                  <Button variant="outline-glow" size="lg" className="w-full sm:w-auto">
-                    View Spare Parts
+                  <Button variant="outline-glow" size="lg" className="w-full sm:w-auto group relative overflow-hidden">
+                    <span className="relative z-10">View Spare Parts</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                   </Button>
                 </Link>
               </div>
 
               {/* Company Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-2 gap-6 pt-8">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-accent">40+</div>
-                  <div className="text-sm text-muted-foreground">Air Cooler Models</div>
+              <div className="grid grid-cols-2 sm:grid-cols-2 gap-6 pt-8 animate-in slide-in-from-bottom-4 fade-in duration-700 delay-700">
+                <div className="text-center group cursor-default">
+                  <div className="text-2xl font-bold text-accent group-hover:scale-110 transition-transform duration-300">40+</div>
+                  <div className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">Air Cooler Models</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-accent">{companyInfo.experience}</div>
-                  <div className="text-sm text-muted-foreground">Years Experience</div>
+                <div className="text-center group cursor-default">
+                  <div className="text-2xl font-bold text-accent group-hover:scale-110 transition-transform duration-300">{companyInfo.experience}</div>
+                  <div className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">Years Experience</div>
                 </div>
               </div>
             </div>
 
-            <div className="relative animate-scale-in">
-              <div className="relative z-10">
+            <div 
+              ref={setElementRef('hero-image')}
+              data-animate-id="hero-image"
+              className={`relative transition-all duration-1000 ${
+                isVisible['hero-image'] 
+                  ? 'animate-in slide-in-from-right-12 fade-in duration-1000 delay-300' 
+                  : 'opacity-0 translate-x-12'
+              }`}
+            >
+              <div className="relative z-10 group">
                 <img
                   src={heroAirCooler}
                   alt="Premium Air Cooler Collection"
-                  className="w-full h-auto rounded-2xl shadow-2xl"
+                  className="w-full h-auto rounded-2xl shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-[1.02]"
                 />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-accent/20 via-transparent to-brand/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
-              <div className="absolute -top-4 -right-4 w-72 h-72 bg-accent/20 rounded-full blur-3xl"></div>
-              <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-brand/20 rounded-full blur-3xl"></div>
+              <div className="absolute -top-4 -right-4 w-72 h-72 bg-accent/20 rounded-full blur-3xl animate-pulse-glow"></div>
+              <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-brand/20 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }}></div>
             </div>
           </div>
         </div>
@@ -603,11 +682,12 @@ const Home = () => {
                 <a href="tel:+918804048811">
                   Call +91 880 404 8811
                 </a>
-              </Button>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 };

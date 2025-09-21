@@ -380,9 +380,124 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .btn-mobile:active {
-    @apply scale-95;
-    transition: transform 0.1s ease-out;
+  /* Premium Animation Classes */
+  .animate-morph {
+    animation: morphShape 8s ease-in-out infinite;
+  }
+
+  .animate-liquid {
+    animation: liquidMove 6s ease-in-out infinite;
+  }
+
+  .animate-text-glow {
+    animation: textGlow 3s ease-in-out infinite;
+  }
+
+  .animate-slide-reveal {
+    animation: slideReveal 0.8s ease-out forwards;
+  }
+
+  /* Gradient Animations */
+  .gradient-shift {
+    background: linear-gradient(-45deg, hsl(var(--accent)), hsl(var(--brand)), hsl(var(--accent)), hsl(var(--brand)));
+    background-size: 400% 400%;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Morphing Card Effects */
+  .card-morph {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-morph::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent, hsl(var(--accent) / 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+  }
+
+  .card-morph:hover::before {
+    transform: translateX(100%);
+  }
+
+  .card-morph:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 20px 40px hsl(var(--accent) / 0.2);
+  }
+
+  /* Premium Animation Classes */
+  .animate-morph {
+    animation: morphShape 8s ease-in-out infinite;
+  }
+
+  .animate-liquid {
+    animation: liquidMove 6s ease-in-out infinite;
+  }
+
+  .animate-text-glow {
+    animation: textGlow 3s ease-in-out infinite;
+  }
+
+  .animate-slide-reveal {
+    animation: slideReveal 0.8s ease-out forwards;
+  }
+
+  /* Gradient Animations */
+  .gradient-shift {
+    background: linear-gradient(-45deg, hsl(var(--accent)), hsl(var(--brand)), hsl(var(--accent)), hsl(var(--brand)));
+    background-size: 400% 400%;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Morphing Card Effects */
+  .card-morph {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-morph::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent, hsl(var(--accent) / 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+  }
+
+  .card-morph:hover::before {
+    transform: translateX(100%);
+  }
+
+  .card-morph:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 20px 40px hsl(var(--accent) / 0.2);
   }
 
   /* Mobile navigation improvements */
