@@ -67,22 +67,26 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
           )}
         </div>
 
-        {/* Wishlist Button */}
+        {/* Wishlist Button - Mobile optimized */}
         <Button
           variant="ghost"
           size="icon-sm"
-          className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm hover:bg-background/90 hover:scale-110 transition-all duration-300"
+          className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm hover:bg-background/95 
+                     min-h-[44px] min-w-[44px] touch-manipulation active:scale-95 
+                     hover:scale-105 transition-all duration-300 z-10"
           onClick={handleWishlistToggle}
         >
-          <Heart className={`h-4 w-4 transition-all duration-300 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500 scale-110' : 'hover:scale-110'}`} />
+          <Heart className={`h-5 w-5 transition-all duration-300 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500 scale-110' : ''}`} />
         </Button>
 
-        {/* Quick Actions - appear on hover */}
-        <div className="absolute bottom-3 left-3 right-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+        {/* Quick Actions - Mobile responsive */}
+        <div className="absolute bottom-3 left-3 right-3 transform 
+                        md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 
+                        translate-y-0 opacity-100 md:transition-all md:duration-500 md:delay-100">
           <Button 
             variant="hero"
             size="sm"
-            className="w-full animate-shimmer"
+            className="w-full animate-shimmer min-h-[44px] touch-manipulation active:scale-95"
             onClick={handleAddToCart}
             disabled={!product.inStock}
           >

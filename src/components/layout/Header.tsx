@@ -172,10 +172,13 @@ const Header = () => {
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="md:hidden relative min-h-[44px] min-w-[44px] touch-manipulation"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <div className="relative">
+                <Menu className={`h-5 w-5 transition-all duration-300 ${isMenuOpen ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'}`} />
+                <X className={`h-5 w-5 absolute top-0 left-0 transition-all duration-300 ${isMenuOpen ? 'rotate-0 opacity-100' : 'rotate-180 opacity-0'}`} />
+              </div>
             </Button>
           </div>
         </div>
@@ -250,31 +253,51 @@ const Header = () => {
           </div>
         </nav>
 
-        {/* Mobile menu */}
+        {/* Mobile menu backdrop */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-border py-4 animate-fade-in">
+          <div 
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden animate-fade-in"
+            onClick={() => setIsMenuOpen(false)}
+          />
+        )}
+
+        {/* Mobile menu */}
+        <div className={`
+          fixed top-16 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border z-50 md:hidden
+          transform transition-all duration-300 ease-out
+          ${isMenuOpen 
+            ? 'translate-y-0 opacity-100' 
+            : '-translate-y-full opacity-0 pointer-events-none'
+          }
+        `}>
+          <div className="container mx-auto px-4 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
             {/* Mobile search */}
-            <SearchWithSuggestions 
-              placeholder="Search products..."
-              onSearch={(query) => {
-                navigate(`/shop?search=${encodeURIComponent(query)}`);
-                setIsMenuOpen(false);
-              }}
-              className="mb-4"
-            />
+            <div className="mb-6">
+              <SearchWithSuggestions 
+                placeholder="Search products..."
+                onSearch={(query) => {
+                  navigate(`/shop?search=${encodeURIComponent(query)}`);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full"
+              />
+            </div>
 
             {/* Mobile navigation */}
             <nav>
-              <ul className="space-y-2">
+              <ul className="space-y-1">
                 {navigation.slice(0, 2).map((item) => (
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className={`block py-2 text-sm font-medium transition-colors ${
-                        isActive(item.href)
-                          ? 'text-accent'
-                          : 'text-muted-foreground hover:text-foreground'
-                      }`}
+                      className={`
+                        flex items-center py-4 px-4 -mx-4 rounded-lg text-base font-medium transition-all duration-200 
+                        active:scale-95 active:bg-accent/20
+                        ${isActive(item.href)
+                          ? 'text-accent bg-accent/10 font-semibold'
+                          : 'text-foreground hover:text-accent hover:bg-accent/5'
+                        }
+                      `}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {item.name}
@@ -283,15 +306,19 @@ const Header = () => {
                 ))}
                 
                 {/* Category submenu for mobile */}
-                <li>
-                  <div className="py-2">
-                    <span className="text-sm font-medium text-muted-foreground">Category</span>
-                    <ul className="mt-2 ml-4 space-y-1">
+                <li className="py-2">
+                  <div className="px-4 -mx-4">
+                    <span className="text-base font-semibold text-foreground mb-3 block">Categories</span>
+                    <ul className="space-y-1 ml-2">
                       {coolerCategories.map((category) => (
                         <li key={category.name}>
                           <Link
                             to={category.href}
-                            className="block py-1 text-sm text-muted-foreground hover:text-foreground"
+                            className="
+                              flex items-center py-3 px-3 -mx-3 rounded-md text-sm font-medium 
+                              text-muted-foreground hover:text-foreground hover:bg-accent/5 
+                              transition-all duration-200 active:scale-95 active:bg-accent/10
+                            "
                             onClick={() => setIsMenuOpen(false)}
                           >
                             {category.name}
@@ -306,11 +333,14 @@ const Header = () => {
                 <li>
                   <Link
                     to="/comparison"
-                    className={`block py-2 text-sm font-medium transition-colors ${
-                      isActive('/comparison')
-                        ? 'text-accent'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
+                    className={`
+                      flex items-center py-4 px-4 -mx-4 rounded-lg text-base font-medium transition-all duration-200 
+                      active:scale-95 active:bg-accent/20
+                      ${isActive('/comparison')
+                        ? 'text-accent bg-accent/10 font-semibold'
+                        : 'text-foreground hover:text-accent hover:bg-accent/5'
+                      }
+                    `}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Comparison
@@ -321,11 +351,14 @@ const Header = () => {
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className={`block py-2 text-sm font-medium transition-colors ${
-                        isActive(item.href)
-                          ? 'text-accent'
-                          : 'text-muted-foreground hover:text-foreground'
-                      }`}
+                      className={`
+                        flex items-center py-4 px-4 -mx-4 rounded-lg text-base font-medium transition-all duration-200 
+                        active:scale-95 active:bg-accent/20
+                        ${isActive(item.href)
+                          ? 'text-accent bg-accent/10 font-semibold'
+                          : 'text-foreground hover:text-accent hover:bg-accent/5'
+                        }
+                      `}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {item.name}
@@ -334,8 +367,28 @@ const Header = () => {
                 ))}
               </ul>
             </nav>
+
+            {/* Mobile menu footer */}
+            <div className="mt-8 pt-6 border-t border-border">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/wishlist" onClick={() => setIsMenuOpen(false)}>
+                      <Heart className="h-4 w-4 mr-2" />
+                      Wishlist ({wishlistItems.length})
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/cart" onClick={() => setIsMenuOpen(false)}>
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Cart ({itemCount})
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );
