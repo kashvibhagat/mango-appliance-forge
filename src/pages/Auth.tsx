@@ -53,12 +53,12 @@ const Auth = () => {
         {isLogin ? (
           <LoginForm
             onToggleMode={() => setIsLogin(false)}
-            onSuccess={() => handleSuccess('signin')}
+            onSuccess={handleSuccess}
           />
         ) : (
           <RegisterForm
             onToggleMode={() => setIsLogin(true)}
-            onSuccess={() => handleSuccess('signup')}
+            onSuccess={handleSuccess}
           />
         )}
       </div>
