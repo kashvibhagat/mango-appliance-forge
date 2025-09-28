@@ -313,12 +313,30 @@ const ShippingDetails = () => {
                         <Package className="h-4 w-4 text-muted-foreground" />
                       </div>
                       <div className="flex-1">
-                        <Label className="text-sm font-semibold text-foreground">Expected Delivery</Label>
+                        <Label className="text-sm font-semibold text-foreground">
+                          {shipmentDetails.status === 'delivered' ? 'Delivered' : 'Expected Delivery'}
+                        </Label>
                         <p className="text-foreground font-medium mt-1">
-                          {shipmentDetails.delivered_at ? formatDate(shipmentDetails.delivered_at) : 'Estimated delivery date not available'}
+                          {shipmentDetails.status === 'delivered' && shipmentDetails.delivered_at
+                            ? formatDate(shipmentDetails.delivered_at)
+                            : (() => {
+                                // Calculate estimated delivery (3-5 business days from shipped date)
+                                const shippedDate = new Date(shipmentDetails.shipped_at);
+                                const estimatedDelivery = new Date(shippedDate);
+                                estimatedDelivery.setDate(shippedDate.getDate() + 4); // 4 days estimate
+                                return `${estimatedDelivery.toLocaleDateString('en-IN', {
+                                  day: '2-digit',
+                                  month: 'short',
+                                  year: 'numeric'
+                                })} (Estimated)`;
+                              })()
+                          }
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {shipmentDetails.delivered_at ? 'Order delivered successfully' : 'We\'ll update you once delivered'}
+                          {shipmentDetails.status === 'delivered' 
+                            ? 'Your order has been successfully delivered'
+                            : 'Estimated delivery within 3-5 business days from shipping'
+                          }
                         </p>
                       </div>
                     </div>
