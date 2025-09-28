@@ -149,16 +149,38 @@ const AdminDashboard = () => {
       return
     }
 
+    // Validate datetime format
+    const shippedDate = new Date(shippingForm.shipped_at)
+    if (isNaN(shippedDate.getTime())) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a valid shipping date and time',
+        variant: 'destructive',
+      })
+      return
+    }
+
     try {
+      // Prepare shipment data
+      const shipmentData: any = {
+        order_id: selectedOrderId,
+        vendor_name: shippingForm.vendor_name,
+        shipped_at: shippedDate.toISOString(),
+        status: 'shipped'
+      }
+
+      // Add estimated delivery if provided
+      if (shippingForm.estimated_delivery) {
+        const estimatedDelivery = new Date(shippingForm.estimated_delivery + 'T23:59:59')
+        if (!isNaN(estimatedDelivery.getTime())) {
+          shipmentData.delivered_at = null // Will be updated when actually delivered
+        }
+      }
+
       // Create shipment details
       const { error: shipmentError } = await supabase
         .from('shipment_details')
-        .insert({
-          order_id: selectedOrderId,
-          vendor_name: shippingForm.vendor_name,
-          shipped_at: shippingForm.shipped_at,
-          status: 'shipped'
-        })
+        .insert(shipmentData)
 
       if (shipmentError) throw shipmentError
 
@@ -588,8 +610,12 @@ const AdminDashboard = () => {
                 type="datetime-local"
                 value={shippingForm.shipped_at}
                 onChange={(e) => setShippingForm(prev => ({ ...prev, shipped_at: e.target.value }))}
+                min={new Date().toISOString().slice(0, 16)}
                 required
               />
+              <p className="text-xs text-muted-foreground">
+                Enter the date and time when the order was shipped
+              </p>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="estimated_delivery">Estimated Delivery Date</Label>
