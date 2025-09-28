@@ -26,6 +26,7 @@ const Header = () => {
     { name: 'Shop', href: '/shop' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'Track Order', href: '/track-order' },
+    { name: 'Shipping Details', href: '/shipping-details' },
     { name: 'Warranty Registration', href: '/warranty-registration' },
   ];
 

@@ -19,6 +19,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import TrackOrder from "./pages/TrackOrder";
+import ShippingDetails from "./pages/ShippingDetails";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
@@ -174,6 +175,15 @@ const router = createBrowserRouter([
           <FloatingChatbot hideFloatingButton={true} />
         </Layout>
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/shipping-details",
+    element: (
+      <Layout>
+        <PageTransition><ShippingDetails /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
     ),
   },
   {
