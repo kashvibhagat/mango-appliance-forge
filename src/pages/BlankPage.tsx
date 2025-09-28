@@ -5,6 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { 
   Package, 
   TrendingUp, 
@@ -14,7 +17,8 @@ import {
   CheckCircle,
   AlertCircle,
   MoreHorizontal,
-  Filter
+  Filter,
+  Truck
 } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -49,6 +53,13 @@ const AdminDashboard = () => {
   })
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [shippingDialogOpen, setShippingDialogOpen] = useState(false)
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
+  const [shippingForm, setShippingForm] = useState({
+    vendor_name: '',
+    shipped_at: '',
+    estimated_delivery: ''
+  })
   const { user } = useAuth()
 
   useEffect(() => {
@@ -118,6 +129,56 @@ const AdminDashboard = () => {
       toast({
         title: 'Error',
         description: 'Failed to update order status',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleMarkAsShipped = (orderId: string) => {
+    setSelectedOrderId(orderId)
+    setShippingDialogOpen(true)
+  }
+
+  const handleShippingSubmit = async () => {
+    if (!selectedOrderId || !shippingForm.vendor_name || !shippingForm.shipped_at) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all required fields',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      // Create shipment details
+      const { error: shipmentError } = await supabase
+        .from('shipment_details')
+        .insert({
+          order_id: selectedOrderId,
+          vendor_name: shippingForm.vendor_name,
+          shipped_at: shippingForm.shipped_at,
+          status: 'shipped'
+        })
+
+      if (shipmentError) throw shipmentError
+
+      // Update order status
+      await updateOrderStatus(selectedOrderId, 'shipped')
+
+      // Reset form and close dialog
+      setShippingForm({ vendor_name: '', shipped_at: '', estimated_delivery: '' })
+      setShippingDialogOpen(false)
+      setSelectedOrderId(null)
+
+      toast({
+        title: 'Success',
+        description: 'Order marked as shipped successfully',
+      })
+    } catch (error) {
+      console.error('Error marking order as shipped:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to mark order as shipped',
         variant: 'destructive',
       })
     }
@@ -454,10 +515,10 @@ const AdminDashboard = () => {
                               Mark as Confirmed
                             </DropdownMenuItem>
                             <DropdownMenuItem 
-                              onClick={() => updateOrderStatus(order.id, 'shipped')}
+                              onClick={() => handleMarkAsShipped(order.id)}
                               className="gap-2"
                             >
-                              <Package className="w-4 h-4" />
+                              <Truck className="w-4 h-4" />
                               Mark as Shipped
                             </DropdownMenuItem>
                             <DropdownMenuItem 
@@ -496,6 +557,61 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Shipping Details Dialog */}
+      <Dialog open={shippingDialogOpen} onOpenChange={setShippingDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Truck className="w-5 h-5" />
+              Mark Order as Shipped
+            </DialogTitle>
+            <DialogDescription>
+              Enter the shipping details for this order.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="vendor_name">Courier/Shipping Provider *</Label>
+              <Input
+                id="vendor_name"
+                value={shippingForm.vendor_name}
+                onChange={(e) => setShippingForm(prev => ({ ...prev, vendor_name: e.target.value }))}
+                placeholder="e.g., BlueDart, FedEx, DTDC"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="shipped_at">Shipping Date *</Label>
+              <Input
+                id="shipped_at"
+                type="datetime-local"
+                value={shippingForm.shipped_at}
+                onChange={(e) => setShippingForm(prev => ({ ...prev, shipped_at: e.target.value }))}
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="estimated_delivery">Estimated Delivery Date</Label>
+              <Input
+                id="estimated_delivery"
+                type="date"
+                value={shippingForm.estimated_delivery}
+                onChange={(e) => setShippingForm(prev => ({ ...prev, estimated_delivery: e.target.value }))}
+                placeholder="Optional"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShippingDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleShippingSubmit}>
+              Mark as Shipped
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
