@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
-import { Search, Truck, Package, MapPin, Calendar, ExternalLink, AlertCircle } from 'lucide-react';
+import { Search, Truck, Package, MapPin, Calendar, ExternalLink, AlertCircle, Clock } from 'lucide-react';
 
 interface ShipmentDetail {
   id: string;
@@ -245,73 +245,132 @@ const ShippingDetails = () => {
 
         {/* Shipping Details */}
         {searched && orderInfo && shipmentDetails && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Truck className="h-5 w-5" />
-                Shipping Details
+          <Card className="border border-border/60 shadow-sm">
+            <CardHeader className="border-b border-border/40 bg-gradient-to-r from-primary/5 to-primary/10">
+              <CardTitle className="flex items-center gap-3 text-xl">
+                <div className="p-2 bg-primary/15 rounded-lg">
+                  <Truck className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <span className="text-foreground">Shipping Information</span>
+                  <p className="text-sm font-normal text-muted-foreground mt-1">
+                    Track your order delivery status and details
+                  </p>
+                </div>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Status and Vendor */}
-              <div className="flex flex-wrap items-center gap-4">
-                <Badge className={getStatusColor(shipmentDetails.status)}>
-                  {getStatusIcon(shipmentDetails.status)}
-                  {shipmentDetails.status.replace('_', ' ').toUpperCase()}
-                </Badge>
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Shipping Vendor</Label>
-                  <p className="font-medium">{shipmentDetails.vendor_name}</p>
+            <CardContent className="p-8 space-y-8">
+              {/* Status Banner */}
+              <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 p-6 border border-primary/20">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-white rounded-full shadow-sm">
+                      {getStatusIcon(shipmentDetails.status)}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <Badge className={`${getStatusColor(shipmentDetails.status)} px-3 py-1 text-sm font-semibold`}>
+                          {shipmentDetails.status.replace('_', ' ').toUpperCase()}
+                        </Badge>
+                      </div>
+                      <h3 className="text-lg font-semibold text-foreground">
+                        Your order is {shipmentDetails.status.replace('_', ' ').toLowerCase()}
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
+                        Order {orderInfo.order_number} • {shipmentDetails.vendor_name}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Tracking Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {shipmentDetails.tracking_number && (
-                  <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Tracking Number</Label>
-                    <p className="font-mono text-sm bg-muted p-2 rounded">
-                      {shipmentDetails.tracking_number}
-                    </p>
-                  </div>
-                )}
-                {shipmentDetails.pod_number && (
-                  <div>
-                    <Label className="text-sm font-medium text-muted-foreground">POD Number</Label>
-                    <p className="font-mono text-sm bg-muted p-2 rounded">
-                      {shipmentDetails.pod_number}
-                    </p>
-                  </div>
-                )}
-              </div>
+              {/* Shipping Timeline */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <h4 className="text-lg font-semibold flex items-center gap-2 text-foreground">
+                    <Calendar className="h-5 w-5 text-primary" />
+                    Shipping Timeline
+                  </h4>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4 p-4 bg-muted/30 rounded-lg border border-border/40">
+                      <div className="p-2 bg-primary/15 rounded-lg mt-1">
+                        <Truck className="h-4 w-4 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm font-semibold text-foreground">Shipped</Label>
+                        <p className="text-foreground font-medium mt-1">
+                          {formatDate(shipmentDetails.shipped_at)}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Your order has been picked up by {shipmentDetails.vendor_name}
+                        </p>
+                      </div>
+                    </div>
 
-              {/* Dates */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Shipped At</Label>
-                  <p className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    {formatDate(shipmentDetails.shipped_at)}
-                  </p>
+                    <div className="flex items-start gap-4 p-4 bg-muted/20 rounded-lg border border-border/30">
+                      <div className="p-2 bg-muted rounded-lg mt-1">
+                        <Package className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm font-semibold text-foreground">Expected Delivery</Label>
+                        <p className="text-foreground font-medium mt-1">
+                          {shipmentDetails.delivered_at ? formatDate(shipmentDetails.delivered_at) : 'Estimated delivery date not available'}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {shipmentDetails.delivered_at ? 'Order delivered successfully' : 'We\'ll update you once delivered'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Delivered At</Label>
-                  <p className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    {formatDate(shipmentDetails.delivered_at)}
-                  </p>
+
+                <div className="space-y-6">
+                  <h4 className="text-lg font-semibold flex items-center gap-2 text-foreground">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    Carrier Details
+                  </h4>
+                  
+                  <div className="space-y-4">
+                    <div className="p-4 bg-muted/30 rounded-lg border border-border/40">
+                      <Label className="text-sm font-medium text-muted-foreground">Shipping Carrier</Label>
+                      <p className="text-lg font-semibold text-foreground mt-1">{shipmentDetails.vendor_name}</p>
+                    </div>
+
+                    {shipmentDetails.tracking_number && (
+                      <div className="p-4 bg-muted/30 rounded-lg border border-border/40">
+                        <Label className="text-sm font-medium text-muted-foreground">Tracking Number</Label>
+                        <p className="font-mono text-sm bg-white p-3 rounded border mt-2 text-foreground font-medium">
+                          {shipmentDetails.tracking_number}
+                        </p>
+                      </div>
+                    )}
+
+                    {shipmentDetails.pod_number && (
+                      <div className="p-4 bg-muted/30 rounded-lg border border-border/40">
+                        <Label className="text-sm font-medium text-muted-foreground">POD Number</Label>
+                        <p className="font-mono text-sm bg-white p-3 rounded border mt-2 text-foreground font-medium">
+                          {shipmentDetails.pod_number}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Tracking Link */}
               {shipmentDetails.tracking_link && (
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Track Your Package</Label>
-                  <div className="mt-2">
+                <div className="p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-lg font-semibold text-foreground mb-2">Real-time Tracking</h4>
+                      <p className="text-muted-foreground text-sm">
+                        Get live updates on your package location and delivery status
+                      </p>
+                    </div>
                     <Button 
                       asChild 
-                      variant="outline" 
-                      className="w-full md:w-auto"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3"
                     >
                       <a 
                         href={shipmentDetails.tracking_link} 
@@ -319,7 +378,7 @@ const ShippingDetails = () => {
                         rel="noopener noreferrer"
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />
-                        Track on {shipmentDetails.vendor_name} Website
+                        Track Live
                       </a>
                     </Button>
                   </div>
@@ -327,9 +386,14 @@ const ShippingDetails = () => {
               )}
 
               {/* Last Updated */}
-              <div className="pt-4 border-t">
-                <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
-                <p className="text-sm">{formatDate(shipmentDetails.updated_at)}</p>
+              <div className="pt-6 border-t border-border/40 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  <span>Information last updated: {formatDate(shipmentDetails.updated_at)}</span>
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  Live Data
+                </Badge>
               </div>
             </CardContent>
           </Card>
