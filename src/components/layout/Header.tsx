@@ -25,6 +25,7 @@ const Header = () => {
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
     { name: 'Contact Us', href: '/contact' },
+    { name: 'Shipping Details', href: '/shipping' },
     { name: 'Track Order', href: '/track-order' },
     { name: 'Warranty Registration', href: '/warranty-registration' },
   ];
