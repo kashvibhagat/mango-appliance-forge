@@ -45,11 +45,16 @@ const ShippingDetails = () => {
     setLoading(true);
     setSearched(true);
     try {
+      const searchValue = orderId.trim();
+      
+      // Determine if searching by order number or order ID
+      const isOrderNumber = searchValue.startsWith('MNG-ORD-');
+      
       // First, get the order information
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .select('id, order_number, status, customer_name, customer_email, created_at')
-        .eq('id', orderId.trim())
+        .eq(isOrderNumber ? 'order_number' : 'id', searchValue)
         .maybeSingle();
 
       if (orderError && orderError.code !== 'PGRST116') {
@@ -59,7 +64,9 @@ const ShippingDetails = () => {
       if (!orderData) {
         toast({
           title: "Order not found",
-          description: "No order found with the provided ID. Please check the order ID and try again.",
+          description: isOrderNumber 
+            ? "No order found with the provided order number. Please check the order number and try again."
+            : "No order found with the provided ID. Please check the order ID and try again.",
           variant: "destructive"
         });
         setOrderInfo(null);
@@ -69,11 +76,11 @@ const ShippingDetails = () => {
 
       setOrderInfo(orderData);
 
-      // Then get the shipment details
+      // Then get the shipment details using the actual order ID
       const { data: shipmentData, error: shipmentError } = await supabase
         .from('shipment_details')
         .select('*')
-        .eq('order_id', orderId.trim())
+        .eq('order_id', orderData.id)
         .maybeSingle();
 
       if (shipmentError && shipmentError.code !== 'PGRST116') {
@@ -182,11 +189,11 @@ const ShippingDetails = () => {
                   id="orderId"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
-                  placeholder="Enter order ID (e.g., uuid format)"
+                  placeholder="Enter order number (e.g., MNG-ORD-182333) or order ID"
                   required
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  Enter the complete order ID as provided in your order confirmation.
+                  Enter either the order number (MNG-ORD-XXXXXX) or the complete order ID.
                 </p>
               </div>
               
