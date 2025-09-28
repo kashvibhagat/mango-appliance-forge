@@ -19,7 +19,6 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import TrackOrder from "./pages/TrackOrder";
-import ShippingDetails from "./pages/ShippingDetails";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
@@ -169,19 +168,17 @@ const router = createBrowserRouter([
   {
     path: "/track-order",
     element: (
-      <ProtectedRoute>
-        <Layout>
-          <PageTransition><TrackOrder /></PageTransition>
-          <FloatingChatbot hideFloatingButton={true} />
-        </Layout>
-      </ProtectedRoute>
+      <Layout>
+        <PageTransition><TrackOrder /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
     ),
   },
   {
     path: "/shipping-details",
     element: (
       <Layout>
-        <PageTransition><ShippingDetails /></PageTransition>
+        <PageTransition><TrackOrder /></PageTransition>
         <FloatingChatbot hideFloatingButton={true} />
       </Layout>
     ),
