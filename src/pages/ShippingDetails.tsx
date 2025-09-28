@@ -204,134 +204,6 @@ const ShippingDetails = () => {
           </CardContent>
         </Card>
 
-        {/* Order Information */}
-        {searched && orderInfo && (
-          <Card className="border border-border/60 shadow-sm animate-fade-in">
-            <CardHeader className="border-b border-border/40 bg-gradient-to-r from-muted/30 to-muted/10">
-              <CardTitle className="flex items-center gap-3 text-xl">
-                <div className="p-2 bg-primary/15 rounded-lg">
-                  <Receipt className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <span className="text-foreground">Order Details</span>
-                  <p className="text-sm font-normal text-muted-foreground mt-1">
-                    Your order summary and current status
-                  </p>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Left Column */}
-                <div className="space-y-6">
-                  <div className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl border border-primary/20 hover-scale">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 bg-white rounded-full shadow-sm">
-                        <Receipt className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                          Order Number
-                        </Label>
-                        <p className="text-2xl font-bold font-mono text-foreground mt-2 tracking-wide">
-                          {orderInfo.order_number}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Reference this number for any inquiries
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {orderInfo.customer_name && (
-                    <div className="p-6 bg-muted/30 rounded-xl border border-border/40 hover-scale">
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 bg-white rounded-full shadow-sm">
-                          <User className="h-5 w-5 text-primary" />
-                        </div>
-                        <div className="flex-1">
-                          <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                            Customer
-                          </Label>
-                          <p className="text-xl font-semibold text-foreground mt-2 capitalize">
-                            {orderInfo.customer_name}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-2">
-                            Order placed by this customer
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Right Column */}
-                <div className="space-y-6">
-                  <div className="p-6 bg-gradient-to-br from-success/5 to-success/10 rounded-xl border border-success/20 hover-scale">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 bg-white rounded-full shadow-sm">
-                        {getStatusIcon(orderInfo.status)}
-                      </div>
-                      <div className="flex-1">
-                        <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                          Current Status
-                        </Label>
-                        <div className="mt-3">
-                          <Badge className={`${getStatusColor(orderInfo.status)} px-4 py-2 text-sm font-bold`}>
-                            {orderInfo.status.replace('_', ' ').toUpperCase()}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-3">
-                          {orderInfo.status === 'shipped' 
-                            ? 'Your order is on its way'
-                            : orderInfo.status === 'delivered'
-                            ? 'Successfully delivered'
-                            : orderInfo.status === 'pending'
-                            ? 'Being processed by our team'
-                            : 'Order confirmed and ready'
-                          }
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-6 bg-muted/30 rounded-xl border border-border/40 hover-scale">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 bg-white rounded-full shadow-sm">
-                        <Calendar className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                          Order Placed
-                        </Label>
-                        <p className="text-xl font-semibold text-foreground mt-2">
-                          {formatDate(orderInfo.created_at)}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Thank you for choosing us
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Order Summary Footer */}
-              <div className="mt-8 pt-6 border-t border-border/40">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <div className="h-2 w-2 bg-success rounded-full animate-pulse"></div>
-                    <span>Order tracking is live and updated in real-time</span>
-                  </div>
-                  <Badge variant="outline" className="text-xs font-medium">
-                    Order #{orderInfo.order_number.split('-').pop()}
-                  </Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Shipping Details */}
         {searched && orderInfo && shipmentDetails && (
           <Card className="border border-border/60 shadow-sm">
@@ -501,6 +373,134 @@ const ShippingDetails = () => {
                 <Badge variant="outline" className="text-xs">
                   Live Data
                 </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Order Information */}
+        {searched && orderInfo && (
+          <Card className="border border-border/60 shadow-sm animate-fade-in">
+            <CardHeader className="border-b border-border/40 bg-gradient-to-r from-muted/30 to-muted/10">
+              <CardTitle className="flex items-center gap-3 text-xl">
+                <div className="p-2 bg-primary/15 rounded-lg">
+                  <Receipt className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <span className="text-foreground">Order Details</span>
+                  <p className="text-sm font-normal text-muted-foreground mt-1">
+                    Your order summary and current status
+                  </p>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Left Column */}
+                <div className="space-y-6">
+                  <div className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl border border-primary/20 hover-scale">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-white rounded-full shadow-sm">
+                        <Receipt className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                          Order Number
+                        </Label>
+                        <p className="text-2xl font-bold font-mono text-foreground mt-2 tracking-wide">
+                          {orderInfo.order_number}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Reference this number for any inquiries
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {orderInfo.customer_name && (
+                    <div className="p-6 bg-muted/30 rounded-xl border border-border/40 hover-scale">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-white rounded-full shadow-sm">
+                          <User className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                            Customer
+                          </Label>
+                          <p className="text-xl font-semibold text-foreground mt-2 capitalize">
+                            {orderInfo.customer_name}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Order placed by this customer
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Column */}
+                <div className="space-y-6">
+                  <div className="p-6 bg-gradient-to-br from-success/5 to-success/10 rounded-xl border border-success/20 hover-scale">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-white rounded-full shadow-sm">
+                        {getStatusIcon(orderInfo.status)}
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                          Current Status
+                        </Label>
+                        <div className="mt-3">
+                          <Badge className={`${getStatusColor(orderInfo.status)} px-4 py-2 text-sm font-bold`}>
+                            {orderInfo.status.replace('_', ' ').toUpperCase()}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-3">
+                          {orderInfo.status === 'shipped' 
+                            ? 'Your order is on its way'
+                            : orderInfo.status === 'delivered'
+                            ? 'Successfully delivered'
+                            : orderInfo.status === 'pending'
+                            ? 'Being processed by our team'
+                            : 'Order confirmed and ready'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-6 bg-muted/30 rounded-xl border border-border/40 hover-scale">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-white rounded-full shadow-sm">
+                        <Calendar className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                          Order Placed
+                        </Label>
+                        <p className="text-xl font-semibold text-foreground mt-2">
+                          {formatDate(orderInfo.created_at)}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Thank you for choosing us
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Order Summary Footer */}
+              <div className="mt-8 pt-6 border-t border-border/40">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="h-2 w-2 bg-success rounded-full animate-pulse"></div>
+                    <span>Order tracking is live and updated in real-time</span>
+                  </div>
+                  <Badge variant="outline" className="text-xs font-medium">
+                    Order #{orderInfo.order_number.split('-').pop()}
+                  </Badge>
+                </div>
               </div>
             </CardContent>
           </Card>
