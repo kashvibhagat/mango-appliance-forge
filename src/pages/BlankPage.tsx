@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Package, 
   TrendingUp, 
@@ -18,7 +19,9 @@ import {
   AlertCircle,
   MoreHorizontal,
   Filter,
-  Truck
+  Truck,
+  Shield,
+  FileText
 } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -285,9 +288,24 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <div className="container mx-auto max-w-7xl px-6 py-8 space-y-8">
+      <div className="container mx-auto max-w-7xl px-6 py-8">
+        
+        {/* Navigation Tabs */}
+        <Tabs defaultValue="orders" className="space-y-8">
+          <TabsList className="grid w-full max-w-md grid-cols-2 h-12">
+            <TabsTrigger value="orders" className="gap-2">
+              <Package className="w-4 h-4" />
+              Order Management
+            </TabsTrigger>
+            <TabsTrigger value="warranty" className="gap-2">
+              <Shield className="w-4 h-4" />
+              Warranty Management
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Professional Stats Grid */}
+          {/* Orders Tab Content */}
+          <TabsContent value="orders" className="space-y-8">
+            {/* Professional Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
           <Card className="bg-white border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 group">
             <CardContent className="p-6">
@@ -578,6 +596,42 @@ const AdminDashboard = () => {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
+
+          {/* Warranty Tab Content */}
+          <TabsContent value="warranty" className="space-y-6">
+            <Card className="bg-white border border-border/60 shadow-sm">
+              <CardHeader className="border-b border-border/40 bg-muted/20">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Shield className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl font-semibold text-foreground">
+                      Warranty Management
+                    </CardTitle>
+                    <CardDescription className="text-muted-foreground">
+                      View and manage product warranty registrations
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-center py-12">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
+                    <FileText className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    Warranty registrations will appear here
+                  </h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    Once customers register their products for warranty, you'll be able to view and manage all warranty claims and registrations from this section.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Shipping Details Dialog */}
