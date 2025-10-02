@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { CheckCircle, XCircle, Clock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 
@@ -17,8 +18,36 @@ const WarrantyRegistration = () => {
     billFile: null as File | null
   });
   const [loading, setLoading] = useState(false);
+  const [warranties, setWarranties] = useState<any[]>([]);
+  const [loadingWarranties, setLoadingWarranties] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      fetchUserWarranties();
+    }
+  }, [user]);
+
+  const fetchUserWarranties = async () => {
+    if (!user) return;
+    
+    try {
+      setLoadingWarranties(true);
+      const { data, error } = await supabase
+        .from('warranty_registrations')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setWarranties(data || []);
+    } catch (error) {
+      console.error('Error fetching warranties:', error);
+    } finally {
+      setLoadingWarranties(false);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -106,13 +135,16 @@ const WarrantyRegistration = () => {
         description: 'Warranty request sent successfully! Admin will review your registration.',
       });
       
-      // Reset form
+      // Reset form and refresh warranties
       setFormData({
         serialNumber: '',
         productModel: '',
         dateOfPurchase: '',
         billFile: null
       });
+      
+      // Refresh warranties list
+      fetchUserWarranties();
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -125,8 +157,102 @@ const WarrantyRegistration = () => {
   };
 
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return (
+          <div className="flex items-center gap-2 text-success">
+            <CheckCircle className="w-5 h-5" />
+            <span className="font-semibold">Warranty Accepted</span>
+          </div>
+        );
+      case 'rejected':
+        return (
+          <div className="flex items-center gap-2 text-destructive">
+            <XCircle className="w-5 h-5" />
+            <span className="font-semibold">Warranty Denied</span>
+          </div>
+        );
+      default:
+        return (
+          <div className="flex items-center gap-2 text-warning">
+            <Clock className="w-5 h-5" />
+            <span className="font-semibold">Pending Review</span>
+          </div>
+        );
+    }
+  };
+
   return (
-    <div className="container mx-auto py-8 px-4 max-w-2xl">
+    <div className="container mx-auto py-8 px-4 max-w-4xl">
+      {/* Previous Warranty Registrations */}
+      {user && warranties.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Your Warranty Status</h2>
+          <div className="space-y-4">
+            {warranties.map((warranty) => (
+              <Card key={warranty.id} className={
+                warranty.status === 'approved' ? 'border-success bg-success/5' :
+                warranty.status === 'rejected' ? 'border-destructive bg-destructive/5' :
+                'border-warning bg-warning/5'
+              }>
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    {getStatusBadge(warranty.status)}
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(warranty.created_at).toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric'
+                      })}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Product:</span>
+                      <p className="font-medium">{warranty.product_model}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Serial Number:</span>
+                      <p className="font-medium font-mono">{warranty.serial_number}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Purchase Date:</span>
+                      <p className="font-medium">
+                        {new Date(warranty.date_of_purchase).toLocaleDateString('en-IN')}
+                      </p>
+                    </div>
+                  </div>
+
+                  {warranty.status === 'approved' && (
+                    <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg">
+                      <p className="text-sm text-success font-medium">
+                        ✓ You have successfully claimed warranty for this product
+                      </p>
+                    </div>
+                  )}
+
+                  {warranty.status === 'rejected' && (
+                    <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                      <p className="text-sm text-destructive font-medium">
+                        ✗ Warranty claim has been denied
+                      </p>
+                      {warranty.admin_notes && (
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Note: {warranty.admin_notes}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* New Warranty Registration Form */}
       <Card>
         <CardHeader>
           <CardTitle>Warranty Registration</CardTitle>

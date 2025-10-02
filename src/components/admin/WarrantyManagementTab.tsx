@@ -252,36 +252,31 @@ export const WarrantyManagementTab = () => {
                       </div>
                     </TableCell>
                     <TableCell className="py-4">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline" size="sm">
-                            Actions
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem 
+                      {warranty.status === 'pending' ? (
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
                             onClick={() => updateWarrantyStatus(warranty.id, 'approved', true)}
-                            className="gap-2"
+                            className="bg-success hover:bg-success/90 text-white gap-1"
                           >
                             <CheckCircle className="w-4 h-4" />
-                            Approve
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
+                            Accept
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
                             onClick={() => updateWarrantyStatus(warranty.id, 'rejected', false)}
-                            className="gap-2 text-destructive focus:text-destructive"
+                            className="gap-1"
                           >
                             <XCircle className="w-4 h-4" />
-                            Reject
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => handleAddNotes(warranty)}
-                            className="gap-2"
-                          >
-                            <FileText className="w-4 h-4" />
-                            Add Notes
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            Deny
+                          </Button>
+                        </div>
+                      ) : (
+                        <Badge className={`${getStatusColor(warranty.status)} capitalize`}>
+                          {warranty.status}
+                        </Badge>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
