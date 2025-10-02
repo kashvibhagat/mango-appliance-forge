@@ -4,6 +4,39 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  * {
+    /* Reduce animations on mobile for better performance */
+    animation-duration: 0.3s !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Disable blur effects on mobile */
+  .blur-xl, .blur-2xl, .blur-3xl {
+    filter: none !important;
+  }
+  
+  /* Optimize transforms for mobile */
+  [class*="translate"], [class*="scale"], [class*="animate"] {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Mango Appliances Design System - Light Theme */
 
 @layer base {
@@ -91,28 +124,64 @@
   /* Enhanced Button Variants */
   .btn-hero {
     background: var(--gradient-brand);
-    @apply text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 relative overflow-hidden;
+    @apply text-white border-0 shadow-lg transition-all duration-300 relative overflow-hidden touch-manipulation;
+  }
+  
+  @media (min-width: 768px) {
+    .btn-hero {
+      @apply hover:shadow-xl hover:scale-105;
+    }
   }
   
   .btn-hero::before {
     content: '';
-    @apply absolute inset-0 bg-white/20 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700 ease-out;
+    @apply absolute inset-0 bg-white/20 translate-x-[-100%] transition-transform duration-700 ease-out;
+  }
+  
+  @media (min-width: 768px) {
+    .btn-hero:hover::before {
+      transform: translateX(100%);
+    }
   }
   
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary/90 hover:shadow-lg hover:scale-[1.02] transition-all duration-300;
+    @apply bg-secondary text-secondary-foreground border border-secondary transition-all duration-300 touch-manipulation;
+  }
+  
+  @media (min-width: 768px) {
+    .btn-secondary {
+      @apply hover:bg-secondary/90 hover:shadow-lg hover:scale-[1.02];
+    }
   }
   
   .btn-ghost {
-    @apply bg-transparent text-muted-foreground hover:text-foreground hover:bg-card/30 hover:scale-[1.02] transition-all duration-300;
+    @apply bg-transparent text-muted-foreground transition-all duration-300 touch-manipulation;
+  }
+  
+  @media (min-width: 768px) {
+    .btn-ghost {
+      @apply hover:text-foreground hover:bg-card/30 hover:scale-[1.02];
+    }
   }
   
   .btn-outline-glow {
-    @apply border-2 border-primary/30 bg-transparent text-primary hover:bg-primary hover:text-primary-foreground hover:shadow-brand hover:scale-[1.02] transition-all duration-300;
+    @apply border-2 border-primary/30 bg-transparent text-primary transition-all duration-300 touch-manipulation;
+  }
+  
+  @media (min-width: 768px) {
+    .btn-outline-glow {
+      @apply hover:bg-primary hover:text-primary-foreground hover:shadow-brand hover:scale-[1.02];
+    }
   }
   
   .btn-floating {
-    @apply fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300;
+    @apply fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 shadow-lg transition-all duration-300 touch-manipulation min-h-[44px] min-w-[44px];
+  }
+  
+  @media (min-width: 768px) {
+    .btn-floating {
+      @apply hover:shadow-xl hover:scale-110;
+    }
   }
   
   /* Enhanced Card Variants */
@@ -121,11 +190,23 @@
   }
   
   .card-hover {
-    @apply hover:shadow-xl hover:scale-[1.02] hover:shadow-brand transition-all duration-300 hover:-translate-y-1;
+    @apply transition-all duration-300;
+  }
+  
+  @media (min-width: 768px) {
+    .card-hover {
+      @apply hover:shadow-xl hover:scale-[1.02] hover:shadow-brand hover:-translate-y-1;
+    }
   }
   
   .card-interactive {
-    @apply cursor-pointer hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-2 transition-all duration-500 hover:shadow-accent/20;
+    @apply cursor-pointer transition-all duration-300;
+  }
+  
+  @media (min-width: 768px) {
+    .card-interactive {
+      @apply hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-2 hover:shadow-accent/20;
+    }
   }
   
   .card-floating {
@@ -185,34 +266,36 @@
     transition: opacity 200ms;
   }
 
-  /* 3D Card Effects */
-  .card-3d {
-    perspective: 1000px;
-    transform-style: preserve-3d;
-    @apply transition-all duration-300;
-  }
-  
-  .card-3d:hover {
-    transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
-  }
-  
-  .card-perspective {
-    @apply transition-all duration-500 ease-out;
-    transform-style: preserve-3d;
-  }
-  
-  .card-perspective:hover {
-    transform: perspective(1000px) rotateY(-10deg) rotateX(5deg) translateZ(30px);
-  }
+  /* 3D Card Effects - Desktop Only */
+  @media (min-width: 768px) {
+    .card-3d {
+      perspective: 1000px;
+      transform-style: preserve-3d;
+      @apply transition-all duration-300;
+    }
+    
+    .card-3d:hover {
+      transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
+    }
+    
+    .card-perspective {
+      @apply transition-all duration-500 ease-out;
+      transform-style: preserve-3d;
+    }
+    
+    .card-perspective:hover {
+      transform: perspective(1000px) rotateY(-10deg) rotateX(5deg) translateZ(30px);
+    }
 
-  /* Product Image 3D Rotation */
-  .product-image-3d {
-    @apply transition-all duration-700 ease-out;
-    transform-style: preserve-3d;
-  }
-  
-  .product-image-3d:hover {
-    transform: perspective(1000px) rotateY(15deg) rotateX(-5deg) scale(1.05);
+    /* Product Image 3D Rotation */
+    .product-image-3d {
+      @apply transition-all duration-700 ease-out;
+      transform-style: preserve-3d;
+    }
+    
+    .product-image-3d:hover {
+      transform: perspective(1000px) rotateY(15deg) rotateX(-5deg) scale(1.05);
+    }
   }
 
   /* Stagger animation for lists */
