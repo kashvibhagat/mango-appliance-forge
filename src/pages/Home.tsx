@@ -16,72 +16,14 @@ import industrialCoolersCategory from '@/assets/industrial-coolers-category.jpg'
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [isVisible, setIsVisible] = useState({});
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const elementsRef = useRef<Map<string, HTMLElement>>(new Map());
-
   const totalSlides = Math.ceil(mangoFeaturedProducts.length / 4);
-
-  // Intersection Observer for scroll animations
-  useEffect(() => {
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const id = entry.target.getAttribute('data-animate-id');
-          if (id) {
-            setIsVisible(prev => ({
-              ...prev,
-              [id]: entry.isIntersecting
-            }));
-          }
-        });
-      },
-      { 
-        threshold: 0.1,
-        rootMargin: '-50px 0px'
-      }
-    );
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, []);
-
-  const setElementRef = (id: string) => (element: HTMLElement | null) => {
-    if (element) {
-      elementsRef.current.set(id, element);
-      observerRef.current?.observe(element);
-    } else {
-      const existingElement = elementsRef.current.get(id);
-      if (existingElement) {
-        observerRef.current?.unobserve(existingElement);
-        elementsRef.current.delete(id);
-      }
-    }
-  };
-
-  // Auto-play carousel
-  useEffect(() => {
-    if (!isAutoPlaying || totalSlides <= 1) return;
-    
-    const interval = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % totalSlides);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, totalSlides]);
 
   const nextSlide = () => {
     setCurrentSlide(prev => (prev + 1) % totalSlides);
-    setIsAutoPlaying(false);
   };
 
   const prevSlide = () => {
     setCurrentSlide(prev => (prev - 1 + totalSlides) % totalSlides);
-    setIsAutoPlaying(false);
   };
 
   const features = [
@@ -182,34 +124,11 @@ const Home = () => {
 
   return (
     <div className="relative">
-      {/* Floating Elements Background - Hidden on mobile for performance */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 hidden md:block">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-accent/5 rounded-full blur-xl animate-float" style={{ animationDelay: '0s' }} />
-        <div className="absolute top-40 right-20 w-24 h-24 bg-brand/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-32 left-32 w-40 h-40 bg-accent/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
-        <div className="absolute bottom-20 right-10 w-28 h-28 bg-brand/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '6s' }} />
-      </div>
-
-      <div className="relative z-10">
         {/* Hero Section */}
-        <section className="relative bg-gradient-hero py-12 md:py-20 lg:py-32 overflow-hidden">
-          {/* Animated Background Elements - Simplified on mobile */}
-          <div className="absolute inset-0 overflow-hidden hidden md:block">
-            <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-radial from-accent/10 to-transparent rounded-full animate-pulse-glow" />
-            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-radial from-brand/10 to-transparent rounded-full animate-pulse-glow" style={{ animationDelay: '2s' }} />
-          </div>
-
+        <section className="relative bg-gradient-hero py-12 md:py-20 lg:py-32">
           <div className="container mx-auto px-4 relative">
             <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-              <div 
-                ref={setElementRef('hero-content')}
-                data-animate-id="hero-content"
-                className={`space-y-6 md:space-y-8 transition-all duration-700 md:duration-1000 ${
-                  isVisible['hero-content'] 
-                    ? 'opacity-100 translate-x-0' 
-                    : 'opacity-0 md:translate-x-12'
-                }`}
-              >
+              <div className="space-y-6 md:space-y-8">
               <div className="space-y-3 md:space-y-4">
                 <Badge className="bg-accent/20 text-accent border-accent/30">
                   <Zap className="h-3 w-3 mr-1" />
@@ -217,7 +136,7 @@ const Home = () => {
                 </Badge>
                 <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-foreground leading-tight">
                   <span className="inline-block">Beat the Heat with</span>{' '}
-                  <span className="inline-block bg-gradient-brand bg-clip-text text-transparent md:hover:scale-105 transition-transform cursor-default">
+                  <span className="inline-block bg-gradient-brand bg-clip-text text-transparent">
                     {companyInfo.brand}
                   </span>
                 </h1>
@@ -229,59 +148,44 @@ const Home = () => {
 
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <Link to="/shop" className="w-full sm:w-auto">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto group relative overflow-hidden">
-                    <span className="relative z-10 flex items-center justify-center">
-                      Shop Air Coolers
-                      <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-brand/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <Button variant="hero" size="lg" className="w-full sm:w-auto">
+                    Shop Air Coolers
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
                 <Link to="/shop?category=spare-parts" className="w-full sm:w-auto">
-                  <Button variant="outline-glow" size="lg" className="w-full sm:w-auto group relative overflow-hidden">
-                    <span className="relative z-10">View Spare Parts</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 md:duration-1000" />
+                  <Button variant="outline-glow" size="lg" className="w-full sm:w-auto">
+                    View Spare Parts
                   </Button>
                 </Link>
               </div>
 
               {/* Company Stats */}
               <div className="grid grid-cols-2 gap-4 md:gap-6 pt-6 md:pt-8">
-                <div className="text-center group cursor-default">
-                  <div className="text-xl md:text-2xl font-bold text-accent md:group-hover:scale-110 transition-transform duration-300">40+</div>
-                  <div className="text-xs md:text-sm text-muted-foreground md:group-hover:text-foreground transition-colors">Air Cooler Models</div>
+                <div className="text-center">
+                  <div className="text-xl md:text-2xl font-bold text-accent">40+</div>
+                  <div className="text-xs md:text-sm text-muted-foreground">Air Cooler Models</div>
                 </div>
-                <div className="text-center group cursor-default">
-                  <div className="text-xl md:text-2xl font-bold text-accent md:group-hover:scale-110 transition-transform duration-300">{companyInfo.experience}</div>
-                  <div className="text-xs md:text-sm text-muted-foreground md:group-hover:text-foreground transition-colors">Years Experience</div>
+                <div className="text-center">
+                  <div className="text-xl md:text-2xl font-bold text-accent">{companyInfo.experience}</div>
+                  <div className="text-xs md:text-sm text-muted-foreground">Years Experience</div>
                 </div>
+              </div>
               </div>
             </div>
 
-            <div 
-              ref={setElementRef('hero-image')}
-              data-animate-id="hero-image"
-              className={`relative mt-8 lg:mt-0 transition-all duration-700 md:duration-1000 ${
-                isVisible['hero-image'] 
-                  ? 'opacity-100 translate-x-0' 
-                  : 'opacity-0 md:translate-x-12'
-              }`}
-            >
-              <div className="relative z-10 group">
+            <div className="relative mt-8 lg:mt-0">
+              <div className="relative z-10">
                 <img
                   src={heroAirCooler}
                   alt="Premium Air Cooler Collection"
-                  className="w-full h-auto rounded-2xl shadow-2xl md:group-hover:shadow-3xl transition-all duration-300 md:duration-500 md:group-hover:scale-[1.02]"
+                  className="w-full h-auto rounded-2xl shadow-2xl"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-accent/20 via-transparent to-brand/20 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 md:duration-500" />
               </div>
-              <div className="absolute -top-4 -right-4 w-48 h-48 md:w-72 md:h-72 bg-accent/20 rounded-full blur-3xl animate-pulse-glow hidden md:block"></div>
-              <div className="absolute -bottom-4 -left-4 w-48 h-48 md:w-72 md:h-72 bg-brand/20 rounded-full blur-3xl animate-pulse-glow hidden md:block" style={{ animationDelay: '1s' }}></div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* Product Categories Grid */}
       <section className="py-12 md:py-20">
@@ -303,7 +207,7 @@ const Home = () => {
                   <img
                     src={desertCoolersCategory}
                     alt="Desert Coolers"
-                    className="w-full h-40 md:h-64 object-cover transition-transform duration-500 md:group-hover:scale-105"
+                    className="w-full h-40 md:h-64 object-cover"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -322,7 +226,7 @@ const Home = () => {
                   <img
                     src={industrialCoolersCategory}
                     alt="Industrial Coolers"
-                    className="w-full h-40 md:h-64 object-cover transition-transform duration-500 md:group-hover:scale-105"
+                    className="w-full h-40 md:h-64 object-cover"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -341,7 +245,7 @@ const Home = () => {
                   <img
                     src={personalCoolersCategory}
                     alt="Personal Coolers"
-                    className="w-full h-40 md:h-64 object-cover transition-transform duration-500 md:group-hover:scale-105"
+                    className="w-full h-40 md:h-64 object-cover"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -360,7 +264,7 @@ const Home = () => {
                   <img
                     src={towerCoolersCategory}
                     alt="Tower Coolers"
-                    className="w-full h-40 md:h-64 object-cover transition-transform duration-500 md:group-hover:scale-105"
+                    className="w-full h-40 md:h-64 object-cover"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -692,7 +596,6 @@ const Home = () => {
             </div>
           </div>
         </section>
-      </div>
     </div>
   );
 };
