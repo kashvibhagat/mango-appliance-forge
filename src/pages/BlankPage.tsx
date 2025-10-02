@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { WarrantyManagementTab } from '@/components/admin/WarrantyManagementTab'
 
 interface Order {
   id: string
@@ -600,36 +601,7 @@ const AdminDashboard = () => {
 
           {/* Warranty Tab Content */}
           <TabsContent value="warranty" className="space-y-6">
-            <Card className="bg-white border border-border/60 shadow-sm">
-              <CardHeader className="border-b border-border/40 bg-muted/20">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <Shield className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl font-semibold text-foreground">
-                      Warranty Management
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground">
-                      View and manage product warranty registrations
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="text-center py-12">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-                    <FileText className="w-8 h-8 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">
-                    Warranty registrations will appear here
-                  </h3>
-                  <p className="text-muted-foreground max-w-md mx-auto">
-                    Once customers register their products for warranty, you'll be able to view and manage all warranty claims and registrations from this section.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <WarrantyManagementTab />
           </TabsContent>
         </Tabs>
       </div>
