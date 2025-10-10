@@ -48,7 +48,7 @@ const Footer = () => {
                 { name: 'Shop All Products', href: '/shop' },
                 { name: 'Air Coolers', href: '/shop?category=air-coolers' },
                 { name: 'Spare Parts', href: '/shop?category=spare-parts' },
-                { name: 'About Us', href: '/about' },
+                { name: 'About Us', href: '/#about' },
                 { name: 'Contact', href: '/contact' },
                 { name: 'Track Order', href: '/track-order' },
               ].map((link) => (
