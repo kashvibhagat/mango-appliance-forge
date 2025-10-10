@@ -360,50 +360,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* About Us Section */}
-      <section id="about" className="py-20 scroll-mt-20">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
-                About {companyInfo.brand}
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                {companyInfo.name} is a {companyInfo.experience} experienced company specializing in evaporative air coolers. 
-                With {companyInfo.factories} in {companyInfo.location}, we've built a reputation for quality and innovation.
-              </p>
-              <p className="text-muted-foreground">
-                Our manufacturing facilities are {companyInfo.facilities} with an {companyInfo.team}. 
-                We maintain a strong {companyInfo.network} and have successfully expanded to international markets.
-              </p>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="flex items-center space-x-3">
-                  <Factory className="h-8 w-8 text-accent" />
-                  <div>
-                    <div className="font-semibold">{companyInfo.factories}</div>
-                    <div className="text-sm text-muted-foreground">Manufacturing Units</div>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Users className="h-8 w-8 text-accent" />
-                  <div>
-                    <div className="font-semibold">{companyInfo.experience}</div>
-                    <div className="text-sm text-muted-foreground">Experience</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="relative">
-              <img
-                src={heroLandscapeCoolers}
-                alt="About Mango Appliances"
-                className="w-full h-auto rounded-2xl shadow-lg"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Why Choose Us Section */}
       <section className="py-20 bg-card/30">
         <div className="container mx-auto px-4">
