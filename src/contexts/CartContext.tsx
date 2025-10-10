@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
 import { Product } from '@/types/product';
 import { toast } from '@/hooks/use-toast';
+import { SuccessConfetti } from '@/components/ui/SuccessConfetti';
 
 export interface CartItem {
   id: string;
@@ -102,6 +103,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     itemCount: 0,
   });
 
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [confettiMessage, setConfettiMessage] = useState({ title: '', message: '' });
+
   // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem(CART_STORAGE_KEY);
@@ -122,10 +126,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addItem = (product: Product, variant?: string) => {
     dispatch({ type: 'ADD_ITEM', payload: { product, variant } });
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+    
+    // Show confetti notification
+    setConfettiMessage({
+      title: '🎉 Added to Cart!',
+      message: `${product.name} has been added to your cart.`
     });
+    setShowConfetti(true);
   };
 
   const removeItem = (id: string) => {
@@ -159,6 +166,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }}
     >
       {children}
+      <SuccessConfetti
+        isVisible={showConfetti}
+        onClose={() => setShowConfetti(false)}
+        title={confettiMessage.title}
+        message={confettiMessage.message}
+        type="order"
+        autoClose={true}
+        autoCloseDelay={3000}
+      />
     </CartContext.Provider>
   );
 };
