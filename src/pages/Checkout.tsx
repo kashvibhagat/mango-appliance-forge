@@ -90,6 +90,7 @@ const Checkout = () => {
   const finalTotal = total + deliveryCharge + gst;
 
   const handleAddressSubmit = () => {
+    // Check if all required fields are filled
     if (!shippingAddress.name || !shippingAddress.email || !shippingAddress.phone || 
         !shippingAddress.address || !shippingAddress.city || !shippingAddress.pincode) {
       toast({
@@ -99,6 +100,40 @@ const Checkout = () => {
       });
       return;
     }
+
+    // Validate phone number (exactly 10 digits)
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(shippingAddress.phone)) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Please enter a valid 10-digit mobile number",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(shippingAddress.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate pincode (exactly 6 digits)
+    const pincodeRegex = /^[0-9]{6}$/;
+    if (!pincodeRegex.test(shippingAddress.pincode)) {
+      toast({
+        title: "Invalid Pincode",
+        description: "Please enter a valid 6-digit pincode",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setCurrentStep(2);
   };
 
@@ -245,8 +280,13 @@ const Checkout = () => {
                   <Label htmlFor="phone" className="text-sm">Phone Number *</Label>
                   <Input
                     id="phone"
+                    type="tel"
+                    maxLength={10}
                     value={shippingAddress.phone}
-                    onChange={(e) => setShippingAddress({...shippingAddress, phone: e.target.value})}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      setShippingAddress({...shippingAddress, phone: value});
+                    }}
                     placeholder="Enter 10-digit mobile number"
                     className="mt-1"
                   />
@@ -288,8 +328,13 @@ const Checkout = () => {
                     <Label htmlFor="pincode" className="text-sm">Pincode *</Label>
                     <Input
                       id="pincode"
+                      type="tel"
+                      maxLength={6}
                       value={shippingAddress.pincode}
-                      onChange={(e) => setShippingAddress({...shippingAddress, pincode: e.target.value})}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '');
+                        setShippingAddress({...shippingAddress, pincode: value});
+                      }}
                       placeholder="6-digit pincode"
                       className="mt-1"
                     />
