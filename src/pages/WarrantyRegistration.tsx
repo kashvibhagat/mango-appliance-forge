@@ -15,6 +15,8 @@ const WarrantyRegistration = () => {
     serialNumber: '',
     productModel: '',
     dateOfPurchase: '',
+    customerName: '',
+    customerMobile: '',
     billFile: null as File | null
   });
   const [loading, setLoading] = useState(false);
@@ -65,7 +67,7 @@ const WarrantyRegistration = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.serialNumber || !formData.productModel || !formData.dateOfPurchase) {
+    if (!formData.serialNumber || !formData.productModel || !formData.dateOfPurchase || !formData.customerName || !formData.customerMobile) {
       toast({
         title: 'Error',
         description: 'Please fill all required fields',
@@ -108,8 +110,8 @@ const WarrantyRegistration = () => {
           serial_number: formData.serialNumber,
           product_model: formData.productModel,
           date_of_purchase: formData.dateOfPurchase,
-          customer_name: user.email || 'Customer',
-          customer_mobile: '',
+          customer_name: formData.customerName,
+          customer_mobile: formData.customerMobile,
           bill_upload_url: billUploadUrl,
           status: 'pending'
         });
@@ -140,6 +142,8 @@ const WarrantyRegistration = () => {
         serialNumber: '',
         productModel: '',
         dateOfPurchase: '',
+        customerName: '',
+        customerMobile: '',
         billFile: null
       });
       
@@ -300,6 +304,31 @@ const WarrantyRegistration = () => {
                   value={formData.dateOfPurchase}
                   onChange={handleInputChange}
                   placeholder="dd-mm-yyyy"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="customerName">Customer Name</Label>
+                <Input
+                  id="customerName"
+                  name="customerName"
+                  value={formData.customerName}
+                  onChange={handleInputChange}
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="customerMobile">Mobile Number</Label>
+                <Input
+                  id="customerMobile"
+                  name="customerMobile"
+                  type="tel"
+                  value={formData.customerMobile}
+                  onChange={handleInputChange}
+                  placeholder="Enter your mobile number"
                   required
                 />
               </div>
