@@ -195,39 +195,6 @@ const Home = () => {
                 </div>
               </div>
             </div>
-
-              {/* Hero Image */}
-              <div className="relative mt-8 lg:mt-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                <div className="relative z-10 group">
-                  {/* Decorative gradient background */}
-                  <div className="absolute -inset-4 bg-gradient-brand opacity-20 blur-3xl group-hover:opacity-30 transition-opacity duration-500 rounded-3xl"></div>
-                  
-                  <div className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/50 group-hover:shadow-brand transition-all duration-500">
-                    <img
-                      src={heroAirCooler}
-                      alt="Premium Mango Air Cooler - Best cooling solution for homes and offices in India"
-                      className="w-full h-auto transform group-hover:scale-105 transition-transform duration-700"
-                      loading="eager"
-                      width="800"
-                      height="600"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  </div>
-
-                  {/* Floating badge */}
-                  <div className="absolute -bottom-6 -left-6 bg-background/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-border/50 animate-fade-in hidden md:block" style={{ animationDelay: '0.5s' }}>
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-success/10 rounded-xl">
-                        <Star className="h-6 w-6 text-success fill-success" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-lg">4.8/5</div>
-                        <div className="text-xs text-muted-foreground">Customer Rating</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
           </div>
         </section>
 
@@ -532,21 +499,13 @@ const Home = () => {
       {/* Latest News/Blog Section */}
       <section className="py-20 bg-card/30">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-            <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Latest News & Updates
-              </h2>
-              <p className="text-muted-foreground">
-                Stay updated with our latest products, tips, and industry news
-              </p>
-            </div>
-            <Link to="/shop">
-              <Button variant="outline" className="btn-secondary">
-                View All Articles
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Latest News & Updates
+            </h2>
+            <p className="text-muted-foreground">
+              Stay updated with our latest products, tips, and industry news
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 stagger-animation">
