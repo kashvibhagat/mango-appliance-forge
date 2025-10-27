@@ -148,13 +148,12 @@ const Home = () => {
                 {/* Main Heading */}
                 <div className="space-y-6">
                   <div className="relative inline-block">
-                    {/* Decorative background */}
-                    <div className="absolute inset-0 -inset-x-12 -inset-y-8 bg-gradient-to-r from-primary/5 via-primary/8 to-primary/5 rounded-3xl blur-2xl"></div>
-                    <div className="absolute inset-0 -inset-x-8 -inset-y-6 bg-card/30 backdrop-blur-sm rounded-2xl border border-primary/10"></div>
+                    {/* Optimized decorative background */}
+                    <div className="absolute inset-0 -inset-x-8 -inset-y-6 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-2xl opacity-60"></div>
                     
-                    <h1 className="relative text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-foreground leading-[1.05] tracking-tight px-4 md:px-8 py-6">
+                    <h1 className="relative text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-foreground leading-[1.05] tracking-tight px-4 md:px-8 py-6" style={{willChange: 'transform'}}>
                       Beat the Heat with
-                      <span className="block mt-2 bg-gradient-brand bg-clip-text text-transparent animate-shimmer">
+                      <span className="block mt-2 bg-gradient-brand bg-clip-text text-transparent">
                         {companyInfo.brand}
                       </span>
                     </h1>
@@ -180,30 +179,30 @@ const Home = () => {
                   </Link>
                 </div>
 
-                {/* Trust Indicators - More Prominent */}
+                {/* Trust Indicators - Optimized */}
                 <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 pt-8">
-                  <div className="flex items-center gap-3 px-6 py-3.5 bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-md rounded-2xl border border-success/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <div className="flex items-center gap-3 px-6 py-3.5 bg-card/80 rounded-2xl border border-success/20 shadow-md hover:shadow-lg transition-shadow duration-300">
                     <Award className="h-6 w-6 text-success" />
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground font-medium">Quality</div>
                       <div className="text-sm font-bold text-foreground">ISO 9001:2015</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 px-6 py-3.5 bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-md rounded-2xl border border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <div className="flex items-center gap-3 px-6 py-3.5 bg-card/80 rounded-2xl border border-primary/20 shadow-md hover:shadow-lg transition-shadow duration-300">
                     <Shield className="h-6 w-6 text-primary" />
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground font-medium">Warranty</div>
                       <div className="text-sm font-bold text-foreground">2 Years</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 px-6 py-3.5 bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-md rounded-2xl border border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <div className="flex items-center gap-3 px-6 py-3.5 bg-card/80 rounded-2xl border border-primary/20 shadow-md hover:shadow-lg transition-shadow duration-300">
                     <Truck className="h-6 w-6 text-primary" />
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground font-medium">Shipping</div>
                       <div className="text-sm font-bold text-foreground">Free Pan-India</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 px-6 py-3.5 bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-md rounded-2xl border border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <div className="flex items-center gap-3 px-6 py-3.5 bg-card/80 rounded-2xl border border-primary/20 shadow-md hover:shadow-lg transition-shadow duration-300">
                     <Factory className="h-6 w-6 text-primary" />
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground font-medium">Manufacturing</div>
@@ -212,23 +211,23 @@ const Home = () => {
                   </div>
                 </div>
 
-                {/* Company Stats with Animated Counters */}
+                {/* Company Stats - Optimized */}
                 <div className="grid grid-cols-3 gap-6 md:gap-10 pt-16 max-w-4xl mx-auto">
-                  <div className="group text-center p-8 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md rounded-3xl border border-border/30 hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                  <div className="text-center p-8 bg-card/60 rounded-3xl border border-border/30 hover:border-primary/50 transition-colors duration-300">
                     <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-3">
-                      <AnimatedCounter end={40} suffix="+" duration={2500} />
+                      <AnimatedCounter end={40} suffix="+" duration={2000} />
                     </div>
                     <div className="text-xs md:text-sm lg:text-base text-muted-foreground font-semibold tracking-wide uppercase">Product Models</div>
                   </div>
-                  <div className="group text-center p-8 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md rounded-3xl border border-border/30 hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                  <div className="text-center p-8 bg-card/60 rounded-3xl border border-border/30 hover:border-primary/50 transition-colors duration-300">
                     <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-3">
-                      <AnimatedCounter end={15} suffix="+" duration={2500} />
+                      <AnimatedCounter end={15} suffix="+" duration={2000} />
                     </div>
                     <div className="text-xs md:text-sm lg:text-base text-muted-foreground font-semibold tracking-wide uppercase">Years Experience</div>
                   </div>
-                  <div className="group text-center p-8 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md rounded-3xl border border-border/30 hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                  <div className="text-center p-8 bg-card/60 rounded-3xl border border-border/30 hover:border-primary/50 transition-colors duration-300">
                     <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-3">
-                      <AnimatedCounter end={50} suffix="K+" duration={2500} />
+                      <AnimatedCounter end={50} suffix="K+" duration={2000} />
                     </div>
                     <div className="text-xs md:text-sm lg:text-base text-muted-foreground font-semibold tracking-wide uppercase">Happy Customers</div>
                   </div>
