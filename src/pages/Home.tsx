@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ArrowRight, Truck, Shield, Headphones, Star, Zap, ThermometerSun, ChevronLeft, ChevronRight, Award, Globe, Factory, Users, CheckCircle, MapPin, Quote, Calendar, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -122,98 +123,214 @@ const Home = () => {
     }
   ];
 
+  // Structured Data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Mango Appliances",
+    "url": "https://mangoappliances.com",
+    "logo": "https://mangoappliances.com/logo.png",
+    "description": "Leading manufacturer of premium air coolers in India with 35+ years of experience. Specialized in desert coolers, tower coolers, personal coolers, and industrial cooling solutions.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "IN",
+      "addressRegion": "India"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Service",
+      "availableLanguage": ["English", "Hindi"]
+    },
+    "sameAs": [
+      "https://facebook.com/mangoappliances",
+      "https://twitter.com/mangoappliances",
+      "https://instagram.com/mangoappliances"
+    ]
+  };
+
+  const productsStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": mangoFeaturedProducts.slice(0, 8).map((product, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "Product",
+        "name": product.name,
+        "image": product.images[0],
+        "description": product.shortDescription,
+        "brand": {
+          "@type": "Brand",
+          "name": "Mango"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": "INR",
+          "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+        }
+      }
+    }))
+  };
+
   return (
     <div className="relative">
+      <Helmet>
+        <title>Mango Appliances - Best Air Coolers in India | Desert, Tower & Industrial Coolers</title>
+        <meta name="description" content="Buy premium air coolers from Mango Appliances - Leading manufacturer with 35+ years experience. Desert coolers, tower coolers, personal coolers & genuine spare parts. Free shipping, 2-year warranty & ISO certified quality." />
+        <link rel="canonical" href="https://mangoappliances.com/" />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(productsStructuredData)}
+        </script>
+      </Helmet>
         {/* Hero Section */}
-        <section className="relative bg-gradient-hero py-12 md:py-20 lg:py-32">
+        <section className="relative bg-gradient-hero overflow-hidden py-16 md:py-24 lg:py-32">
+          {/* Decorative background pattern */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djItaDJ2LTJoLTJ6bTAgNHYyaDJ2LTJoLTJ6bS0yIDJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0yLTJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0tMiAydi0yaC0ydjJoMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40"></div>
+          
           <div className="container mx-auto px-4 relative">
-            <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-              <div className="space-y-6 md:space-y-8">
-              <div className="space-y-3 md:space-y-4">
-                <Badge className="bg-accent/20 text-accent border-accent/30">
-                  <Zap className="h-3 w-3 mr-1" />
-                  {companyInfo.philosophy}
-                </Badge>
-                <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-foreground leading-tight">
-                  <span className="inline-block">Beat the Heat with</span>{' '}
-                  <span className="inline-block bg-gradient-brand bg-clip-text text-transparent">
-                    {companyInfo.brand}
-                  </span>
-                </h1>
-                <p className="text-base md:text-lg text-muted-foreground max-w-lg">
-                  {companyInfo.experience} of experience with {companyInfo.factories} in {companyInfo.location}. 
-                  Pan India network with exports to {companyInfo.international}.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-                <Link to="/shop" className="w-full sm:w-auto">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto">
-                    Shop Air Coolers
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link to="/shop?category=spare-parts" className="w-full sm:w-auto">
-                  <Button variant="outline-glow" size="lg" className="w-full sm:w-auto">
-                    View Spare Parts
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Company Stats */}
-              <div className="grid grid-cols-2 gap-4 md:gap-6 pt-6 md:pt-8">
-                <div className="text-center">
-                  <div className="text-xl md:text-2xl font-bold text-accent">40+</div>
-                  <div className="text-xs md:text-sm text-muted-foreground">Air Cooler Models</div>
+            <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-center">
+              <div className="space-y-8 md:space-y-10 animate-fade-in">
+                <div className="space-y-4 md:space-y-6">
+                  <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors duration-300 font-semibold px-4 py-1.5">
+                    <Zap className="h-3.5 w-3.5 mr-2" />
+                    {companyInfo.philosophy}
+                  </Badge>
+                  <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground leading-[1.1]">
+                    <span className="block mb-2">Beat the Heat with</span>
+                    <span className="block bg-gradient-brand bg-clip-text text-transparent animate-shimmer">
+                      {companyInfo.brand}
+                    </span>
+                  </h1>
+                  <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
+                    India&apos;s trusted cooling solution provider with <strong className="text-foreground">{companyInfo.experience} of excellence</strong>. Manufacturing from {companyInfo.factories} with a pan-India presence and exports to {companyInfo.international}.
+                  </p>
                 </div>
-                <div className="text-center">
-                  <div className="text-xl md:text-2xl font-bold text-accent">{companyInfo.experience}</div>
-                  <div className="text-xs md:text-sm text-muted-foreground">Years Experience</div>
+
+                <div className="flex flex-col sm:flex-row gap-4 md:gap-5">
+                  <Link to="/shop" className="w-full sm:w-auto">
+                    <Button variant="hero" size="xl" className="w-full sm:w-auto group shadow-2xl hover:shadow-brand">
+                      Shop Air Coolers
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                    </Button>
+                  </Link>
+                  <Link to="/shop?category=spare-parts" className="w-full sm:w-auto">
+                    <Button variant="outline-glow" size="xl" className="w-full sm:w-auto">
+                      View Spare Parts
+                    </Button>
+                  </Link>
                 </div>
-              </div>
+
+                {/* Trust Indicators */}
+                <div className="flex flex-wrap items-center gap-6 pt-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-success" />
+                    <span className="font-medium">ISO Certified</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-primary" />
+                    <span className="font-medium">2-Year Warranty</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Truck className="h-5 w-5 text-primary" />
+                    <span className="font-medium">Free Shipping</span>
+                  </div>
+                </div>
+
+                {/* Company Stats */}
+                <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border/50">
+                  <div className="text-center">
+                    <div className="text-3xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-1">40+</div>
+                    <div className="text-xs md:text-sm text-muted-foreground font-medium">Product Models</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-1">{companyInfo.experience}</div>
+                    <div className="text-xs md:text-sm text-muted-foreground font-medium">Years Experience</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-1">50K+</div>
+                    <div className="text-xs md:text-sm text-muted-foreground font-medium">Happy Customers</div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="relative mt-8 lg:mt-0">
-              <div className="relative z-10">
-                <img
-                  src={heroAirCooler}
-                  alt="Premium Air Cooler Collection"
-                  className="w-full h-auto rounded-2xl shadow-2xl"
-                  loading="lazy"
-                />
+              {/* Hero Image */}
+              <div className="relative mt-8 lg:mt-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                <div className="relative z-10 group">
+                  {/* Decorative gradient background */}
+                  <div className="absolute -inset-4 bg-gradient-brand opacity-20 blur-3xl group-hover:opacity-30 transition-opacity duration-500 rounded-3xl"></div>
+                  
+                  <div className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/50 group-hover:shadow-brand transition-all duration-500">
+                    <img
+                      src={heroAirCooler}
+                      alt="Premium Mango Air Cooler - Best cooling solution for homes and offices in India"
+                      className="w-full h-auto transform group-hover:scale-105 transition-transform duration-700"
+                      loading="eager"
+                      width="800"
+                      height="600"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  </div>
+
+                  {/* Floating badge */}
+                  <div className="absolute -bottom-6 -left-6 bg-background/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-border/50 animate-fade-in hidden md:block" style={{ animationDelay: '0.5s' }}>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-success/10 rounded-xl">
+                        <Star className="h-6 w-6 text-success fill-success" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-lg">4.8/5</div>
+                        <div className="text-xs text-muted-foreground">Customer Rating</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
           </div>
         </section>
 
       {/* Product Categories Grid */}
-      <section className="py-12 md:py-20">
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 md:mb-4">
-              Shop by Category
+          <div className="text-center mb-12 md:mb-16 animate-fade-in">
+            <Badge variant="secondary" className="mb-4 font-semibold px-4 py-1.5">
+              Product Categories
+            </Badge>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 md:mb-6">
+              Find Your Perfect Cooling Solution
             </h2>
-            <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
-              Explore our comprehensive range of evaporative air coolers designed for every cooling need
+            <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              From compact personal coolers to powerful industrial units, we offer a complete range of energy-efficient cooling solutions designed for every space and need
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto stagger-animation">
             {/* Desert Coolers */}
             <Link to="/shop?category=desert-coolers" className="group">
-              <Card className="card-hover overflow-hidden">
-                <div className="relative">
+              <Card className="card-hover overflow-hidden border-border/50 h-full transition-all duration-500 hover:border-primary/50">
+                <div className="relative h-72 md:h-80">
                   <img
                     src={desertCoolersCategory}
-                    alt="Desert Coolers"
-                    className="w-full h-40 md:h-64 object-cover"
+                    alt="Desert Air Coolers - High capacity cooling for large rooms and halls"
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                     loading="lazy"
+                    width="400"
+                    height="320"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                  <div className="absolute bottom-2 left-2 md:bottom-4 md:left-4 text-white">
-                    <h3 className="text-sm md:text-xl font-bold mb-0 md:mb-1">Desert Coolers</h3>
-                    <p className="text-xs md:text-sm opacity-90 hidden sm:block">High capacity for large areas</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-500"></div>
+                  
+                  <div className="absolute bottom-6 left-6 right-6 text-white transform group-hover:translate-y-[-4px] transition-transform duration-300">
+                    <h3 className="text-xl md:text-2xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">Desert Coolers</h3>
+                    <p className="text-sm md:text-base opacity-90 group-hover:opacity-100 transition-opacity duration-300">Powerful cooling for large spaces up to 1000 sq ft</p>
+                    <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <span className="text-sm font-semibold">Explore Range</span>
+                      <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" />
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -221,18 +338,26 @@ const Home = () => {
 
             {/* Industrial Coolers */}
             <Link to="/shop?category=industrial-coolers" className="group">
-              <Card className="card-hover overflow-hidden">
-                <div className="relative">
+              <Card className="card-hover overflow-hidden border-border/50 h-full transition-all duration-500 hover:border-primary/50">
+                <div className="relative h-72 md:h-80">
                   <img
                     src={industrialCoolersCategory}
-                    alt="Industrial Coolers"
-                    className="w-full h-40 md:h-64 object-cover"
+                    alt="Industrial Air Coolers - Heavy-duty cooling for commercial and industrial spaces"
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                     loading="lazy"
+                    width="400"
+                    height="320"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                  <div className="absolute bottom-2 left-2 md:bottom-4 md:left-4 text-white">
-                    <h3 className="text-sm md:text-xl font-bold mb-0 md:mb-1">Industrial Coolers</h3>
-                    <p className="text-xs md:text-sm opacity-90 hidden sm:block">Heavy-duty commercial solutions</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-500"></div>
+                  
+                  <div className="absolute bottom-6 left-6 right-6 text-white transform group-hover:translate-y-[-4px] transition-transform duration-300">
+                    <h3 className="text-xl md:text-2xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">Industrial Coolers</h3>
+                    <p className="text-sm md:text-base opacity-90 group-hover:opacity-100 transition-opacity duration-300">Commercial-grade cooling for factories & warehouses</p>
+                    <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <span className="text-sm font-semibold">Explore Range</span>
+                      <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" />
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -240,18 +365,26 @@ const Home = () => {
 
             {/* Personal Coolers */}
             <Link to="/shop?category=personal-coolers" className="group">
-              <Card className="card-hover overflow-hidden">
-                <div className="relative">
+              <Card className="card-hover overflow-hidden border-border/50 h-full transition-all duration-500 hover:border-primary/50">
+                <div className="relative h-72 md:h-80">
                   <img
                     src={personalCoolersCategory}
-                    alt="Personal Coolers"
-                    className="w-full h-40 md:h-64 object-cover"
+                    alt="Personal Air Coolers - Compact and portable cooling for bedrooms and small rooms"
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                     loading="lazy"
+                    width="400"
+                    height="320"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                  <div className="absolute bottom-2 left-2 md:bottom-4 md:left-4 text-white">
-                    <h3 className="text-sm md:text-xl font-bold mb-0 md:mb-1">Personal Coolers</h3>
-                    <p className="text-xs md:text-sm opacity-90 hidden sm:block">Compact cooling for personal spaces</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-500"></div>
+                  
+                  <div className="absolute bottom-6 left-6 right-6 text-white transform group-hover:translate-y-[-4px] transition-transform duration-300">
+                    <h3 className="text-xl md:text-2xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">Personal Coolers</h3>
+                    <p className="text-sm md:text-base opacity-90 group-hover:opacity-100 transition-opacity duration-300">Portable solutions perfect for bedrooms & offices</p>
+                    <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <span className="text-sm font-semibold">Explore Range</span>
+                      <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" />
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -259,18 +392,26 @@ const Home = () => {
 
             {/* Tower Coolers */}
             <Link to="/shop?category=tower-coolers" className="group">
-              <Card className="card-hover overflow-hidden">
-                <div className="relative">
+              <Card className="card-hover overflow-hidden border-border/50 h-full transition-all duration-500 hover:border-primary/50">
+                <div className="relative h-72 md:h-80">
                   <img
                     src={towerCoolersCategory}
-                    alt="Tower Coolers"
-                    className="w-full h-40 md:h-64 object-cover"
+                    alt="Tower Air Coolers - Sleek space-saving design with powerful cooling"
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                     loading="lazy"
+                    width="400"
+                    height="320"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                  <div className="absolute bottom-2 left-2 md:bottom-4 md:left-4 text-white">
-                    <h3 className="text-sm md:text-xl font-bold mb-0 md:mb-1">Tower Coolers</h3>
-                    <p className="text-xs md:text-sm opacity-90 hidden sm:block">Space-saving tower design</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-500"></div>
+                  
+                  <div className="absolute bottom-6 left-6 right-6 text-white transform group-hover:translate-y-[-4px] transition-transform duration-300">
+                    <h3 className="text-xl md:text-2xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">Tower Coolers</h3>
+                    <p className="text-sm md:text-base opacity-90 group-hover:opacity-100 transition-opacity duration-300">Stylish vertical design ideal for modern homes</p>
+                    <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <span className="text-sm font-semibold">Explore Range</span>
+                      <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" />
+                    </div>
                   </div>
                 </div>
               </Card>
