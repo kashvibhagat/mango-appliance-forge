@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Truck, Shield, Headphones, Star, Zap, ThermometerSun, ChevronLeft, ChevronRight, Award, Globe, Factory, Users, CheckCircle, MapPin, Quote, Calendar, ExternalLink } from 'lucide-react';
+import { ArrowRight, Truck, Shield, Headphones, Star, Zap, ThermometerSun, ChevronLeft, ChevronRight, Award, Globe, Factory, Users, CheckCircle, MapPin, Quote, Calendar, ExternalLink, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import ProductCard from '@/components/ui/ProductCard';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { mangoFeaturedProducts, mangoCategories, companyInfo } from '@/data/mangoProducts';
 import heroAirCooler from '@/assets/hero-air-cooler.jpg';
 import heroLandscapeCoolers from '@/assets/hero-landscape-coolers.jpg';
@@ -125,72 +126,105 @@ const Home = () => {
   return (
     <div className="relative">
         {/* Hero Section */}
-        <section className="relative bg-gradient-hero overflow-hidden py-20 md:py-28 lg:py-36">
-          {/* Decorative background pattern */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djItaDJ2LTJoLTJ6bTAgNHYyaDJ2LTJoLTJ6bS0yIDJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0yLTJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0tMiAydi0yaC0ydjJoMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40"></div>
+        <section className="relative bg-gradient-hero overflow-hidden py-20 md:py-28 lg:py-40">
+          {/* Enhanced background pattern */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PHBhdGggZD0iTTM2IDM0djItaDJ2LTJoLTJ6bTAgNHYyaDJ2LTJoLTJ6bS0yIDJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0yLTJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0tMiAydi0yaC0ydjJoMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30"></div>
+          
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/5 to-background/20"></div>
           
           <div className="container mx-auto px-4 relative">
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center space-y-8 md:space-y-10 animate-fade-in">
-                <div className="space-y-6 md:space-y-8">
-                  <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors duration-300 font-semibold px-5 py-2 text-base">
-                    <Zap className="h-4 w-4 mr-2" />
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center space-y-10 md:space-y-12 animate-fade-in">
+                
+                {/* Premium Badge */}
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border border-primary/30 rounded-full px-6 py-3 shadow-lg backdrop-blur-sm">
+                  <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+                  <span className="text-sm md:text-base font-bold text-primary tracking-wide uppercase">
                     {companyInfo.philosophy}
-                  </Badge>
-                  <h1 className="text-5xl md:text-6xl lg:text-8xl font-bold text-foreground leading-[1.1]">
-                    <span className="block mb-3">Beat the Heat with</span>
-                    <span className="block bg-gradient-brand bg-clip-text text-transparent animate-shimmer">
+                  </span>
+                </div>
+
+                {/* Main Heading */}
+                <div className="space-y-6">
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-foreground leading-[1.05] tracking-tight">
+                    Beat the Heat with
+                    <span className="block mt-2 bg-gradient-brand bg-clip-text text-transparent animate-shimmer">
                       {companyInfo.brand}
                     </span>
                   </h1>
-                  <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                    India&apos;s trusted cooling solution provider with <strong className="text-foreground">decades of excellence</strong>. Manufacturing from {companyInfo.factories} with a pan-India presence and exports to {companyInfo.international}.
+                  
+                  <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light">
+                    Manufacturing excellence since <strong className="font-semibold text-foreground">{companyInfo.experience.replace('+', '')} years</strong>, delivering premium cooling solutions across <strong className="font-semibold text-foreground">Asia, Middle East & Indian sub-continent</strong>
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 md:gap-5 justify-center">
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center pt-4">
                   <Link to="/shop">
-                    <Button variant="hero" size="xl" className="group shadow-2xl hover:shadow-brand min-w-[200px]">
-                      Shop Air Coolers
+                    <Button variant="hero" size="xl" className="group shadow-2xl hover:shadow-brand min-w-[220px] font-semibold text-base md:text-lg">
+                      Explore Products
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
                   </Link>
                   <Link to="/shop?category=spare-parts">
-                    <Button variant="outline-glow" size="xl" className="min-w-[200px]">
-                      View Spare Parts
+                    <Button variant="outline-glow" size="xl" className="min-w-[220px] font-semibold text-base md:text-lg">
+                      Spare Parts & Service
                     </Button>
                   </Link>
                 </div>
 
-                {/* Trust Indicators */}
-                <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 pt-6 text-sm md:text-base">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-background/50 backdrop-blur-sm rounded-full border border-border/50">
-                    <CheckCircle className="h-5 w-5 text-success" />
-                    <span className="font-semibold">ISO Certified</span>
+                {/* Trust Indicators - More Prominent */}
+                <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 pt-8">
+                  <div className="flex items-center gap-3 px-6 py-3.5 bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-md rounded-2xl border border-success/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <Award className="h-6 w-6 text-success" />
+                    <div className="text-left">
+                      <div className="text-xs text-muted-foreground font-medium">Quality</div>
+                      <div className="text-sm font-bold text-foreground">ISO 9001:2015</div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-background/50 backdrop-blur-sm rounded-full border border-border/50">
-                    <Shield className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">2-Year Warranty</span>
+                  <div className="flex items-center gap-3 px-6 py-3.5 bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-md rounded-2xl border border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <Shield className="h-6 w-6 text-primary" />
+                    <div className="text-left">
+                      <div className="text-xs text-muted-foreground font-medium">Warranty</div>
+                      <div className="text-sm font-bold text-foreground">2 Years</div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-background/50 backdrop-blur-sm rounded-full border border-border/50">
-                    <Truck className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">Free Shipping</span>
+                  <div className="flex items-center gap-3 px-6 py-3.5 bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-md rounded-2xl border border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <Truck className="h-6 w-6 text-primary" />
+                    <div className="text-left">
+                      <div className="text-xs text-muted-foreground font-medium">Shipping</div>
+                      <div className="text-sm font-bold text-foreground">Free Pan-India</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 px-6 py-3.5 bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-md rounded-2xl border border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <Factory className="h-6 w-6 text-primary" />
+                    <div className="text-left">
+                      <div className="text-xs text-muted-foreground font-medium">Manufacturing</div>
+                      <div className="text-sm font-bold text-foreground">{companyInfo.factories}</div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Company Stats */}
-                <div className="grid grid-cols-3 gap-8 md:gap-12 pt-12 max-w-3xl mx-auto">
-                  <div className="text-center p-6 bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
-                    <div className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-2">40+</div>
-                    <div className="text-sm md:text-base text-muted-foreground font-medium">Product Models</div>
+                {/* Company Stats with Animated Counters */}
+                <div className="grid grid-cols-3 gap-6 md:gap-10 pt-16 max-w-4xl mx-auto">
+                  <div className="group text-center p-8 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md rounded-3xl border border-border/30 hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                    <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-3">
+                      <AnimatedCounter end={40} suffix="+" duration={2500} />
+                    </div>
+                    <div className="text-xs md:text-sm lg:text-base text-muted-foreground font-semibold tracking-wide uppercase">Product Models</div>
                   </div>
-                  <div className="text-center p-6 bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
-                    <div className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-2">{companyInfo.experience}</div>
-                    <div className="text-sm md:text-base text-muted-foreground font-medium">Years Experience</div>
+                  <div className="group text-center p-8 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md rounded-3xl border border-border/30 hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                    <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-3">
+                      <AnimatedCounter end={15} suffix="+" duration={2500} />
+                    </div>
+                    <div className="text-xs md:text-sm lg:text-base text-muted-foreground font-semibold tracking-wide uppercase">Years Experience</div>
                   </div>
-                  <div className="text-center p-6 bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
-                    <div className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-2">50K+</div>
-                    <div className="text-sm md:text-base text-muted-foreground font-medium">Happy Customers</div>
+                  <div className="group text-center p-8 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md rounded-3xl border border-border/30 hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                    <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-3">
+                      <AnimatedCounter end={50} suffix="K+" duration={2500} />
+                    </div>
+                    <div className="text-xs md:text-sm lg:text-base text-muted-foreground font-semibold tracking-wide uppercase">Happy Customers</div>
                   </div>
                 </div>
               </div>
