@@ -144,7 +144,7 @@ const Home = () => {
                     </span>
                   </h1>
                   <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                    India&apos;s trusted cooling solution provider with <strong className="text-foreground">{companyInfo.experience} of excellence</strong>. Manufacturing from {companyInfo.factories} with a pan-India presence and exports to {companyInfo.international}.
+                    India&apos;s trusted cooling solution provider with <strong className="text-foreground">decades of excellence</strong>. Manufacturing from {companyInfo.factories} with a pan-India presence and exports to {companyInfo.international}.
                   </p>
                 </div>
 
