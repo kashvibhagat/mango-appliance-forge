@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { ArrowRight, Truck, Shield, Headphones, Star, Zap, ThermometerSun, ChevronLeft, ChevronRight, Award, Globe, Factory, Users, CheckCircle, MapPin, Quote, Calendar, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -123,69 +122,8 @@ const Home = () => {
     }
   ];
 
-  // Structured Data for SEO
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Mango Appliances",
-    "url": "https://mangoappliances.com",
-    "logo": "https://mangoappliances.com/logo.png",
-    "description": "Leading manufacturer of premium air coolers in India with 35+ years of experience. Specialized in desert coolers, tower coolers, personal coolers, and industrial cooling solutions.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "IN",
-      "addressRegion": "India"
-    },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "contactType": "Customer Service",
-      "availableLanguage": ["English", "Hindi"]
-    },
-    "sameAs": [
-      "https://facebook.com/mangoappliances",
-      "https://twitter.com/mangoappliances",
-      "https://instagram.com/mangoappliances"
-    ]
-  };
-
-  const productsStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": mangoFeaturedProducts.slice(0, 8).map((product, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": {
-        "@type": "Product",
-        "name": product.name,
-        "image": product.images[0],
-        "description": product.shortDescription,
-        "brand": {
-          "@type": "Brand",
-          "name": "Mango"
-        },
-        "offers": {
-          "@type": "Offer",
-          "price": product.price,
-          "priceCurrency": "INR",
-          "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
-        }
-      }
-    }))
-  };
-
   return (
     <div className="relative">
-      <Helmet>
-        <title>Mango Appliances - Best Air Coolers in India | Desert, Tower & Industrial Coolers</title>
-        <meta name="description" content="Buy premium air coolers from Mango Appliances - Leading manufacturer with 35+ years experience. Desert coolers, tower coolers, personal coolers & genuine spare parts. Free shipping, 2-year warranty & ISO certified quality." />
-        <link rel="canonical" href="https://mangoappliances.com/" />
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(productsStructuredData)}
-        </script>
-      </Helmet>
         {/* Hero Section */}
         <section className="relative bg-gradient-hero overflow-hidden py-16 md:py-24 lg:py-32">
           {/* Decorative background pattern */}
