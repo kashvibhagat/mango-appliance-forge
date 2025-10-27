@@ -178,25 +178,30 @@ const Shop = () => {
   const activeFilterCount = Object.values(selectedFilters).reduce((acc, filters) => acc + filters.length, 0);
 
   const FilterSidebar = () => (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Price Range */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm">Price Range</CardTitle>
+      <Card className="border-border/50 shadow-card">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-bold flex items-center gap-2">
+            💰 Price Range
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2 text-sm">
-            <span>₹{priceRange[0].toLocaleString()}</span>
-            <span>-</span>
-            <span>₹{priceRange[1].toLocaleString()}</span>
+          <div className="flex items-center justify-between p-3 bg-accent/20 rounded-lg border border-border/50">
+            <span className="text-sm font-semibold text-foreground">₹{priceRange[0].toLocaleString()}</span>
+            <span className="text-muted-foreground">—</span>
+            <span className="text-sm font-semibold text-foreground">₹{priceRange[1].toLocaleString()}</span>
           </div>
-          {/* Price range slider would go here - simplified for now */}
           <div className="grid grid-cols-2 gap-2">
             <Button 
               variant="outline" 
               size="sm" 
               onClick={() => setPriceRange([0, 10000])}
-              className={priceRange[1] === 10000 && priceRange[0] === 0 ? 'bg-accent text-accent-foreground' : ''}
+              className={`transition-all duration-300 ${
+                priceRange[1] === 10000 && priceRange[0] === 0 
+                  ? 'bg-primary text-primary-foreground border-primary shadow-sm' 
+                  : 'hover:border-primary/50 hover:bg-accent/50'
+              }`}
             >
               Under ₹10K
             </Button>
@@ -204,7 +209,11 @@ const Shop = () => {
               variant="outline" 
               size="sm" 
               onClick={() => setPriceRange([10000, 25000])}
-              className={priceRange[0] === 10000 && priceRange[1] === 25000 ? 'bg-accent text-accent-foreground' : ''}
+              className={`transition-all duration-300 ${
+                priceRange[0] === 10000 && priceRange[1] === 25000 
+                  ? 'bg-primary text-primary-foreground border-primary shadow-sm' 
+                  : 'hover:border-primary/50 hover:bg-accent/50'
+              }`}
             >
               ₹10K - ₹25K
             </Button>
@@ -212,7 +221,11 @@ const Shop = () => {
               variant="outline" 
               size="sm" 
               onClick={() => setPriceRange([25000, 50000])}
-              className={priceRange[0] === 25000 && priceRange[1] === 50000 ? 'bg-accent text-accent-foreground' : ''}
+              className={`transition-all duration-300 ${
+                priceRange[0] === 25000 && priceRange[1] === 50000 
+                  ? 'bg-primary text-primary-foreground border-primary shadow-sm' 
+                  : 'hover:border-primary/50 hover:bg-accent/50'
+              }`}
             >
               ₹25K - ₹50K
             </Button>
@@ -220,7 +233,11 @@ const Shop = () => {
               variant="outline" 
               size="sm" 
               onClick={() => setPriceRange([50000, 100000])}
-              className={priceRange[0] === 50000 && priceRange[1] === 100000 ? 'bg-accent text-accent-foreground' : ''}
+              className={`transition-all duration-300 ${
+                priceRange[0] === 50000 && priceRange[1] === 100000 
+                  ? 'bg-primary text-primary-foreground border-primary shadow-sm' 
+                  : 'hover:border-primary/50 hover:bg-accent/50'
+              }`}
             >
               Above ₹50K
             </Button>
@@ -244,41 +261,45 @@ const Shop = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary/10 to-primary/5 py-16">
-        <div className="container mx-auto px-4">
+      <div className="relative bg-gradient-hero overflow-hidden py-20">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djItaDJ2LTJoLTJ6bTAgNHYyaDJ2LTJoLTJ6bS0yIDJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0yLTJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0tMiAydi0yaC0ydjJoMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40"></div>
+        <div className="container mx-auto px-4 relative">
           {/* Hero Content */}
-          <div className="text-center mb-12">
-            <p className="text-sm text-muted-foreground mb-2">Find the right Cooler for you</p>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-8">
-              Ultimate Cooling Solutions By Mango
+          <div className="text-center mb-16 animate-fade-in">
+            <p className="text-sm font-medium text-primary mb-3 tracking-wider uppercase">Premium Cooling Solutions</p>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
+              Discover Your Perfect
+              <span className="block text-primary mt-2">Cooling Experience</span>
             </h1>
-            
-            {/* Hero Image */}
-            <div className="relative max-w-4xl mx-auto mb-12">
-              <img 
-                src="/src/assets/hero-landscape-coolers.jpg" 
-                alt="Mango Coolers Collection" 
-                className="w-full h-auto rounded-2xl shadow-lg"
-              />
-            </div>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore our complete range of innovative air coolers designed for every need
+            </p>
           </div>
 
           {/* Category Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
-            {categories.map((category) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 max-w-7xl mx-auto">
+            {categories.map((category, index) => (
               <button
                 key={category.id}
                 onClick={() => setSearchParams({ category: category.slug })}
-                className="group flex flex-col items-center p-6 bg-card rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105"
+                className="group relative flex flex-col items-center p-6 md:p-8 bg-card/80 backdrop-blur-sm rounded-2xl shadow-card hover:shadow-brand transition-all duration-500 hover:scale-105 hover:-translate-y-1 border border-border/50 overflow-hidden"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="w-16 h-16 md:w-20 md:h-20 mb-4 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors overflow-hidden">
+                {/* Gradient overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-brand opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
+                
+                {/* Category image */}
+                <div className="relative w-20 h-20 md:w-24 md:h-24 mb-4 rounded-full overflow-hidden ring-4 ring-primary/10 group-hover:ring-primary/30 transition-all duration-500">
                   <img 
                     src={category.image} 
                     alt={category.name}
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover"
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/10 group-hover:to-black/20 transition-all duration-500"></div>
                 </div>
-                <h3 className="text-sm md:text-base font-medium text-foreground text-center group-hover:text-primary transition-colors">
+                
+                {/* Category name */}
+                <h3 className="text-sm md:text-base font-semibold text-foreground text-center group-hover:text-primary transition-colors duration-300 relative z-10">
                   {category.name}
                 </h3>
               </button>
@@ -287,114 +308,122 @@ const Shop = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-12">
         {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-          <span>Home</span>
-          <span>/</span>
-          <span>Shop</span>
+        <nav className="flex items-center space-x-2 text-sm mb-8" aria-label="Breadcrumb">
+          <a href="/" className="text-muted-foreground hover:text-primary transition-colors font-medium">Home</a>
+          <span className="text-muted-foreground/50">/</span>
+          <a href="/shop" className="text-muted-foreground hover:text-primary transition-colors font-medium">Shop</a>
           {selectedCategory && (
             <>
-              <span>/</span>
-              <span className="text-foreground">{selectedCategory.name}</span>
+              <span className="text-muted-foreground/50">/</span>
+              <span className="text-foreground font-semibold">{selectedCategory.name}</span>
             </>
           )}
-        </div>
+        </nav>
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
-          <div>
-            <h2 className="text-3xl font-bold text-foreground">
-              {searchQuery ? `Search results for "${searchQuery}"` : 
-               selectedCategory ? selectedCategory.name : 'All Products'}
-            </h2>
-            <p className="text-muted-foreground mt-1">
-              {filteredProducts.length} products found
-            </p>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            {/* Search Bar */}
-            <div className="flex-1 max-w-sm">
-              <SearchWithSuggestions 
-                placeholder="Search products..."
-                onSearch={(query) => {
-                  const newParams = new URLSearchParams(searchParams);
-                  if (query) {
-                    newParams.set('search', query);
-                  } else {
-                    newParams.delete('search');
-                  }
-                  setSearchParams(newParams);
-                }}
-                className="w-full"
-              />
-            </div>
-            
-            {/* Sort */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="featured">Featured</SelectItem>
-                <SelectItem value="price-low">Price: Low to High</SelectItem>
-                <SelectItem value="price-high">Price: High to Low</SelectItem>
-                <SelectItem value="rating">Highest Rated</SelectItem>
-                <SelectItem value="newest">Newest First</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* View Mode */}
-            <div className="hidden md:flex border rounded-lg p-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className={viewMode === 'grid' ? 'bg-accent text-accent-foreground' : ''}
-              >
-                <Grid className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setViewMode('list')}
-                className={viewMode === 'list' ? 'bg-accent text-accent-foreground' : ''}
-              >
-                <List className="h-4 w-4" />
-              </Button>
+        <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-card border border-border/50 mb-8">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <div className="flex-1">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+                {searchQuery ? (
+                  <>Search results for <span className="text-primary">"{searchQuery}"</span></>
+                ) : selectedCategory ? selectedCategory.name : 'All Products'}
+              </h2>
+              <p className="text-muted-foreground flex items-center gap-2">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
+                  {filteredProducts.length}
+                </span>
+                {filteredProducts.length === 1 ? 'product' : 'products'} available
+              </p>
             </div>
 
-            {/* Mobile Filter */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="md:hidden">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filters
-                  {activeFilterCount > 0 && (
-                    <Badge variant="destructive" className="ml-2 h-5 w-5 p-0 text-xs">
-                      {activeFilterCount}
-                    </Badge>
-                  )}
+            <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+              {/* Search Bar */}
+              <div className="flex-1 lg:flex-initial lg:w-72">
+                <SearchWithSuggestions 
+                  placeholder="Search products..."
+                  onSearch={(query) => {
+                    const newParams = new URLSearchParams(searchParams);
+                    if (query) {
+                      newParams.set('search', query);
+                    } else {
+                      newParams.delete('search');
+                    }
+                    setSearchParams(newParams);
+                  }}
+                  className="w-full"
+                />
+              </div>
+              
+              {/* Sort */}
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[180px] bg-background shadow-sm">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="featured">✨ Featured</SelectItem>
+                  <SelectItem value="price-low">💰 Price: Low to High</SelectItem>
+                  <SelectItem value="price-high">💎 Price: High to Low</SelectItem>
+                  <SelectItem value="rating">⭐ Highest Rated</SelectItem>
+                  <SelectItem value="newest">🆕 Newest First</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* View Mode */}
+              <div className="hidden md:flex bg-background rounded-xl p-1 shadow-sm border border-border/50">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className={`transition-all duration-300 ${viewMode === 'grid' ? 'bg-primary text-primary-foreground shadow-sm' : 'hover:bg-accent/50'}`}
+                >
+                  <Grid className="h-4 w-4" />
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-80">
-                <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6">
-                  <FilterSidebar />
-                </div>
-              </SheetContent>
-            </Sheet>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className={`transition-all duration-300 ${viewMode === 'list' ? 'bg-primary text-primary-foreground shadow-sm' : 'hover:bg-accent/50'}`}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Mobile Filter */}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="md:hidden relative shadow-sm">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Filters
+                    {activeFilterCount > 0 && (
+                      <Badge variant="destructive" className="ml-2 h-5 min-w-5 px-1.5 text-xs font-bold animate-scale-in">
+                        {activeFilterCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-80">
+                  <SheetHeader>
+                    <SheetTitle>Filters</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6">
+                    <FilterSidebar />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
 
         {/* Active Filters */}
         {activeFilterCount > 0 && (
-          <div className="flex items-center space-x-2 mb-6">
-            <span className="text-sm text-muted-foreground">Active filters:</span>
-            <Button variant="ghost" size="sm" onClick={clearFilters}>
+          <div className="flex items-center gap-3 mb-6 p-4 bg-accent/30 rounded-xl border border-border/50 animate-fade-in">
+            <span className="text-sm font-medium text-foreground">Active filters:</span>
+            <Badge variant="secondary" className="font-semibold">{activeFilterCount}</Badge>
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="ml-auto hover:bg-destructive/10 hover:text-destructive">
+              <X className="h-4 w-4 mr-1" />
               Clear all
             </Button>
           </div>
@@ -404,11 +433,15 @@ const Shop = () => {
           {/* Desktop Filters Sidebar */}
           <aside className="hidden md:block w-80 flex-shrink-0">
             <div className="sticky top-24">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-foreground">Filters</h3>
+              <div className="flex items-center justify-between mb-6 p-4 bg-card/50 backdrop-blur-sm rounded-xl border border-border/50">
+                <h3 className="font-bold text-foreground flex items-center gap-2">
+                  <SlidersHorizontal className="h-5 w-5 text-primary" />
+                  Filters
+                </h3>
                 {activeFilterCount > 0 && (
-                  <Button variant="ghost" size="sm" onClick={clearFilters}>
-                    Clear all
+                  <Button variant="ghost" size="sm" onClick={clearFilters} className="hover:bg-destructive/10 hover:text-destructive">
+                    <X className="h-4 w-4 mr-1" />
+                    Clear
                   </Button>
                 )}
               </div>
@@ -419,24 +452,34 @@ const Shop = () => {
           {/* Products Grid */}
           <div className="flex-1">
             {filteredProducts.length === 0 ? (
-              <Card className="p-12 text-center">
-                <div className="space-y-4">
-                  <SlidersHorizontal className="h-12 w-12 text-muted-foreground mx-auto" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground">No products found</h3>
-                    <p className="text-muted-foreground">Try adjusting your filters to see more results.</p>
+              <Card className="p-16 text-center shadow-card border-border/50 animate-fade-in">
+                <div className="space-y-6 max-w-md mx-auto">
+                  <div className="w-20 h-20 mx-auto bg-muted rounded-full flex items-center justify-center">
+                    <SlidersHorizontal className="h-10 w-10 text-muted-foreground" />
                   </div>
-                  <Button onClick={clearFilters}>Clear all filters</Button>
+                  <div>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">No products found</h3>
+                    <p className="text-muted-foreground">Try adjusting your filters or search terms to discover more products.</p>
+                  </div>
+                  <Button onClick={clearFilters} size="lg" className="shadow-md">
+                    <X className="h-4 w-4 mr-2" />
+                    Clear all filters
+                  </Button>
                 </div>
               </Card>
             ) : (
               <div className={viewMode === 'grid' ? 'product-grid stagger-animation' : 'space-y-6 stagger-animation'}>
-                {filteredProducts.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product}
-                    className={viewMode === 'list' ? 'flex-row' : ''}
-                  />
+                {filteredProducts.map((product, index) => (
+                  <div 
+                    key={product.id}
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                    className="animate-fade-in"
+                  >
+                    <ProductCard 
+                      product={product}
+                      className={viewMode === 'list' ? 'flex-row' : ''}
+                    />
+                  </div>
                 ))}
               </div>
             )}
