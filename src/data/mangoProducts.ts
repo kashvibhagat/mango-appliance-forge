@@ -6,7 +6,7 @@ export const companyInfo = {
   brand: 'Mango Appliances',
   name: 'Mango Appliances Private Limited',
   philosophy: 'Premium Cooling Solutions',
-  experience: '15+ Years',
+  experience: '15+',
   factories: '3 Manufacturing Units',
   location: 'Rajkot, Gujarat',
   international: 'Asia, Middle East & Indian Sub-continent',
