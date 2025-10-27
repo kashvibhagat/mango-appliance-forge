@@ -125,72 +125,72 @@ const Home = () => {
   return (
     <div className="relative">
         {/* Hero Section */}
-        <section className="relative bg-gradient-hero overflow-hidden py-16 md:py-24 lg:py-32">
+        <section className="relative bg-gradient-hero overflow-hidden py-20 md:py-28 lg:py-36">
           {/* Decorative background pattern */}
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djItaDJ2LTJoLTJ6bTAgNHYyaDJ2LTJoLTJ6bS0yIDJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0yLTJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0tMiAydi0yaC0ydjJoMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40"></div>
           
           <div className="container mx-auto px-4 relative">
-            <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-center">
-              <div className="space-y-8 md:space-y-10 animate-fade-in">
-                <div className="space-y-4 md:space-y-6">
-                  <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors duration-300 font-semibold px-4 py-1.5">
-                    <Zap className="h-3.5 w-3.5 mr-2" />
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center space-y-8 md:space-y-10 animate-fade-in">
+                <div className="space-y-6 md:space-y-8">
+                  <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors duration-300 font-semibold px-5 py-2 text-base">
+                    <Zap className="h-4 w-4 mr-2" />
                     {companyInfo.philosophy}
                   </Badge>
-                  <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground leading-[1.1]">
-                    <span className="block mb-2">Beat the Heat with</span>
+                  <h1 className="text-5xl md:text-6xl lg:text-8xl font-bold text-foreground leading-[1.1]">
+                    <span className="block mb-3">Beat the Heat with</span>
                     <span className="block bg-gradient-brand bg-clip-text text-transparent animate-shimmer">
                       {companyInfo.brand}
                     </span>
                   </h1>
-                  <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
+                  <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                     India&apos;s trusted cooling solution provider with <strong className="text-foreground">{companyInfo.experience} of excellence</strong>. Manufacturing from {companyInfo.factories} with a pan-India presence and exports to {companyInfo.international}.
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 md:gap-5">
-                  <Link to="/shop" className="w-full sm:w-auto">
-                    <Button variant="hero" size="xl" className="w-full sm:w-auto group shadow-2xl hover:shadow-brand">
+                <div className="flex flex-col sm:flex-row gap-4 md:gap-5 justify-center">
+                  <Link to="/shop">
+                    <Button variant="hero" size="xl" className="group shadow-2xl hover:shadow-brand min-w-[200px]">
                       Shop Air Coolers
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
                   </Link>
-                  <Link to="/shop?category=spare-parts" className="w-full sm:w-auto">
-                    <Button variant="outline-glow" size="xl" className="w-full sm:w-auto">
+                  <Link to="/shop?category=spare-parts">
+                    <Button variant="outline-glow" size="xl" className="min-w-[200px]">
                       View Spare Parts
                     </Button>
                   </Link>
                 </div>
 
                 {/* Trust Indicators */}
-                <div className="flex flex-wrap items-center gap-6 pt-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 pt-6 text-sm md:text-base">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-background/50 backdrop-blur-sm rounded-full border border-border/50">
                     <CheckCircle className="h-5 w-5 text-success" />
-                    <span className="font-medium">ISO Certified</span>
+                    <span className="font-semibold">ISO Certified</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-background/50 backdrop-blur-sm rounded-full border border-border/50">
                     <Shield className="h-5 w-5 text-primary" />
-                    <span className="font-medium">2-Year Warranty</span>
+                    <span className="font-semibold">2-Year Warranty</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-background/50 backdrop-blur-sm rounded-full border border-border/50">
                     <Truck className="h-5 w-5 text-primary" />
-                    <span className="font-medium">Free Shipping</span>
+                    <span className="font-semibold">Free Shipping</span>
                   </div>
                 </div>
 
                 {/* Company Stats */}
-                <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border/50">
-                  <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-1">40+</div>
-                    <div className="text-xs md:text-sm text-muted-foreground font-medium">Product Models</div>
+                <div className="grid grid-cols-3 gap-8 md:gap-12 pt-12 max-w-3xl mx-auto">
+                  <div className="text-center p-6 bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+                    <div className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-2">40+</div>
+                    <div className="text-sm md:text-base text-muted-foreground font-medium">Product Models</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-1">{companyInfo.experience}</div>
-                    <div className="text-xs md:text-sm text-muted-foreground font-medium">Years Experience</div>
+                  <div className="text-center p-6 bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+                    <div className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-2">{companyInfo.experience}</div>
+                    <div className="text-sm md:text-base text-muted-foreground font-medium">Years Experience</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-1">50K+</div>
-                    <div className="text-xs md:text-sm text-muted-foreground font-medium">Happy Customers</div>
+                  <div className="text-center p-6 bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+                    <div className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-brand bg-clip-text text-transparent mb-2">50K+</div>
+                    <div className="text-sm md:text-base text-muted-foreground font-medium">Happy Customers</div>
                   </div>
                 </div>
               </div>
