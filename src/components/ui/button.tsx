@@ -5,30 +5,30 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-95 btn-micro focus-ring relative overflow-hidden",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 focus-ring relative overflow-hidden touch-manipulation",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 hover:shadow-lg btn-ripple",
+        default: "bg-primary text-primary-foreground shadow-md hover:shadow-lg active:scale-[0.98] font-semibold",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:scale-105 hover:shadow-lg btn-ripple",
+          "bg-destructive text-destructive-foreground shadow-md hover:shadow-lg active:scale-[0.98] font-semibold",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:scale-[1.02] hover:shadow-md",
+          "border-2 border-input bg-background hover:bg-accent/10 hover:border-accent hover:text-accent-foreground shadow-sm hover:shadow-md active:scale-[0.98]",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:scale-[1.02] hover:shadow-lg btn-ripple",
-        ghost: "hover:bg-accent hover:text-accent-foreground hover:scale-[1.02]",
-        link: "text-primary underline-offset-4 hover:underline hover:scale-[1.02]",
-        hero: "btn-hero btn-ripple",
+          "btn-secondary",
+        ghost: "btn-ghost",
+        link: "text-primary underline-offset-4 hover:underline active:scale-[0.98]",
+        hero: "btn-hero",
         "outline-glow": "btn-outline-glow",
-        floating: "btn-floating bg-primary text-primary-foreground hover:bg-primary/90 btn-ripple",
+        floating: "btn-floating bg-primary text-primary-foreground hover:bg-primary/90",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3 text-xs",
-        lg: "h-12 rounded-lg px-8 text-base font-semibold",
-        xl: "h-14 rounded-xl px-10 text-lg font-bold",
-        icon: "h-10 w-10",
-        "icon-sm": "h-8 w-8",
+        default: "h-11 px-5 py-2.5",
+        sm: "h-9 rounded-lg px-3.5 text-xs",
+        lg: "h-12 rounded-xl px-8 text-base font-semibold",
+        xl: "h-14 rounded-2xl px-10 text-lg font-bold",
+        icon: "h-11 w-11",
+        "icon-sm": "h-9 w-9",
         "icon-lg": "h-12 w-12",
       },
     },

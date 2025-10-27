@@ -51,14 +51,14 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 animate-in slide-in-from-top-4 duration-300">
+    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-lg shadow-sm supports-[backdrop-filter]:bg-background/80 animate-in slide-in-from-top-4 duration-300">
       <div className="container mx-auto px-4">
         {/* Top bar */}
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer z-10" 
+            className="flex items-center space-x-3 transition-all duration-300 hover:scale-105 cursor-pointer z-10 group" 
             onClick={() => {
               console.log('Logo clicked');
               if (location.pathname === '/') {
@@ -66,11 +66,11 @@ const Header = () => {
               }
             }}
           >
-            <div className="h-8 w-8 bg-gradient-brand rounded-lg flex items-center justify-center">
-              <span className="text-lg font-bold text-white">M</span>
+            <div className="h-10 w-10 bg-gradient-brand rounded-xl flex items-center justify-center shadow-md group-hover:shadow-brand transition-all duration-300">
+              <span className="text-xl font-bold text-white">M</span>
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">Mango</h1>
+              <h1 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">Mango</h1>
               <p className="text-xs text-muted-foreground -mt-1">Appliances</p>
             </div>
           </Link>
@@ -92,8 +92,8 @@ const Header = () => {
             {/* AI Assistant */}
             <Button 
               variant="ghost" 
-              size="sm" 
-              className="relative hover:bg-accent/10" 
+              size="icon-sm" 
+              className="relative hover:bg-accent/10 hover:scale-110 transition-all rounded-xl" 
               onClick={() => window.dispatchEvent(new Event('mango-chat-toggle'))}
               title="AI Assistant"
             >
@@ -101,13 +101,13 @@ const Header = () => {
             </Button>
 
             {/* Wishlist */}
-            <Button variant="ghost" size="sm" className="relative" asChild>
+            <Button variant="ghost" size="icon-sm" className="relative hover:scale-110 transition-all rounded-xl" asChild>
               <Link to="/wishlist">
-                <Heart className="h-5 w-5" />
+                <Heart className="h-5 w-5 hover:text-error transition-colors" />
                 {wishlistItems.length > 0 && (
                   <Badge 
                     variant="destructive" 
-                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs shadow-md animate-in zoom-in-50 duration-200"
                   >
                     {wishlistItems.length}
                   </Badge>
@@ -116,13 +116,13 @@ const Header = () => {
             </Button>
 
             {/* Cart */}
-            <Button variant="ghost" size="sm" className="relative" asChild>
+            <Button variant="ghost" size="icon-sm" className="relative hover:scale-110 transition-all rounded-xl" asChild>
               <Link to="/cart">
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="h-5 w-5 hover:text-primary transition-colors" />
                 {itemCount > 0 && (
                   <Badge 
                     variant="destructive" 
-                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs shadow-md animate-in zoom-in-50 duration-200"
                   >
                     {itemCount}
                   </Badge>
@@ -192,19 +192,22 @@ const Header = () => {
         </div>
 
         {/* Navigation - desktop */}
-        <nav className="hidden md:flex border-t border-border py-4">
+        <nav className="hidden md:flex border-t border-border/50 py-4">
           <div className="flex items-center space-x-8">
             {navigation.slice(0, 2).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-accent ${
+                className={`text-sm font-semibold transition-all duration-300 relative group ${
                   isActive(item.href)
-                    ? 'text-accent border-b-2 border-accent pb-1'
-                    : 'text-muted-foreground'
+                    ? 'text-accent'
+                    : 'text-muted-foreground hover:text-accent'
                 }`}
               >
                 {item.name}
+                <span className={`absolute -bottom-1 left-0 h-0.5 bg-accent transition-all duration-300 ${
+                  isActive(item.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                }`} />
               </Link>
             ))}
             
@@ -212,16 +215,16 @@ const Header = () => {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm font-medium text-muted-foreground hover:text-accent data-[state=open]:text-accent">
+                  <NavigationMenuTrigger className="text-sm font-semibold text-muted-foreground hover:text-accent data-[state=open]:text-accent transition-all duration-300">
                     Category
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="w-48 p-2">
+                    <div className="w-52 p-3 bg-background rounded-xl shadow-xl border border-border/50">
                       {coolerCategories.map((category) => (
                         <NavigationMenuLink key={category.name} asChild>
                           <Link
                             to={category.href}
-                            className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors"
+                            className="block rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-accent hover:bg-accent/10 transition-all duration-200 hover:scale-[1.02] hover:shadow-sm"
                           >
                             {category.name}
                           </Link>
@@ -236,26 +239,32 @@ const Header = () => {
             {/* Comparison Link */}
             <Link
               to="/comparison"
-              className={`text-sm font-medium transition-colors hover:text-accent ${
+              className={`text-sm font-semibold transition-all duration-300 relative group ${
                 isActive('/comparison')
-                  ? 'text-accent border-b-2 border-accent pb-1'
-                  : 'text-muted-foreground'
+                  ? 'text-accent'
+                  : 'text-muted-foreground hover:text-accent'
               }`}
             >
               Comparison
+              <span className={`absolute -bottom-1 left-0 h-0.5 bg-accent transition-all duration-300 ${
+                isActive('/comparison') ? 'w-full' : 'w-0 group-hover:w-full'
+              }`} />
             </Link>
 
             {navigation.slice(2).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-accent ${
+                className={`text-sm font-semibold transition-all duration-300 relative group ${
                   isActive(item.href)
-                    ? 'text-accent border-b-2 border-accent pb-1'
-                    : 'text-muted-foreground'
+                    ? 'text-accent'
+                    : 'text-muted-foreground hover:text-accent'
                 }`}
               >
                 {item.name}
+                <span className={`absolute -bottom-1 left-0 h-0.5 bg-accent transition-all duration-300 ${
+                  isActive(item.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                }`} />
               </Link>
             ))}
           </div>

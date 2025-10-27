@@ -70,9 +70,16 @@ export default {
 				'gradient-hero': 'var(--gradient-hero)',
 			},
 			boxShadow: {
+				'xs': 'var(--shadow-xs)',
+				'sm': 'var(--shadow-sm)',
+				'md': 'var(--shadow-md)',
+				'lg': 'var(--shadow-lg)',
+				'xl': 'var(--shadow-xl)',
+				'2xl': 'var(--shadow-2xl)',
 				'card': 'var(--shadow-card)',
 				'brand': 'var(--shadow-brand)',
 				'accent': 'var(--shadow-accent)',
+				'inner': 'var(--shadow-inner)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
