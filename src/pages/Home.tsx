@@ -147,12 +147,18 @@ const Home = () => {
 
                 {/* Main Heading */}
                 <div className="space-y-6">
-                  <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-foreground leading-[1.05] tracking-tight">
-                    Beat the Heat with
-                    <span className="block mt-2 bg-gradient-brand bg-clip-text text-transparent animate-shimmer">
-                      {companyInfo.brand}
-                    </span>
-                  </h1>
+                  <div className="relative inline-block">
+                    {/* Decorative background */}
+                    <div className="absolute inset-0 -inset-x-12 -inset-y-8 bg-gradient-to-r from-primary/5 via-primary/8 to-primary/5 rounded-3xl blur-2xl"></div>
+                    <div className="absolute inset-0 -inset-x-8 -inset-y-6 bg-card/30 backdrop-blur-sm rounded-2xl border border-primary/10"></div>
+                    
+                    <h1 className="relative text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-foreground leading-[1.05] tracking-tight px-4 md:px-8 py-6">
+                      Beat the Heat with
+                      <span className="block mt-2 bg-gradient-brand bg-clip-text text-transparent animate-shimmer">
+                        {companyInfo.brand}
+                      </span>
+                    </h1>
+                  </div>
                   
                   <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light">
                     Manufacturing excellence since <strong className="font-semibold text-foreground">{companyInfo.experience.replace('+', '')} years</strong>, delivering premium cooling solutions across <strong className="font-semibold text-foreground">Asia, Middle East & Indian sub-continent</strong>
