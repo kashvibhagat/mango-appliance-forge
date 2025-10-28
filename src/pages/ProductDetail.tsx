@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Heart, 
@@ -22,19 +22,108 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import ProductCard from '@/components/ui/ProductCard';
 import ProductPoliciesSection from '@/components/ui/ProductPoliciesSection';
-import { featuredProducts } from '@/data/products';
-import { spareProducts } from '@/data/spareProducts';
 import { useCart } from '@/contexts/CartContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const ProductDetail = () => {
   const { slug } = useParams();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [product, setProduct] = useState<any>(null);
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
 
-  const allProducts = [...featuredProducts, ...spareProducts];
-  const product = allProducts.find(p => p.slug === slug);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!slug) return;
+      
+      try {
+        setLoading(true);
+        
+        // Fetch the product by slug
+        const { data: productData, error: productError } = await supabase
+          .from('products')
+          .select('*')
+          .eq('slug', slug)
+          .eq('is_active', true)
+          .single();
+
+        if (productError || !productData) {
+          console.error('Error fetching product:', productError);
+          setProduct(null);
+          return;
+        }
+
+        // Transform product to match expected structure
+        const transformedProduct = {
+          ...productData,
+          images: Array.isArray(productData.images) ? productData.images : [productData.images].filter(Boolean),
+          specifications: productData.specifications || {},
+          rating: 4.5,
+          reviewCount: Math.floor(Math.random() * 100) + 10,
+          inStock: productData.stock_quantity > 0,
+          stockQuantity: productData.stock_quantity,
+          originalPrice: productData.price + Math.floor(productData.price * 0.2),
+          shortDescription: productData.description?.substring(0, 100) + '...' || '',
+          features: [],
+          tags: [],
+          slug: productData.slug,
+          sku: productData.model,
+          warranty: `${productData.warranty_period || 12} months warranty`,
+          powerConsumption: productData.specifications?.['Power Consumption'] || '',
+          tankCapacity: productData.specifications?.['Tank Capacity'] || '',
+          airThrow: productData.specifications?.['Air Throw'] || '',
+          coolingArea: productData.specifications?.['Room Size'] || '',
+          createdAt: productData.created_at,
+          updatedAt: productData.updated_at,
+          dimensions: { length: 0, width: 0, height: 0, weight: 0 },
+          variants: [],
+          category: {
+            id: productData.category || 'unknown',
+            name: productData.category ? productData.category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unknown',
+            slug: productData.category || 'unknown',
+            filters: []
+          }
+        };
+
+        setProduct(transformedProduct);
+
+        // Fetch related products
+        const { data: relatedData } = await supabase
+          .from('products')
+          .select('*')
+          .eq('category', productData.category)
+          .eq('is_active', true)
+          .neq('id', productData.id)
+          .limit(4);
+
+        if (relatedData) {
+          const transformedRelated = relatedData.map(p => ({
+            ...p,
+            images: Array.isArray(p.images) ? p.images : [p.images].filter(Boolean),
+            inStock: p.stock_quantity > 0,
+            originalPrice: p.price + Math.floor(p.price * 0.2),
+            slug: p.slug,
+            category: {
+              id: p.category,
+              name: p.category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              slug: p.category
+            }
+          }));
+          setRelatedProducts(transformedRelated);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [slug]);
 
   const handleAddToCart = () => {
     if (product) {
@@ -51,6 +140,15 @@ const ProductDetail = () => {
     window.location.href = '/cart';
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p>Loading product...</p>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
@@ -61,10 +159,6 @@ const ProductDetail = () => {
       </div>
     );
   }
-
-  const relatedProducts = allProducts.filter(p => 
-    p.category.id === product.category.id && p.id !== product.id
-  ).slice(0, 4);
 
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -356,7 +450,7 @@ const ProductDetail = () => {
               {Object.entries(product.specifications).map(([key, value]) => (
                 <div key={key} className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-border/50 gap-1 sm:gap-0">
                   <span className="font-medium text-foreground text-sm sm:text-base">{key}</span>
-                  <span className="text-muted-foreground text-sm sm:text-base">{value}</span>
+                  <span className="text-muted-foreground text-sm sm:text-base">{String(value)}</span>
                 </div>
               ))}
             </div>

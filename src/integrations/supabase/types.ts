@@ -218,6 +218,7 @@ export type Database = {
           model: string | null
           name: string
           price: number
+          slug: string | null
           specifications: Json | null
           stock_quantity: number
           updated_at: string
@@ -234,6 +235,7 @@ export type Database = {
           model?: string | null
           name: string
           price?: number
+          slug?: string | null
           specifications?: Json | null
           stock_quantity?: number
           updated_at?: string
@@ -250,6 +252,7 @@ export type Database = {
           model?: string | null
           name?: string
           price?: number
+          slug?: string | null
           specifications?: Json | null
           stock_quantity?: number
           updated_at?: string
