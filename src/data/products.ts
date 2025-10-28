@@ -1088,6 +1088,63 @@ export const featuredProducts: Product[] = [
     createdAt: "2024-01-13T00:00:00Z",
     updatedAt: "2024-01-13T00:00:00Z"
   },
+  // Additional Desert Cooler - Artic Series
+  {
+    id: "21",
+    name: "Artic DC 50L",
+    slug: "artic-dc-50l",
+    description: "The Artic DC 50L is a powerful desert air cooler with a 50-liter water tank capacity, designed for efficient cooling in medium to large spaces. Featuring robust construction, high-efficiency cooling pads, and excellent air circulation, it delivers consistent cooling performance for homes and commercial spaces.",
+    shortDescription: "50L capacity desert cooler for medium to large spaces",
+    images: [
+      "/src/assets/artic-dc-50l-1.jpg",
+      "/src/assets/artic-dc-50l-2.jpg",
+      "/src/assets/artic-dc-50l-3.jpg",
+      "/src/assets/artic-dc-50l-4.jpg",
+      "/src/assets/artic-dc-50l-5.jpg",
+      "/src/assets/artic-dc-50l-6.jpg"
+    ],
+    price: 18499,
+    originalPrice: 21999,
+    category: categories[2], // Desert Coolers
+    brand: "Mango",
+    sku: "ADC-50L-021",
+    inStock: true,
+    stockQuantity: 18,
+    rating: 4.6,
+    reviewCount: 42,
+    specifications: {
+      "Tank Capacity": "50 Liters",
+      "Power Consumption": "215 Watts",
+      "Air Throw": "50 feet",
+      "Room Size": "Up to 750 sq ft",
+      "Pump": "High-efficiency circulation pump",
+      "Material": "Premium Metal Body with Anti-rust Coating"
+    },
+    features: [
+      "50L large water tank capacity",
+      "Powerful air throw up to 50 feet",
+      "High-efficiency honeycomb cooling pads",
+      "4-way air deflection system",
+      "Water level indicator",
+      "Heavy-duty castor wheels for easy mobility",
+      "Durable metal body construction",
+      "Low power consumption"
+    ],
+    tags: ["desert", "artic-series", "50L", "efficient", "durable"],
+    dimensions: {
+      length: 58,
+      width: 44,
+      height: 118,
+      weight: 32
+    },
+    warranty: "2 years comprehensive warranty",
+    powerConsumption: "215W",
+    tankCapacity: "50L",
+    airThrow: "50 feet",
+    coolingArea: "750 sq ft",
+    createdAt: "2024-01-04T00:00:00Z",
+    updatedAt: "2024-01-04T00:00:00Z"
+  },
   // Spare Parts
   {
     id: "12",
