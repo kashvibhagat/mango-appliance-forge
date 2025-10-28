@@ -89,15 +89,12 @@ const ProductCard = ({ product, className = '' }: ProductCardProps) => {
           <Button 
             variant="hero"
             size="sm"
-            className="w-full animate-shimmer min-h-[44px] touch-manipulation active:scale-95 relative overflow-hidden group/btn"
+            className="w-full min-h-[44px] touch-manipulation active:scale-95"
             onClick={handleAddToCart}
             disabled={!product.inStock}
           >
-            <span className="relative z-10 flex items-center">
-              <ShoppingCart className="h-4 w-4 mr-2 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12" />
-              {product.inStock ? 'Add to Cart' : 'Out of Stock'}
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-brand/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <ShoppingCart className="h-4 w-4 mr-2 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12" />
+            {product.inStock ? 'Add to Cart' : 'Out of Stock'}
           </Button>
         </div>
       </div>
