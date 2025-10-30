@@ -1,7 +1,7 @@
-import { Product, ProductCategory } from '@/types/product';
-import { featuredProducts, categories } from '@/data/products';
+import { ProductCategory } from '@/types/product';
+import { categories } from '@/data/products';
 
-// Company information
+// Company information for Mango Appliances
 export const companyInfo = {
   brand: 'Mango Appliances',
   name: 'Mango Appliances Private Limited',
@@ -16,11 +16,9 @@ export const companyInfo = {
   certifications: ['ISO 9001:2015', 'BIS', 'Energy Star']
 };
 
-// Use existing featured products from products.ts
-export const mangoFeaturedProducts = featuredProducts;
-
-// Use existing categories from products.ts
+// All products are now fetched from Supabase database
+// This ensures data consistency and eliminates hardcoded product data
 export const mangoCategories = categories;
 
-// Export featured products for easy access
-export { featuredProducts, categories };
+// Re-export categories for convenience
+export { categories };

@@ -1,27 +1,75 @@
 import { useEffect, useState } from 'react';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { featuredProducts } from '@/data/products';
-import { spareProducts } from '@/data/spareProducts';
 import { Product } from '@/types/product';
 import ProductCard from '@/components/ui/ProductCard';
 import { Separator } from '@/components/ui/separator';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const Wishlist = () => {
-  const { wishlistItems, loading } = useWishlist();
+  const { wishlistItems, loading: wishlistLoading } = useWishlist();
   const { user } = useAuth();
   const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Filter products that are in the wishlist
-    const allProducts = [...featuredProducts, ...spareProducts];
-    const products = allProducts.filter(product =>
-      wishlistItems.includes(product.id)
-    );
-    setWishlistProducts(products);
+    const fetchWishlistProducts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .in('id', wishlistItems.length > 0 ? wishlistItems : ['']);
+
+        if (error) throw error;
+
+        const transformedProducts: Product[] = (data || []).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          slug: item.slug || item.name.toLowerCase().replace(/\s+/g, '-'),
+          description: item.description || '',
+          shortDescription: item.description || '',
+          images: Array.isArray(item.images) ? item.images : [],
+          price: Number(item.price),
+          category: {
+            id: item.category,
+            name: item.category.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+            slug: item.category,
+            filters: []
+          },
+          brand: item.brand || 'Mango Appliances',
+          sku: item.sku || item.model || item.id,
+          inStock: item.stock_quantity > 0,
+          stockQuantity: item.stock_quantity || 0,
+          rating: 4.5,
+          reviewCount: 0,
+          specifications: typeof item.specifications === 'object' ? item.specifications : {},
+          features: [],
+          tags: [],
+          warranty: `${item.warranty_period || 12} months`,
+          createdAt: item.created_at,
+          updatedAt: item.updated_at
+        }));
+
+        setWishlistProducts(transformedProducts);
+      } catch (error) {
+        console.error('Error fetching wishlist products:', error);
+        toast.error('Failed to load wishlist products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (wishlistItems.length > 0) {
+      fetchWishlistProducts();
+    } else {
+      setWishlistProducts([]);
+      setLoading(false);
+    }
   }, [wishlistItems]);
 
   if (!user) {
@@ -41,7 +89,7 @@ const Wishlist = () => {
     );
   }
 
-  if (loading) {
+  if (loading || wishlistLoading) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-16">

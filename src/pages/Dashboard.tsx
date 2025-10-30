@@ -13,14 +13,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import ProductCard from '@/components/ui/ProductCard'
 import { User, Package, Heart, MapPin, Settings, LogOut, ShoppingBag, Phone, Mail, Edit, Trash2, Plus, Eye } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
-import { featuredProducts } from '@/data/products'
-import { spareProducts } from '@/data/spareProducts'
+import { Product } from '@/types/product'
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('profile')
   const [profile, setProfile] = useState<any>(null)
   const [orders, setOrders] = useState<any[]>([])
   const [addresses, setAddresses] = useState<any[]>([])
+  const [wishlistProducts, setWishlistProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   
@@ -69,8 +69,62 @@ const Dashboard = () => {
       fetchUserProfile()
       fetchUserOrders()
       fetchUserAddresses()
+      fetchWishlistProducts()
     }
   }, [user])
+
+  const fetchWishlistProducts = async () => {
+    try {
+      if (wishlistItems.length === 0) {
+        setWishlistProducts([])
+        return
+      }
+
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .in('id', wishlistItems)
+
+      if (error) throw error
+
+      const transformedProducts: Product[] = (data || []).map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        slug: item.slug || item.name.toLowerCase().replace(/\s+/g, '-'),
+        description: item.description || '',
+        shortDescription: item.description || '',
+        images: Array.isArray(item.images) ? item.images : [],
+        price: Number(item.price),
+        category: {
+          id: item.category,
+          name: item.category.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+          slug: item.category,
+          filters: []
+        },
+        brand: item.brand || 'Mango Appliances',
+        sku: item.sku || item.model || item.id,
+        inStock: item.stock_quantity > 0,
+        stockQuantity: item.stock_quantity || 0,
+        rating: 4.5,
+        reviewCount: 0,
+        specifications: typeof item.specifications === 'object' ? item.specifications : {},
+        features: [],
+        tags: [],
+        warranty: `${item.warranty_period || 12} months`,
+        createdAt: item.created_at,
+        updatedAt: item.updated_at
+      }))
+
+      setWishlistProducts(transformedProducts)
+    } catch (error) {
+      console.error('Error fetching wishlist products:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchWishlistProducts()
+  }, [wishlistItems])
 
   const fetchUserProfile = async () => {
     try {
@@ -588,13 +642,9 @@ const Dashboard = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {wishlistItems.map((productId: string) => {
-                    // Find product in featured products or spare products
-                    const product = [...featuredProducts, ...spareProducts].find(p => p.id === productId)
-                    return product ? (
-                      <ProductCard key={product.id} product={product} />
-                    ) : null
-                  })}
+                  {wishlistProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
                 </div>
               )}
             </CardContent>

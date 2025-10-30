@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, X, Star, Check, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,22 +6,74 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { featuredProducts } from '@/data/products';
-import { spareProducts } from '@/data/spareProducts';
 import { Product } from '@/types/product';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const Comparison = () => {
   const [selectedProducts, setSelectedProducts] = useState<(Product | null)[]>([null, null]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSlot, setActiveSlot] = useState<0 | 1 | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
+  // Fetch products from database
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .order('name');
+
+        if (error) throw error;
+
+        const transformedProducts: Product[] = (data || []).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          slug: item.slug || item.name.toLowerCase().replace(/\s+/g, '-'),
+          description: item.description || '',
+          shortDescription: item.description || '',
+          images: Array.isArray(item.images) ? item.images : [],
+          price: Number(item.price),
+          category: {
+            id: item.category,
+            name: item.category.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+            slug: item.category,
+            filters: []
+          },
+          brand: item.brand || 'Mango Appliances',
+          sku: item.sku || item.model || item.id,
+          inStock: item.stock_quantity > 0,
+          stockQuantity: item.stock_quantity || 0,
+          rating: 4.5,
+          reviewCount: 0,
+          specifications: typeof item.specifications === 'object' ? item.specifications : {},
+          features: [],
+          tags: [],
+          warranty: `${item.warranty_period || 12} months`,
+          createdAt: item.created_at,
+          updatedAt: item.updated_at
+        }));
+
+        setAllProducts(transformedProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        toast.error('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   // Filter products based on search query
-  const allProducts = [...featuredProducts, ...spareProducts];
   const filteredProducts = allProducts.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||

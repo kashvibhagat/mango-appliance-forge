@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import ProductCard from '@/components/ui/ProductCard';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
-import { mangoFeaturedProducts, mangoCategories, companyInfo } from '@/data/mangoProducts';
+import { mangoCategories, companyInfo } from '@/data/mangoProducts';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/types/product';
 import heroAirCooler from '@/assets/hero-air-cooler.jpg';
@@ -70,8 +70,8 @@ const Home = () => {
         }
       } catch (error) {
         console.error('Error fetching products:', error);
-        // Fallback to static products if database fetch fails
-        setFeaturedProducts(mangoFeaturedProducts);
+        // Show empty state if database fetch fails
+        setFeaturedProducts([]);
       } finally {
         setLoading(false);
       }
