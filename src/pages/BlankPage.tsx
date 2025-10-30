@@ -62,7 +62,8 @@ const AdminDashboard = () => {
   const [shippingForm, setShippingForm] = useState({
     vendor_name: '',
     shipped_at: '',
-    estimated_delivery: ''
+    estimated_delivery: '',
+    pod_number: ''
   })
   const { user } = useAuth()
 
@@ -144,7 +145,7 @@ const AdminDashboard = () => {
   }
 
   const handleShippingSubmit = async () => {
-    if (!selectedOrderId || !shippingForm.vendor_name || !shippingForm.shipped_at) {
+    if (!selectedOrderId || !shippingForm.vendor_name || !shippingForm.shipped_at || !shippingForm.pod_number) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
@@ -170,6 +171,7 @@ const AdminDashboard = () => {
         order_id: selectedOrderId,
         vendor_name: shippingForm.vendor_name,
         shipped_at: shippedDate.toISOString(),
+        pod_number: shippingForm.pod_number,
         status: 'shipped'
       }
 
@@ -192,7 +194,7 @@ const AdminDashboard = () => {
       await updateOrderStatus(selectedOrderId, 'shipped')
 
       // Reset form and close dialog
-      setShippingForm({ vendor_name: '', shipped_at: '', estimated_delivery: '' })
+      setShippingForm({ vendor_name: '', shipped_at: '', estimated_delivery: '', pod_number: '' })
       setShippingDialogOpen(false)
       setSelectedOrderId(null)
 
@@ -628,6 +630,19 @@ const AdminDashboard = () => {
                 placeholder="e.g., BlueDart, FedEx, DTDC"
                 required
               />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="pod_number">POD Number *</Label>
+              <Input
+                id="pod_number"
+                value={shippingForm.pod_number}
+                onChange={(e) => setShippingForm(prev => ({ ...prev, pod_number: e.target.value }))}
+                placeholder="Enter Proof of Delivery number"
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                This number will be visible to customers for tracking
+              </p>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="shipped_at">Shipping Date *</Label>

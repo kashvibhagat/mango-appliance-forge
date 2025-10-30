@@ -21,6 +21,7 @@ const WarrantyRegistration = () => {
   });
   const [loading, setLoading] = useState(false);
   const [warranties, setWarranties] = useState<any[]>([]);
+  const [shipmentDetails, setShipmentDetails] = useState<Record<string, any>>({});
   const [loadingWarranties, setLoadingWarranties] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -44,6 +45,51 @@ const WarrantyRegistration = () => {
 
       if (error) throw error;
       setWarranties(data || []);
+
+      // Fetch shipment details for each warranty's order
+      if (data && data.length > 0) {
+        const shipmentPromises = data.map(async (warranty) => {
+          if (!warranty.serial_number) return null;
+          
+          // Try to find order by matching products in order items with warranty product model
+          const { data: orders } = await supabase
+            .from('orders')
+            .select('id, order_number, items')
+            .eq('user_id', user.id);
+          
+          if (orders && orders.length > 0) {
+            // Find matching order based on product model in items
+            for (const order of orders) {
+              if (order.items && Array.isArray(order.items)) {
+                const matchingItem = order.items.find((item: any) => 
+                  item.name && item.name.toLowerCase().includes(warranty.product_model.toLowerCase())
+                );
+                
+                if (matchingItem) {
+                  // Fetch shipment details for this order
+                  const { data: shipment } = await supabase
+                    .from('shipment_details')
+                    .select('*')
+                    .eq('order_id', order.id)
+                    .maybeSingle();
+                  
+                  return { warrantyId: warranty.id, shipment };
+                }
+              }
+            }
+          }
+          return null;
+        });
+
+        const shipmentResults = await Promise.all(shipmentPromises);
+        const shipmentMap: Record<string, any> = {};
+        shipmentResults.forEach(result => {
+          if (result && result.shipment) {
+            shipmentMap[result.warrantyId] = result.shipment;
+          }
+        });
+        setShipmentDetails(shipmentMap);
+      }
     } catch (error) {
       console.error('Error fetching warranties:', error);
     } finally {
@@ -228,6 +274,38 @@ const WarrantyRegistration = () => {
                       </p>
                     </div>
                   </div>
+
+                  {/* Shipping Information */}
+                  {shipmentDetails[warranty.id] && (
+                    <div className="mt-4 p-4 bg-muted/50 border border-border rounded-lg">
+                      <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Shipping Information
+                      </h4>
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                          <span className="text-muted-foreground">Courier:</span>
+                          <p className="font-medium">{shipmentDetails[warranty.id].vendor_name}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">POD Number:</span>
+                          <p className="font-medium font-mono">{shipmentDetails[warranty.id].pod_number}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Shipped On:</span>
+                          <p className="font-medium">
+                            {new Date(shipmentDetails[warranty.id].shipped_at).toLocaleDateString('en-IN')}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Status:</span>
+                          <p className="font-medium capitalize">{shipmentDetails[warranty.id].status}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {warranty.status === 'approved' && (
                     <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg">
