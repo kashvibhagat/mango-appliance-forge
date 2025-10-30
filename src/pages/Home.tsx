@@ -166,21 +166,24 @@ const Home = () => {
       excerpt: 'A comprehensive guide to selecting the perfect air cooler based on room size, climate, and budget considerations.',
       date: '2024-01-15',
       category: 'Buying Guide',
-      image: heroAirCooler
+      image: heroAirCooler,
+      link: '/shop'
     },
     {
       title: 'Maintenance Tips for Long-lasting Air Cooler Performance',
       excerpt: 'Essential maintenance practices to keep your air cooler running efficiently throughout the summer season.',
       date: '2024-01-10',
       category: 'Maintenance',
-      image: heroLandscapeCoolers
+      image: heroLandscapeCoolers,
+      link: '/help'
     },
     {
-      title: 'New Product Launch: PUNCH 60i with Smart Features',
-      excerpt: 'Introducing our latest intelligent air cooler with sensor touch control, remote operation, and 12-hour timer.',
+      title: 'New Product Launch: Latest Products with Smart Features',
+      excerpt: 'Discover our latest intelligent air coolers with advanced features, remote operation, and energy-efficient technology.',
       date: '2024-01-05',
       category: 'Product News',
-      image: heroSpares
+      image: heroSpares,
+      link: '/shop?category=personal-coolers'
     }
   ];
 
@@ -620,7 +623,7 @@ const Home = () => {
 
           <div className="grid md:grid-cols-3 gap-8 stagger-animation">
             {blogPosts.map((post, index) => (
-              <Link key={index} to="/shop" className="group">
+              <Link key={index} to={post.link} className="group">
                 <Card className="card-hover overflow-hidden h-full transition-all duration-300 group-hover:shadow-xl">
                   <div className="relative">
                     <img
