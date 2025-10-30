@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import ProductCard from '@/components/ui/ProductCard';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { mangoFeaturedProducts, mangoCategories, companyInfo } from '@/data/mangoProducts';
+import { supabase } from '@/integrations/supabase/client';
+import { Product } from '@/types/product';
 import heroAirCooler from '@/assets/hero-air-cooler.jpg';
 import heroLandscapeCoolers from '@/assets/hero-landscape-coolers.jpg';
 import heroSpares from '@/assets/hero-spares.jpg';
@@ -17,7 +19,66 @@ import industrialCoolersCategory from '@/assets/industrial-coolers-category.jpg'
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = Math.ceil(mangoFeaturedProducts.length / 4);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const totalSlides = Math.ceil(featuredProducts.length / 4);
+
+  // Fetch products from database
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+          .limit(12);
+
+        if (error) throw error;
+
+        if (data) {
+          // Transform database products to match Product interface
+          const transformedProducts: Product[] = data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            slug: item.slug || item.name.toLowerCase().replace(/\s+/g, '-'),
+            description: item.description || '',
+            shortDescription: item.description || '',
+            images: Array.isArray(item.images) ? item.images : [],
+            price: Number(item.price),
+            category: {
+              id: item.category,
+              name: item.category.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+              slug: item.category,
+              filters: []
+            },
+            brand: item.brand || 'Mango Appliances',
+            sku: item.sku || item.model || item.id,
+            inStock: item.stock_quantity > 0,
+            stockQuantity: item.stock_quantity || 0,
+            rating: 4.5,
+            reviewCount: 0,
+            specifications: typeof item.specifications === 'object' ? item.specifications : {},
+            features: [],
+            tags: [],
+            warranty: `${item.warranty_period || 12} months`,
+            createdAt: item.created_at,
+            updatedAt: item.updated_at
+          }));
+
+          setFeaturedProducts(transformedProducts);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        // Fallback to static products if database fetch fails
+        setFeaturedProducts(mangoFeaturedProducts);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const nextSlide = () => {
     setCurrentSlide(prev => (prev + 1) % totalSlides);
@@ -386,60 +447,70 @@ const Home = () => {
 
           {/* Carousel - Optimized for mobile */}
           <div className="relative">
-            <div className="overflow-hidden rounded-xl">
-              <div 
-                className="flex transition-transform duration-300 md:duration-500 ease-in-out will-change-transform"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {Array.from({ length: Math.ceil(mangoFeaturedProducts.length / 4) }).map((_, slideIndex) => (
-                  <div key={slideIndex} className="w-full flex-shrink-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
-                      {mangoFeaturedProducts.slice(slideIndex * 4, (slideIndex * 4) + 4).map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                      ))}
-                    </div>
-                  </div>
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="h-96 bg-muted animate-pulse rounded-lg"></div>
                 ))}
               </div>
-            </div>
-
-            {/* Navigation Arrows */}
-            {Math.ceil(mangoFeaturedProducts.length / 4) > 1 && (
+            ) : (
               <>
-                <Button
-                  variant="ghost"  
-                  size="icon"
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background border"
-                  onClick={prevSlide}
-                  disabled={currentSlide === 0}
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background border"
-                  onClick={nextSlide}
-                  disabled={currentSlide === Math.ceil(mangoFeaturedProducts.length / 4) - 1}
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </Button>
-              </>
-            )}
+                <div className="overflow-hidden rounded-xl">
+                  <div 
+                    className="flex transition-transform duration-300 md:duration-500 ease-in-out will-change-transform"
+                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                  >
+                    {Array.from({ length: Math.ceil(featuredProducts.length / 4) }).map((_, slideIndex) => (
+                      <div key={slideIndex} className="w-full flex-shrink-0">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+                          {featuredProducts.slice(slideIndex * 4, (slideIndex * 4) + 4).map((product) => (
+                            <ProductCard key={product.id} product={product} />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-            {/* Carousel Dots */}
-            {Math.ceil(mangoFeaturedProducts.length / 4) > 1 && (
-              <div className="flex justify-center mt-6 space-x-2">
-                {Array.from({ length: Math.ceil(mangoFeaturedProducts.length / 4) }).map((_, index) => (
-                  <button
-                    key={index}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      currentSlide === index ? 'bg-accent scale-110' : 'bg-muted hover:bg-muted-foreground/30'
-                    }`}
-                    onClick={() => setCurrentSlide(index)}
-                  />
-                ))}
-              </div>
+                {/* Navigation Arrows */}
+                {Math.ceil(featuredProducts.length / 4) > 1 && (
+                  <>
+                    <Button
+                      variant="ghost"  
+                      size="icon"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background border"
+                      onClick={prevSlide}
+                      disabled={currentSlide === 0}
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background border"
+                      onClick={nextSlide}
+                      disabled={currentSlide === Math.ceil(featuredProducts.length / 4) - 1}
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </Button>
+                  </>
+                )}
+
+                {/* Carousel Dots */}
+                {Math.ceil(featuredProducts.length / 4) > 1 && (
+                  <div className="flex justify-center mt-6 space-x-2">
+                    {Array.from({ length: Math.ceil(featuredProducts.length / 4) }).map((_, index) => (
+                      <button
+                        key={index}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                          currentSlide === index ? 'bg-accent scale-110' : 'bg-muted hover:bg-muted-foreground/30'
+                        }`}
+                        onClick={() => setCurrentSlide(index)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
