@@ -162,28 +162,28 @@ const Home = () => {
 
   const blogPosts = [
     {
+      id: 'choose-right-air-cooler',
       title: 'How to Choose the Right Air Cooler for Your Home',
       excerpt: 'A comprehensive guide to selecting the perfect air cooler based on room size, climate, and budget considerations.',
       date: '2024-01-15',
       category: 'Buying Guide',
-      image: heroAirCooler,
-      link: '/shop'
+      image: heroAirCooler
     },
     {
+      id: 'maintenance-tips',
       title: 'Maintenance Tips for Long-lasting Air Cooler Performance',
       excerpt: 'Essential maintenance practices to keep your air cooler running efficiently throughout the summer season.',
       date: '2024-01-10',
       category: 'Maintenance',
-      image: heroLandscapeCoolers,
-      link: '/help'
+      image: heroLandscapeCoolers
     },
     {
-      title: 'New Product Launch: Latest Products with Smart Features',
+      id: 'new-product-launch',
+      title: 'New Product Launch: Latest Arctic Series with Smart Features',
       excerpt: 'Discover our latest intelligent air coolers with advanced features, remote operation, and energy-efficient technology.',
       date: '2024-01-05',
       category: 'Product News',
-      image: heroSpares,
-      link: '/shop?category=personal-coolers'
+      image: heroSpares
     }
   ];
 
@@ -622,8 +622,8 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 stagger-animation">
-            {blogPosts.map((post, index) => (
-              <Link key={index} to={post.link} className="group">
+            {blogPosts.map((post) => (
+              <Link key={post.id} to={`/blog/${post.id}`} className="group">
                 <Card className="card-hover overflow-hidden h-full transition-all duration-300 group-hover:shadow-xl">
                   <div className="relative">
                     <img

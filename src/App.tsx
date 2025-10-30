@@ -33,6 +33,8 @@ import Shipping from './pages/Shipping';
 import Returns from './pages/Returns';
 import Installation from './pages/Installation';
 import BulkOrders from './pages/BulkOrders';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 
 const queryClient = new QueryClient();
 
@@ -246,6 +248,24 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <PageTransition><BulkOrders /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/blog",
+    element: (
+      <Layout>
+        <PageTransition><Blog /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/blog/:id",
+    element: (
+      <Layout>
+        <PageTransition><BlogPost /></PageTransition>
         <FloatingChatbot hideFloatingButton={true} />
       </Layout>
     ),
