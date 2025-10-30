@@ -190,19 +190,25 @@ const Home = () => {
   return (
     <div className="relative">
         {/* Hero Section */}
-        <section className="relative bg-gradient-hero overflow-hidden py-20 md:py-28 lg:py-40">
-          {/* Enhanced background pattern */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PHBhdGggZD0iTTM2IDM0djItaDJ2LTJoLTJ6bTAgNHYyaDJ2LTJoLTJ6bS0yIDJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0yLTJ2LTJoLTJ2Mmgyem0wLTR2LTJoLTJ2Mmgyem0tMiAydi0yaC0ydjJoMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30"></div>
-          
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/5 to-background/20"></div>
-          
+        <section className="relative bg-gradient-to-br from-background via-muted/20 to-background overflow-hidden">
+          {/* Animated background elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Large gradient orbs */}
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{animationDuration: '4s'}}></div>
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse" style={{animationDuration: '6s', animationDelay: '1s'}}></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-primary/5 to-accent/5 rounded-full blur-3xl"></div>
+            
+            {/* Grid pattern */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
+          </div>
+
           <div className="container mx-auto px-4 relative">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center space-y-10 md:space-y-12 animate-fade-in">
-                
+            <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[90vh] py-20">
+              
+              {/* Left Content */}
+              <div className="space-y-8 animate-fade-in order-2 lg:order-1">
                 {/* Premium Badge */}
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border border-primary/30 rounded-full px-6 py-3 shadow-lg backdrop-blur-sm">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/30 rounded-full px-6 py-3 shadow-lg backdrop-blur-sm hover:scale-105 transition-transform duration-300">
                   <Sparkles className="h-5 w-5 text-primary animate-pulse" />
                   <span className="text-sm md:text-base font-bold text-primary tracking-wide uppercase">
                     {companyInfo.philosophy}
@@ -211,92 +217,154 @@ const Home = () => {
 
                 {/* Main Heading */}
                 <div className="space-y-6">
-                  <div className="relative inline-block">
-                    {/* Optimized decorative background */}
-                    <div className="absolute inset-0 -inset-x-8 -inset-y-6 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-2xl opacity-60"></div>
-                    
-                    <h1 className="relative text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-foreground leading-[1.05] tracking-tight px-4 md:px-8 py-6" style={{willChange: 'transform'}}>
-                      Beat the Heat with
-                      <span className="block mt-2 bg-gradient-brand bg-clip-text text-transparent">
-                        {companyInfo.brand}
-                      </span>
-                    </h1>
-                  </div>
+                  <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-foreground leading-[1.05] tracking-tight">
+                    Beat the Heat with
+                    <span className="block mt-3 bg-gradient-brand bg-clip-text text-transparent relative">
+                      {companyInfo.brand}
+                      <div className="absolute -bottom-2 left-0 w-1/3 h-1 bg-gradient-brand rounded-full"></div>
+                    </span>
+                  </h1>
                   
-                  <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light">
-                    Manufacturing excellence since <strong className="font-semibold text-foreground">{companyInfo.experience.replace('+', '')} years</strong>, delivering premium cooling solutions across <strong className="font-semibold text-foreground">Asia, Middle East & Indian sub-continent</strong>
+                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
+                    Manufacturing excellence since <span className="font-semibold text-primary">{companyInfo.experience.replace('+', '')} years</span>, delivering premium cooling solutions across <span className="font-semibold text-foreground">Asia, Middle East & Indian sub-continent</span>
                   </p>
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center pt-4">
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Link to="/shop">
-                    <Button variant="hero" size="xl" className="group shadow-2xl hover:shadow-brand min-w-[220px] font-semibold text-base md:text-lg">
+                    <Button variant="hero" size="xl" className="group shadow-2xl hover:shadow-brand min-w-[220px] font-semibold text-base md:text-lg w-full sm:w-auto">
                       Explore Products
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
                   </Link>
                   <Link to="/shop?category=spare-parts">
-                    <Button variant="outline-glow" size="xl" className="min-w-[220px] font-semibold text-base md:text-lg">
+                    <Button variant="outline-glow" size="xl" className="min-w-[220px] font-semibold text-base md:text-lg w-full sm:w-auto">
                       Spare Parts & Service
                     </Button>
                   </Link>
                 </div>
 
-                {/* Trust Indicators - Optimized */}
-                <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 pt-8">
-                  <div className="flex items-center gap-3 px-6 py-3.5 bg-card/80 rounded-2xl border border-success/20 shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <Award className="h-6 w-6 text-success" />
+                {/* Trust Indicators */}
+                <div className="grid grid-cols-2 gap-4 pt-4">
+                  <div className="flex items-center gap-3 px-4 py-3 bg-card/80 rounded-xl border border-success/20 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                    <Award className="h-5 w-5 text-success flex-shrink-0" />
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground font-medium">Quality</div>
                       <div className="text-sm font-bold text-foreground">ISO 9001:2015</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 px-6 py-3.5 bg-card/80 rounded-2xl border border-primary/20 shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <Shield className="h-6 w-6 text-primary" />
+                  <div className="flex items-center gap-3 px-4 py-3 bg-card/80 rounded-xl border border-primary/20 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                    <Shield className="h-5 w-5 text-primary flex-shrink-0" />
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground font-medium">Warranty</div>
                       <div className="text-sm font-bold text-foreground">2 Years</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 px-6 py-3.5 bg-card/80 rounded-2xl border border-primary/20 shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <Truck className="h-6 w-6 text-primary" />
+                  <div className="flex items-center gap-3 px-4 py-3 bg-card/80 rounded-xl border border-primary/20 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                    <Truck className="h-5 w-5 text-primary flex-shrink-0" />
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground font-medium">Shipping</div>
                       <div className="text-sm font-bold text-foreground">Free Pan-India</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 px-6 py-3.5 bg-card/80 rounded-2xl border border-primary/20 shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <Factory className="h-6 w-6 text-primary" />
+                  <div className="flex items-center gap-3 px-4 py-3 bg-card/80 rounded-xl border border-primary/20 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                    <Factory className="h-5 w-5 text-primary flex-shrink-0" />
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground font-medium">Manufacturing</div>
                       <div className="text-sm font-bold text-foreground">{companyInfo.factories}</div>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Company Stats - Optimized */}
-                <div className="grid grid-cols-3 gap-6 md:gap-10 pt-16 max-w-4xl mx-auto">
-                  <div className="text-center p-8 bg-card/60 rounded-3xl border border-border/30 hover:border-primary/50 transition-colors duration-300">
-                    <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-3">
+              {/* Right Content - Product Showcase */}
+              <div className="relative order-1 lg:order-2 animate-fade-in" style={{animationDelay: '0.2s'}}>
+                {/* Decorative floating elements */}
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+                
+                {/* Main product display */}
+                <div className="relative rounded-3xl bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm border border-border/50 p-8 shadow-2xl hover:shadow-brand transition-all duration-500 hover:scale-[1.02]">
+                  {!loading && featuredProducts.length > 0 && (
+                    <>
+                      <div className="aspect-square relative overflow-hidden rounded-2xl bg-gradient-to-br from-muted/50 to-background mb-6">
+                        <img 
+                          src={featuredProducts[currentSlide]?.images?.[0]} 
+                          alt={featuredProducts[currentSlide]?.name}
+                          className="w-full h-full object-contain p-6 transform hover:scale-110 transition-transform duration-700"
+                        />
+                        
+                        {/* Floating badge */}
+                        <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-bold shadow-lg animate-bounce-gentle">
+                          Featured
+                        </div>
+                      </div>
+                      
+                      {/* Product info */}
+                      <div className="space-y-3">
+                        <h3 className="text-2xl font-bold text-foreground">{featuredProducts[currentSlide]?.name}</h3>
+                        <p className="text-muted-foreground line-clamp-2">{featuredProducts[currentSlide]?.description}</p>
+                        <div className="flex items-center justify-between pt-2">
+                          <div className="text-3xl font-bold text-primary">
+                            ₹{featuredProducts[currentSlide]?.price?.toLocaleString()}
+                          </div>
+                          <Link to={`/product/${featuredProducts[currentSlide]?.id}`}>
+                            <Button variant="outline-glow" size="lg" className="group">
+                              View Details
+                              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                      
+                      {/* Carousel navigation */}
+                      <div className="flex items-center justify-center gap-2 mt-6">
+                        {featuredProducts.slice(0, 3).map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setCurrentSlide(index)}
+                            className={`h-2 rounded-full transition-all duration-300 ${
+                              currentSlide === index 
+                                ? 'w-8 bg-primary' 
+                                : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  
+                  {loading && (
+                    <div className="aspect-square flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent"></div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Floating stats */}
+                <div className="grid grid-cols-3 gap-4 mt-8">
+                  <div className="text-center p-6 bg-card/80 backdrop-blur-sm rounded-2xl border border-border/30 hover:border-primary/50 hover:scale-105 transition-all duration-300 shadow-lg">
+                    <div className="text-4xl md:text-5xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-2">
                       <AnimatedCounter end={40} suffix="+" duration={2000} />
                     </div>
-                    <div className="text-xs md:text-sm lg:text-base text-muted-foreground font-semibold tracking-wide uppercase">Product Models</div>
+                    <div className="text-xs text-muted-foreground font-semibold uppercase">Models</div>
                   </div>
-                  <div className="text-center p-8 bg-card/60 rounded-3xl border border-border/30 hover:border-primary/50 transition-colors duration-300">
-                    <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-3">
+                  <div className="text-center p-6 bg-card/80 backdrop-blur-sm rounded-2xl border border-border/30 hover:border-primary/50 hover:scale-105 transition-all duration-300 shadow-lg">
+                    <div className="text-4xl md:text-5xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-2">
                       <AnimatedCounter end={15} suffix="+" duration={2000} />
                     </div>
-                    <div className="text-xs md:text-sm lg:text-base text-muted-foreground font-semibold tracking-wide uppercase">Years Experience</div>
+                    <div className="text-xs text-muted-foreground font-semibold uppercase">Years</div>
                   </div>
-                  <div className="text-center p-8 bg-card/60 rounded-3xl border border-border/30 hover:border-primary/50 transition-colors duration-300">
-                    <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-3">
+                  <div className="text-center p-6 bg-card/80 backdrop-blur-sm rounded-2xl border border-border/30 hover:border-primary/50 hover:scale-105 transition-all duration-300 shadow-lg">
+                    <div className="text-4xl md:text-5xl font-extrabold bg-gradient-brand bg-clip-text text-transparent mb-2">
                       <AnimatedCounter end={50} suffix="K+" duration={2000} />
                     </div>
-                    <div className="text-xs md:text-sm lg:text-base text-muted-foreground font-semibold tracking-wide uppercase">Happy Customers</div>
+                    <div className="text-xs text-muted-foreground font-semibold uppercase">Customers</div>
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         </section>
