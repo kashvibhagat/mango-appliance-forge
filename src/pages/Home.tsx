@@ -309,7 +309,7 @@ const Home = () => {
                           <div className="text-3xl font-bold text-primary">
                             ₹{featuredProducts[currentSlide]?.price?.toLocaleString()}
                           </div>
-                          <Link to={`/product/${featuredProducts[currentSlide]?.id}`}>
+                          <Link to={`/product/${featuredProducts[currentSlide]?.slug}`}>
                             <Button variant="outline-glow" size="lg" className="group">
                               View Details
                               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
