@@ -109,13 +109,13 @@ const Home = () => {
   const whyChooseUs = [
     {
       icon: MapPin,
-      title: 'Made in India',
-      description: 'Proudly manufactured in India with local expertise'
+      title: 'Leading Air Cooler Manufacturer in India',
+      description: 'Proudly manufacturing premium cooling solutions with local expertise'
     },
     {
       icon: Zap,
       title: 'Energy Efficient',
-      description: 'Low power consumption with maximum cooling'
+      description: 'Heavy airflow with low power consumption for homes, offices & industries'
     },
     {
       icon: Award,
@@ -125,7 +125,7 @@ const Home = () => {
     {
       icon: Globe,
       title: 'Global Reach',
-      description: 'Trusted in Asia, Middle East & Indian sub-continent'
+      description: 'Distributors across India, Asia, Middle East & Indian sub-continent'
     }
   ];
 
@@ -226,7 +226,7 @@ const Home = () => {
                   </h1>
                   
                   <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
-                    Manufacturing excellence since <span className="font-semibold text-primary">{companyInfo.experience.replace('+', '')} years</span>, delivering premium cooling solutions across <span className="font-semibold text-foreground">Asia, Middle East & Indian sub-continent</span>
+                    Leading <span className="font-semibold text-foreground">air cooler manufacturer in India</span> with <span className="font-semibold text-primary">{companyInfo.experience.replace('+', '')} years</span> of excellence. From <span className="font-semibold text-foreground">desert cooler for home</span> to <span className="font-semibold text-foreground">industrial air cooler</span>, we deliver energy-efficient solutions across India.
                   </p>
                 </div>
 
