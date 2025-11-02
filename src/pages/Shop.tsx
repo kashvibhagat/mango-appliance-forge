@@ -37,6 +37,8 @@ const Shop = () => {
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [selectedProductFilter, setSelectedProductFilter] = useState<string>('');
 
   const categorySlug = searchParams.get('category');
   const searchQuery = searchParams.get('search') || '';
@@ -68,7 +70,7 @@ const Shop = () => {
           shortDescription: product.description?.substring(0, 100) + '...' || '',
           features: [], // Empty for now
           tags: [], // Empty for now
-          slug: product.name.toLowerCase().replace(/\s+/g, '-'),
+          slug: product.slug || product.name.toLowerCase().replace(/\s+/g, '-'),
           sku: product.model,
           warranty: `${product.warranty_period || 12} months warranty`,
           powerConsumption: product.specifications?.['Power Consumption'] || '',
@@ -85,10 +87,14 @@ const Shop = () => {
             name: product.category ? product.category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unknown',
             slug: product.category || 'unknown',
             filters: []
-          }
+          },
+          compatibleProducts: product.compatible_products || []
         }));
         
         setProducts(transformedProducts);
+        
+        // Store all main products (non-spare-parts) for filtering
+        setAllProducts(transformedProducts.filter(p => p.category.slug !== 'spare-parts'));
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
@@ -131,6 +137,16 @@ const Shop = () => {
       }
     }
 
+    // Filter spare parts by selected product
+    if (selectedCategory?.slug === 'spare-parts' && selectedProductFilter) {
+      filtered = filtered.filter(product => {
+        const compatibleProducts = product.compatibleProducts || [];
+        return compatibleProducts.includes('all') || 
+               compatibleProducts.includes(selectedProductFilter) ||
+               compatibleProducts.some((cp: string) => cp.toLowerCase() === selectedProductFilter.toLowerCase());
+      });
+    }
+
     // Filter by price range
     filtered = filtered.filter(product => 
       product.price >= priceRange[0] && product.price <= priceRange[1]
@@ -149,7 +165,7 @@ const Shop = () => {
       default:
         return filtered;
     }
-  }, [products, selectedCategory, searchQuery, priceRange, sortBy]);
+  }, [products, selectedCategory, searchQuery, priceRange, sortBy, selectedProductFilter]);
 
   const handleFilterChange = (filterId: string, value: string, checked: boolean) => {
     setSelectedFilters(prev => {
@@ -173,12 +189,53 @@ const Shop = () => {
   const clearFilters = () => {
     setSelectedFilters({});
     setPriceRange([0, 100000]);
+    setSelectedProductFilter('');
   };
 
   const activeFilterCount = Object.values(selectedFilters).reduce((acc, filters) => acc + filters.length, 0);
 
   const FilterSidebar = () => (
     <div className="space-y-4">
+      {/* Product Filter for Spare Parts */}
+      {selectedCategory?.slug === 'spare-parts' && (
+        <Card className="border-border/50 shadow-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base font-bold flex items-center gap-2">
+              🔧 Filter by Product
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground mb-4">
+              Select a product to view compatible spare parts
+            </p>
+            <Select value={selectedProductFilter} onValueChange={setSelectedProductFilter}>
+              <SelectTrigger className="w-full bg-background">
+                <SelectValue placeholder="All Products" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[300px] bg-background z-50">
+                <SelectItem value="">All Products</SelectItem>
+                {allProducts.map(product => (
+                  <SelectItem key={product.id} value={product.name}>
+                    {product.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {selectedProductFilter && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setSelectedProductFilter('')}
+                className="w-full hover:bg-destructive/10 hover:text-destructive"
+              >
+                <X className="h-4 w-4 mr-1" />
+                Clear Product Filter
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Price Range */}
       <Card className="border-border/50 shadow-card">
         <CardHeader className="pb-4">

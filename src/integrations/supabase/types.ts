@@ -210,6 +210,7 @@ export type Database = {
         Row: {
           brand: string | null
           category: string
+          compatible_products: Json | null
           created_at: string
           description: string | null
           id: string
@@ -227,6 +228,7 @@ export type Database = {
         Insert: {
           brand?: string | null
           category: string
+          compatible_products?: Json | null
           created_at?: string
           description?: string | null
           id?: string
@@ -244,6 +246,7 @@ export type Database = {
         Update: {
           brand?: string | null
           category?: string
+          compatible_products?: Json | null
           created_at?: string
           description?: string | null
           id?: string
