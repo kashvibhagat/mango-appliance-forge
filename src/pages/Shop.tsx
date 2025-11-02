@@ -208,12 +208,12 @@ const Shop = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Select a product to view compatible spare parts
             </p>
-            <Select value={selectedProductFilter} onValueChange={setSelectedProductFilter}>
+            <Select value={selectedProductFilter || 'all'} onValueChange={(value) => setSelectedProductFilter(value === 'all' ? '' : value)}>
               <SelectTrigger className="w-full bg-background">
                 <SelectValue placeholder="All Products" />
               </SelectTrigger>
               <SelectContent className="max-h-[300px] bg-background z-50">
-                <SelectItem value="">All Products</SelectItem>
+                <SelectItem value="all">All Products</SelectItem>
                 {allProducts.map(product => (
                   <SelectItem key={product.id} value={product.name}>
                     {product.name}
