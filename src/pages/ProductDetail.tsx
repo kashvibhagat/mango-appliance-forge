@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   Heart, 
   Share2, 
@@ -12,7 +12,8 @@ import {
   Truck,
   RotateCcw,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,6 +29,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 const ProductDetail = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -195,17 +197,27 @@ const ProductDetail = () => {
 
   return (
     <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
-      {/* Breadcrumb */}
-      <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 overflow-x-auto">
-        <Link to="/" className="hover:text-accent whitespace-nowrap">Home</Link>
-        <span>/</span>
-        <Link to="/shop" className="hover:text-accent whitespace-nowrap">Shop</Link>
-        <span>/</span>
-        <Link to={`/shop?category=${product.category.slug}`} className="hover:text-accent whitespace-nowrap">
-          {product.category.name}
-        </Link>
-        <span>/</span>
-        <span className="text-foreground truncate">{product.name}</span>
+      {/* Breadcrumb with Back Button */}
+      <div className="flex items-center justify-between mb-4 sm:mb-6 gap-4">
+        <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-muted-foreground overflow-x-auto">
+          <Link to="/" className="hover:text-accent whitespace-nowrap">Home</Link>
+          <span>/</span>
+          <Link to="/shop" className="hover:text-accent whitespace-nowrap">Shop</Link>
+          <span>/</span>
+          <Link to={`/shop?category=${product.category.slug}`} className="hover:text-accent whitespace-nowrap">
+            {product.category.name}
+          </Link>
+          <span>/</span>
+          <span className="text-foreground truncate">{product.name}</span>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate(-1)}
+          className="flex-shrink-0 h-8 w-8 rounded-full hover:bg-accent/10"
+        >
+          <X className="h-4 w-4" />
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 mb-8 sm:mb-12 lg:mb-16">
