@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import ProductCard from '@/components/ui/ProductCard';
 import ProductPoliciesSection from '@/components/ui/ProductPoliciesSection';
+import { ImageLightbox } from '@/components/ui/ImageLightbox';
 import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -33,6 +34,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState<any>(null);
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const { addItem } = useCart();
 
   useEffect(() => {
@@ -209,11 +211,14 @@ const ProductDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 mb-8 sm:mb-12 lg:mb-16">
         {/* Product Images */}
         <div className="space-y-3 sm:space-y-4">
-          <div className="aspect-square bg-muted/30 rounded-xl sm:rounded-2xl overflow-hidden">
+          <div 
+            className="aspect-square bg-muted/30 rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer group"
+            onClick={() => setLightboxOpen(true)}
+          >
             <img
               src={product.images[selectedImage]}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
           <div className="flex space-x-1 sm:space-x-2 overflow-x-auto pb-2">
@@ -418,6 +423,16 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Image Lightbox */}
+      <ImageLightbox
+        images={product.images}
+        currentIndex={selectedImage}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        onNavigate={setSelectedImage}
+        productName={product.name}
+      />
 
       {/* Product Details Tabs */}
       <Card className="mb-8 sm:mb-12 lg:mb-16">
