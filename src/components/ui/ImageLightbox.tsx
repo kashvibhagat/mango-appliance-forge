@@ -55,7 +55,7 @@ export const ImageLightbox = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[9999] bg-background/95 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
       {/* Close Button */}
