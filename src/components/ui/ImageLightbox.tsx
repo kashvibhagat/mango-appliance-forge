@@ -35,11 +35,23 @@ export const ImageLightbox = ({
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
+      
+      // Hide navbar/header when lightbox is open
+      const header = document.querySelector('header');
+      if (header) {
+        (header as HTMLElement).style.display = 'none';
+      }
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'unset';
+      
+      // Show navbar/header when lightbox closes
+      const header = document.querySelector('header');
+      if (header) {
+        (header as HTMLElement).style.display = '';
+      }
     };
   }, [isOpen, currentIndex, images.length, onClose, onNavigate]);
 
