@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Phone, ShieldCheck } from 'lucide-react';
+import { Phone, ShieldCheck, MessageCircle } from 'lucide-react';
 
 const WarrantyRegistration = () => {
   const { user } = useAuth();
@@ -10,6 +10,10 @@ const WarrantyRegistration = () => {
 
   const handleContactClick = () => {
     window.location.href = 'tel:8320656831';
+  };
+
+  const handleWhatsAppClick = () => {
+    window.open('https://wa.me/918320656831?text=Hi,%20I%20would%20like%20to%20register%20my%20product%20warranty', '_blank');
   };
 
   if (!user) {
@@ -72,14 +76,26 @@ const WarrantyRegistration = () => {
             </p>
           </div>
 
-          <Button 
-            onClick={handleContactClick}
-            className="w-full"
-            size="lg"
-          >
-            <Phone className="w-4 h-4 mr-2" />
-            Call Now for Warranty Registration
-          </Button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Button 
+              onClick={handleContactClick}
+              className="w-full"
+              size="lg"
+            >
+              <Phone className="w-4 h-4 mr-2" />
+              Call Now
+            </Button>
+
+            <Button 
+              onClick={handleWhatsAppClick}
+              variant="outline"
+              className="w-full"
+              size="lg"
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              WhatsApp Us
+            </Button>
+          </div>
 
           <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-4">
             <p className="text-sm text-blue-900 dark:text-blue-100">
