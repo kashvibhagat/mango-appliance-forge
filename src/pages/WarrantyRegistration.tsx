@@ -1,443 +1,98 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { CheckCircle, XCircle, Clock } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
-
+import { Phone, ShieldCheck } from 'lucide-react';
 
 const WarrantyRegistration = () => {
-  const [formData, setFormData] = useState({
-    serialNumber: '',
-    productModel: '',
-    dateOfPurchase: '',
-    customerName: '',
-    customerMobile: '',
-    billFile: null as File | null
-  });
-  const [loading, setLoading] = useState(false);
-  const [warranties, setWarranties] = useState<any[]>([]);
-  const [shipmentDetails, setShipmentDetails] = useState<Record<string, any>>({});
-  const [loadingWarranties, setLoadingWarranties] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) {
-      fetchUserWarranties();
-    }
-  }, [user]);
-
-  const fetchUserWarranties = async () => {
-    if (!user) return;
-    
-    try {
-      setLoadingWarranties(true);
-      const { data, error } = await supabase
-        .from('warranty_registrations')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setWarranties(data || []);
-
-      // Fetch shipment details for each warranty's order
-      if (data && data.length > 0) {
-        const shipmentPromises = data.map(async (warranty) => {
-          if (!warranty.serial_number) return null;
-          
-          // Try to find order by matching products in order items with warranty product model
-          const { data: orders } = await supabase
-            .from('orders')
-            .select('id, order_number, items')
-            .eq('user_id', user.id);
-          
-          if (orders && orders.length > 0) {
-            // Find matching order based on product model in items
-            for (const order of orders) {
-              if (order.items && Array.isArray(order.items)) {
-                const matchingItem = order.items.find((item: any) => 
-                  item.name && item.name.toLowerCase().includes(warranty.product_model.toLowerCase())
-                );
-                
-                if (matchingItem) {
-                  // Fetch shipment details for this order
-                  const { data: shipment } = await supabase
-                    .from('shipment_details')
-                    .select('*')
-                    .eq('order_id', order.id)
-                    .maybeSingle();
-                  
-                  return { warrantyId: warranty.id, shipment };
-                }
-              }
-            }
-          }
-          return null;
-        });
-
-        const shipmentResults = await Promise.all(shipmentPromises);
-        const shipmentMap: Record<string, any> = {};
-        shipmentResults.forEach(result => {
-          if (result && result.shipment) {
-            shipmentMap[result.warrantyId] = result.shipment;
-          }
-        });
-        setShipmentDetails(shipmentMap);
-      }
-    } catch (error) {
-      console.error('Error fetching warranties:', error);
-    } finally {
-      setLoadingWarranties(false);
-    }
+  const handleContactClick = () => {
+    window.location.href = 'tel:8320656831';
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData(prev => ({ ...prev, billFile: file }));
-    }
-  };
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.serialNumber || !formData.productModel || !formData.dateOfPurchase || !formData.customerName || !formData.customerMobile) {
-      toast({
-        title: 'Error',
-        description: 'Please fill all required fields',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    if (!user) {
-      toast({
-        title: 'Error',
-        description: 'Please sign in to register warranty',
-        variant: 'destructive'
-      });
-      navigate('/auth');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      let billUploadUrl = '';
-      
-      // Upload bill file if provided
-      if (formData.billFile) {
-        const fileExt = formData.billFile.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        const { data, error } = await supabase.storage
-          .from('warranty-bills')
-          .upload(fileName, formData.billFile);
-        
-        if (error) throw error;
-        billUploadUrl = data.path;
-      }
-
-      // Insert warranty registration
-      const { error } = await supabase
-        .from('warranty_registrations')
-        .insert({
-          user_id: user.id,
-          serial_number: formData.serialNumber,
-          product_model: formData.productModel,
-          date_of_purchase: formData.dateOfPurchase,
-          customer_name: formData.customerName,
-          customer_mobile: formData.customerMobile,
-          bill_upload_url: billUploadUrl,
-          status: 'pending'
-        });
-
-      if (error) throw error;
-
-      // Create notification for admin
-      await supabase
-        .from('notifications')
-        .insert({
-          type: 'warranty_registration',
-          title: 'New Warranty Registration',
-          message: `New warranty registration for ${formData.productModel}`,
-          data: {
-            serialNumber: formData.serialNumber,
-            productModel: formData.productModel
-          },
-          priority: 'normal'
-        });
-
-      toast({
-        title: 'Success',
-        description: 'Warranty request sent successfully! Admin will review your registration.',
-      });
-      
-      // Reset form and refresh warranties
-      setFormData({
-        serialNumber: '',
-        productModel: '',
-        dateOfPurchase: '',
-        customerName: '',
-        customerMobile: '',
-        billFile: null
-      });
-      
-      // Refresh warranties list
-      fetchUserWarranties();
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to register warranty',
-        variant: 'destructive'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return (
-          <div className="flex items-center gap-2 text-success">
-            <CheckCircle className="w-5 h-5" />
-            <span className="font-semibold">Warranty Accepted</span>
-          </div>
-        );
-      case 'rejected':
-        return (
-          <div className="flex items-center gap-2 text-destructive">
-            <XCircle className="w-5 h-5" />
-            <span className="font-semibold">Warranty Denied</span>
-          </div>
-        );
-      default:
-        return (
-          <div className="flex items-center gap-2 text-warning">
-            <Clock className="w-5 h-5" />
-            <span className="font-semibold">Pending Review</span>
-          </div>
-        );
-    }
-  };
+  if (!user) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="max-w-md mx-auto">
+          <CardHeader>
+            <CardTitle>Sign In Required</CardTitle>
+            <CardDescription>
+              Please sign in to access warranty registration
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate('/auth')} className="w-full">
+              Sign In
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-4xl">
-      {/* Previous Warranty Registrations */}
-      {user && warranties.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Your Warranty Status</h2>
-          <div className="space-y-4">
-            {warranties.map((warranty) => (
-              <Card key={warranty.id} className={
-                warranty.status === 'approved' ? 'border-success bg-success/5' :
-                warranty.status === 'rejected' ? 'border-destructive bg-destructive/5' :
-                'border-warning bg-warning/5'
-              }>
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    {getStatusBadge(warranty.status)}
-                    <span className="text-sm text-muted-foreground">
-                      {new Date(warranty.created_at).toLocaleDateString('en-IN', {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric'
-                      })}
-                    </span>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="text-muted-foreground">Product:</span>
-                      <p className="font-medium">{warranty.product_model}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Serial Number:</span>
-                      <p className="font-medium font-mono">{warranty.serial_number}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Purchase Date:</span>
-                      <p className="font-medium">
-                        {new Date(warranty.date_of_purchase).toLocaleDateString('en-IN')}
-                      </p>
-                    </div>
-                  </div>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Warranty Registration</h1>
+        <p className="text-muted-foreground">
+          Register your Mango appliance for warranty coverage and support
+        </p>
+      </div>
 
-                  {/* Shipping Information */}
-                  {shipmentDetails[warranty.id] && (
-                    <div className="mt-4 p-4 bg-muted/50 border border-border rounded-lg">
-                      <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Shipping Information
-                      </h4>
-                      <div className="grid grid-cols-2 gap-3 text-xs">
-                        <div>
-                          <span className="text-muted-foreground">Courier:</span>
-                          <p className="font-medium">{shipmentDetails[warranty.id].vendor_name}</p>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">POD Number:</span>
-                          <p className="font-medium font-mono">{shipmentDetails[warranty.id].pod_number}</p>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Shipped On:</span>
-                          <p className="font-medium">
-                            {new Date(shipmentDetails[warranty.id].shipped_at).toLocaleDateString('en-IN')}
-                          </p>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Status:</span>
-                          <p className="font-medium capitalize">{shipmentDetails[warranty.id].status}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {warranty.status === 'approved' && (
-                    <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg">
-                      <p className="text-sm text-success font-medium">
-                        ✓ You have successfully claimed warranty for this product
-                      </p>
-                    </div>
-                  )}
-
-                  {warranty.status === 'rejected' && (
-                    <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                      <p className="text-sm text-destructive font-medium">
-                        ✗ Warranty claim has been denied
-                      </p>
-                      {warranty.admin_notes && (
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Note: {warranty.admin_notes}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+      {/* Contact Information Card */}
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader className="text-center">
+          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+            <ShieldCheck className="w-8 h-8 text-primary" />
           </div>
-        </div>
-      )}
-
-      {/* New Warranty Registration Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Warranty Registration</CardTitle>
-          <CardDescription>
-            Register your Mango appliance for warranty coverage and support
+          <CardTitle className="text-2xl">Warranty Registration</CardTitle>
+          <CardDescription className="text-base">
+            For warranty registration, please contact us
           </CardDescription>
         </CardHeader>
         
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="serialNumber">Serial Number / Barcode</Label>
-                <div className="flex gap-2 mt-1">
-                  <Input
-                    id="serialNumber"
-                    name="serialNumber"
-                    value={formData.serialNumber}
-                    onChange={handleInputChange}
-                    placeholder="Enter or scan serial number"
-                    className="flex-1"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="productModel">Product Model</Label>
-                <Input
-                  id="productModel"
-                  name="productModel"
-                  value={formData.productModel}
-                  onChange={handleInputChange}
-                  placeholder="e.g., Cool Master i, Arctic TC 25"
-                  required
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="dateOfPurchase">Date of Purchase</Label>
-                <Input
-                  id="dateOfPurchase"
-                  name="dateOfPurchase"
-                  type="date"
-                  value={formData.dateOfPurchase}
-                  onChange={handleInputChange}
-                  placeholder="dd-mm-yyyy"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="customerName">Customer Name</Label>
-                <Input
-                  id="customerName"
-                  name="customerName"
-                  value={formData.customerName}
-                  onChange={handleInputChange}
-                  placeholder="Enter your full name"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="customerMobile">Mobile Number</Label>
-                <Input
-                  id="customerMobile"
-                  name="customerMobile"
-                  type="tel"
-                  value={formData.customerMobile}
-                  onChange={handleInputChange}
-                  placeholder="Enter your mobile number"
-                  required
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="billFile">Bill Upload</Label>
-                <div className="mt-1">
-                  <Input
-                    id="billFile"
-                    type="file"
-                    accept="image/*,.pdf"
-                    onChange={handleFileChange}
-                    className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Upload purchase bill (JPG, PNG, PDF)
-                  </p>
-                </div>
-              </div>
+        <CardContent className="space-y-6">
+          <div className="bg-muted/50 rounded-lg p-6 text-center space-y-4">
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
+              <Phone className="w-5 h-5" />
+              <span className="text-sm font-medium">Contact Number</span>
             </div>
             
-            <Button 
-              type="submit"
-              className="w-full"
-              disabled={loading}
+            <a 
+              href="tel:8320656831"
+              className="text-3xl font-bold text-primary hover:text-primary/80 transition-colors block"
             >
-              {loading ? 'Sending...' : 'Send Warranty Request'}
-            </Button>
-          </form>
+              8320656831
+            </a>
+            
+            <p className="text-sm text-muted-foreground">
+              Our warranty team is available to assist you
+            </p>
+          </div>
+
+          <Button 
+            onClick={handleContactClick}
+            className="w-full"
+            size="lg"
+          >
+            <Phone className="w-4 h-4 mr-2" />
+            Call Now for Warranty Registration
+          </Button>
+
+          <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-4">
+            <p className="text-sm text-blue-900 dark:text-blue-100">
+              <strong>Note:</strong> Please have your product serial number, model number, and purchase date ready when you call.
+            </p>
+          </div>
         </CardContent>
       </Card>
+
+      {/* Temporarily disabled form notice */}
+      <div className="mt-6 text-center text-sm text-muted-foreground">
+        <p>Online warranty registration form is temporarily unavailable</p>
+      </div>
     </div>
   );
 };
