@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { CheckCircle, Package, Truck, Download, ArrowRight } from 'lucide-react';
+import { CheckCircle, Package, Truck, Download, ArrowRight, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useSuccessNotificationContext } from '@/contexts/SuccessNotificationContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const OrderSuccess = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('orderId') || 'MNG123456789';
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
+  const [orderDetails, setOrderDetails] = useState<any>(null);
   const { showOrderSuccess } = useSuccessNotificationContext();
 
   useEffect(() => {
@@ -26,6 +28,21 @@ const OrderSuccess = () => {
       month: 'long',
       day: 'numeric'
     }));
+
+    // Fetch order details
+    const fetchOrderDetails = async () => {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('order_number', orderId)
+        .single();
+      
+      if (!error && data) {
+        setOrderDetails(data);
+      }
+    };
+
+    fetchOrderDetails();
   }, [orderId, showOrderSuccess]);
 
   return (
@@ -69,6 +86,49 @@ const OrderSuccess = () => {
             </div>
 
             <Separator />
+
+            {/* Payment Info */}
+            {orderDetails && (
+              <>
+                <div className="space-y-4">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <CreditCard className="h-4 w-4" />
+                    Payment Information
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Payment Method</p>
+                      <p className="font-medium capitalize">
+                        {orderDetails.payment_method === 'cod' ? 'Cash on Delivery' : 
+                         orderDetails.payment_method === 'upi' ? 'UPI Payment' :
+                         orderDetails.payment_method === 'card' ? 'Card Payment' : 
+                         orderDetails.payment_method}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Payment Status</p>
+                      <Badge 
+                        className={
+                          orderDetails.payment_status === 'completed' 
+                            ? 'bg-ok/10 text-ok border-ok/20' 
+                            : 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'
+                        }
+                      >
+                        {orderDetails.payment_status === 'completed' ? 'Paid' : 'Pending'}
+                      </Badge>
+                    </div>
+                    {orderDetails.razorpay_payment_id && (
+                      <div className="md:col-span-2">
+                        <p className="text-muted-foreground">Payment ID</p>
+                        <p className="font-mono text-xs">{orderDetails.razorpay_payment_id}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <Separator />
+              </>
+            )}
 
             {/* Delivery Info */}
             <div className="space-y-4">
