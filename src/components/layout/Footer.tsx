@@ -133,7 +133,7 @@ const Footer = () => {
         {/* Bottom section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="text-sm text-muted-foreground">
-            © 2024 Mango Appliances. All rights reserved.
+            © 2025 Mango Appliances Private Limited. All rights reserved.
           </div>
           <div className="flex space-x-6">
             {[
