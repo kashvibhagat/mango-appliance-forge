@@ -38,6 +38,7 @@ import BlogPost from './pages/BlogPost';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import RefundPolicy from './pages/RefundPolicy';
+import DataExport from './pages/DataExport';
 
 const queryClient = new QueryClient();
 
@@ -296,6 +297,19 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <PageTransition><RefundPolicy /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/data-export",
+    element: (
+      <Layout>
+        <PageTransition>
+          <ProtectedRoute>
+            <DataExport />
+          </ProtectedRoute>
+        </PageTransition>
         <FloatingChatbot hideFloatingButton={true} />
       </Layout>
     ),

@@ -138,6 +138,17 @@ const PrivacyPolicy = () => {
                 You have the right to receive your personal data in a structured, commonly used format 
                 and transmit it to another entity.
               </p>
+              <div className="mt-3 p-4 bg-accent/10 border border-accent/20 rounded-lg">
+                <p className="text-sm mb-3">
+                  <strong>Export Your Data:</strong> Download a complete copy of all your personal data in JSON format.
+                </p>
+                <a 
+                  href="/data-export"
+                  className="inline-flex items-center justify-center px-4 py-2 bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors text-sm font-medium"
+                >
+                  Go to Data Export Page →
+                </a>
+              </div>
             </div>
 
             <div>
