@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { WarrantyManagementTab } from '@/components/admin/WarrantyManagementTab'
+import { PaymentManagementTab } from '@/components/admin/PaymentManagementTab'
 
 interface Order {
   id: string
@@ -300,9 +300,9 @@ const AdminDashboard = () => {
               <Package className="w-4 h-4" />
               Order Management
             </TabsTrigger>
-            <TabsTrigger value="warranty" className="gap-2">
-              <Shield className="w-4 h-4" />
-              Warranty Management
+            <TabsTrigger value="payments" className="gap-2">
+              <DollarSign className="w-4 h-4" />
+              Payment Management
             </TabsTrigger>
           </TabsList>
 
@@ -601,9 +601,9 @@ const AdminDashboard = () => {
         </Card>
           </TabsContent>
 
-          {/* Warranty Tab Content */}
-          <TabsContent value="warranty" className="space-y-6">
-            <WarrantyManagementTab />
+          {/* Payment Management Tab Content */}
+          <TabsContent value="payments" className="space-y-6">
+            <PaymentManagementTab />
           </TabsContent>
         </Tabs>
       </div>
