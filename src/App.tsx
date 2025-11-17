@@ -35,6 +35,9 @@ import Installation from './pages/Installation';
 import BulkOrders from './pages/BulkOrders';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import RefundPolicy from './pages/RefundPolicy';
 
 const queryClient = new QueryClient();
 
@@ -266,6 +269,33 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <PageTransition><BlogPost /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/privacy",
+    element: (
+      <Layout>
+        <PageTransition><PrivacyPolicy /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/terms",
+    element: (
+      <Layout>
+        <PageTransition><TermsOfService /></PageTransition>
+        <FloatingChatbot hideFloatingButton={true} />
+      </Layout>
+    ),
+  },
+  {
+    path: "/refund-policy",
+    element: (
+      <Layout>
+        <PageTransition><RefundPolicy /></PageTransition>
         <FloatingChatbot hideFloatingButton={true} />
       </Layout>
     ),
