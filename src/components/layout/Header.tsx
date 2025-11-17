@@ -205,10 +205,10 @@ const Header = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-bold transition-all duration-300 relative group py-1 ${
+                className={`text-sm font-bold transition-all duration-300 relative group py-1 px-3 rounded-lg ${
                   isActive(item.href)
-                    ? 'text-primary'
-                    : 'text-foreground/70 hover:text-primary'
+                    ? 'text-primary bg-primary/10'
+                    : 'text-foreground/70 hover:text-primary hover:bg-primary/5'
                 }`}
               >
                 {item.name}
@@ -222,7 +222,7 @@ const Header = () => {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm font-bold text-foreground/70 hover:text-primary data-[state=open]:text-primary transition-all duration-300 py-1">
+                  <NavigationMenuTrigger className="text-sm font-bold text-foreground/70 hover:text-primary hover:bg-primary/5 data-[state=open]:text-primary data-[state=open]:bg-primary/10 transition-all duration-300 py-1 px-3 rounded-lg">
                     Categories
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -250,10 +250,10 @@ const Header = () => {
             {/* Comparison Link */}
             <Link
               to="/comparison"
-              className={`text-sm font-bold transition-all duration-300 relative group py-1 ${
+              className={`text-sm font-bold transition-all duration-300 relative group py-1 px-3 rounded-lg ${
                 isActive('/comparison')
-                  ? 'text-primary'
-                  : 'text-foreground/70 hover:text-primary'
+                  ? 'text-primary bg-primary/10'
+                  : 'text-foreground/70 hover:text-primary hover:bg-primary/5'
               }`}
             >
               Comparison
@@ -266,10 +266,10 @@ const Header = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-bold transition-all duration-300 relative group py-1 whitespace-nowrap ${
+                className={`text-sm font-bold transition-all duration-300 relative group py-1 px-3 rounded-lg whitespace-nowrap ${
                   isActive(item.href)
-                    ? 'text-primary'
-                    : 'text-foreground/70 hover:text-primary'
+                    ? 'text-primary bg-primary/10'
+                    : 'text-foreground/70 hover:text-primary hover:bg-primary/5'
                 }`}
               >
                 {item.name}
