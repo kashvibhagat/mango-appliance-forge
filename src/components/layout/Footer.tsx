@@ -130,12 +130,27 @@ const Footer = () => {
 
         <Separator className="my-8" />
 
+        {/* Legal & Compliance Information */}
+        <div className="mb-6 text-center">
+          <div className="text-xs text-muted-foreground space-y-1">
+            <p className="font-medium">Rishika Industries Ltd. (Mango Appliances)</p>
+            <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
+              <span>GST: 24AABCR8157A1ZW</span>
+              <span className="hidden sm:inline">•</span>
+              <span>CIN: U29307GJ2009PLC056789</span>
+            </div>
+            <p className="mt-2">Registered Office: Nargol Road, Manda, Valsad, Gujarat - 396155, India</p>
+          </div>
+        </div>
+
+        <Separator className="my-6" />
+
         {/* Bottom section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="text-sm text-muted-foreground">
             © 2025 Mango Appliances Private Limited. All rights reserved.
           </div>
-          <div className="flex space-x-6">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
             {[
               { name: 'Privacy Policy', href: '/privacy' },
               { name: 'Terms of Service', href: '/terms' },
