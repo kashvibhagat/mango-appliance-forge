@@ -8,6 +8,7 @@ import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { SuccessNotificationProvider } from './contexts/SuccessNotificationContext';
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { AdminProtectedRoute } from "./components/auth/AdminProtectedRoute";
 import Layout from "./components/layout/Layout";
 import PageTransition from "./components/layout/PageTransition";
 import FloatingChatbot, { ChatbotRef } from "./components/ui/FloatingChatbot";
@@ -199,8 +200,12 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/blank",
-    element: <BlankPage />,
+    path: "/admin/dashboard",
+    element: (
+      <AdminProtectedRoute>
+        <BlankPage />
+      </AdminProtectedRoute>
+    ),
   },
   {
     path: "/help",
