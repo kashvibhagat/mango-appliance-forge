@@ -26,6 +26,8 @@ import {
 import { toast } from '@/hooks/use-toast'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { PaymentManagementTab } from '@/components/admin/PaymentManagementTab'
+import { CustomerManagementTab } from '@/components/admin/CustomerManagementTab'
+import { AnalyticsTab } from '@/components/admin/AnalyticsTab'
 
 interface Order {
   id: string
@@ -295,14 +297,22 @@ const AdminDashboard = () => {
         
         {/* Navigation Tabs */}
         <Tabs defaultValue="orders" className="space-y-8">
-          <TabsList className="grid w-full max-w-md grid-cols-2 h-12">
+          <TabsList className="grid w-full max-w-4xl grid-cols-4 h-12">
             <TabsTrigger value="orders" className="gap-2">
               <Package className="w-4 h-4" />
-              Order Management
+              Orders
             </TabsTrigger>
             <TabsTrigger value="payments" className="gap-2">
               <DollarSign className="w-4 h-4" />
-              Payment Management
+              Payments
+            </TabsTrigger>
+            <TabsTrigger value="customers" className="gap-2">
+              <Shield className="w-4 h-4" />
+              Customers
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Analytics
             </TabsTrigger>
           </TabsList>
 
@@ -604,6 +614,16 @@ const AdminDashboard = () => {
           {/* Payment Management Tab Content */}
           <TabsContent value="payments" className="space-y-6">
             <PaymentManagementTab />
+          </TabsContent>
+
+          {/* Customer Management Tab Content */}
+          <TabsContent value="customers" className="space-y-6">
+            <CustomerManagementTab />
+          </TabsContent>
+
+          {/* Analytics Tab Content */}
+          <TabsContent value="analytics" className="space-y-6">
+            <AnalyticsTab />
           </TabsContent>
         </Tabs>
       </div>
