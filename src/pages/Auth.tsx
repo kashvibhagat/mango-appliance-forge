@@ -13,9 +13,9 @@ const Auth = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (!loading && user) {
-      // Special redirect for specific user (case-insensitive)
+      // Special redirect for admin user (case-insensitive)
       if (user.email?.toLowerCase() === 'donotreply@mangoappliances.com') {
-        navigate('/blank', { replace: true })
+        navigate('/admin/dashboard', { replace: true })
         return
       }
       
@@ -25,9 +25,9 @@ const Auth = () => {
   }, [user, loading, navigate, location])
 
   const handleSuccess = (email?: string) => {
-    // Special redirect for specific user (case-insensitive)
+    // Special redirect for admin user (case-insensitive)
     if (email?.toLowerCase() === 'donotreply@mangoappliances.com') {
-      navigate('/blank', { replace: true })
+      navigate('/admin/dashboard', { replace: true })
       return
     }
     
