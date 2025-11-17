@@ -7,9 +7,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CreditCard, CheckCircle, Clock, XCircle, Search, Download, TrendingUp } from 'lucide-react';
+import { CreditCard, CheckCircle, Clock, XCircle, Search, Download, TrendingUp, Calendar, AlertTriangle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface PaymentOrder {
   id: string;
@@ -41,6 +42,7 @@ export const PaymentManagementTab = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [methodFilter, setMethodFilter] = useState<string>('all');
+  const [quickFilter, setQuickFilter] = useState<string>('all');
   const [stats, setStats] = useState<PaymentStats>({
     totalRevenue: 0,
     totalTransactions: 0,
@@ -54,7 +56,7 @@ export const PaymentManagementTab = () => {
 
   useEffect(() => {
     filterPayments();
-  }, [payments, searchQuery, statusFilter, methodFilter]);
+  }, [payments, searchQuery, statusFilter, methodFilter, quickFilter]);
 
   const fetchPayments = async () => {
     try {
@@ -99,13 +101,35 @@ export const PaymentManagementTab = () => {
   const filterPayments = () => {
     let filtered = [...payments];
 
-    // Filter by payment method
-    if (methodFilter !== 'all') {
+    // Quick filter logic
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekAgo = new Date(today);
+    weekAgo.setDate(weekAgo.getDate() - 7);
+
+    if (quickFilter === 'today') {
+      filtered = filtered.filter(p => {
+        const paymentDate = new Date(p.created_at);
+        return paymentDate >= today;
+      });
+    } else if (quickFilter === 'week') {
+      filtered = filtered.filter(p => {
+        const paymentDate = new Date(p.created_at);
+        return paymentDate >= weekAgo;
+      });
+    } else if (quickFilter === 'failed') {
+      filtered = filtered.filter(p => p.payment_status === 'failed');
+    } else if (quickFilter === 'razorpay') {
+      filtered = filtered.filter(p => p.payment_method === 'razorpay');
+    }
+
+    // Filter by payment method (if not using razorpay quick filter)
+    if (methodFilter !== 'all' && quickFilter !== 'razorpay') {
       filtered = filtered.filter(p => p.payment_method === methodFilter);
     }
 
-    // Filter by status
-    if (statusFilter !== 'all') {
+    // Filter by status (if not using failed quick filter)
+    if (statusFilter !== 'all' && quickFilter !== 'failed') {
       filtered = filtered.filter(p => p.payment_status === statusFilter);
     }
 
@@ -122,6 +146,15 @@ export const PaymentManagementTab = () => {
     }
 
     setFilteredPayments(filtered);
+  };
+
+  const handleQuickFilter = (value: string) => {
+    setQuickFilter(value);
+    // Reset other filters when using quick filters
+    if (value !== 'all') {
+      setStatusFilter('all');
+      setMethodFilter('all');
+    }
   };
 
   const handleViewDetails = (payment: PaymentOrder) => {
@@ -161,11 +194,26 @@ export const PaymentManagementTab = () => {
   const getStatusBadge = (status: string | null) => {
     switch (status) {
       case 'completed':
-        return <Badge className="bg-green-500"><CheckCircle className="w-3 h-3 mr-1" />Completed</Badge>;
+        return (
+          <Badge className="bg-green-600 hover:bg-green-700 text-white shadow-sm">
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Completed
+          </Badge>
+        );
       case 'pending':
-        return <Badge className="bg-yellow-500"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
+        return (
+          <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white shadow-sm">
+            <Clock className="w-3 h-3 mr-1" />
+            Pending
+          </Badge>
+        );
       case 'failed':
-        return <Badge variant="destructive"><XCircle className="w-3 h-3 mr-1" />Failed</Badge>;
+        return (
+          <Badge className="bg-red-600 hover:bg-red-700 text-white shadow-sm">
+            <XCircle className="w-3 h-3 mr-1" />
+            Failed
+          </Badge>
+        );
       default:
         return <Badge variant="secondary">{status || 'Unknown'}</Badge>;
     }
@@ -241,6 +289,31 @@ export const PaymentManagementTab = () => {
                 Export CSV
               </Button>
             </div>
+
+            {/* Quick Filter Tabs */}
+            <Tabs value={quickFilter} onValueChange={handleQuickFilter} className="mt-4">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="all" className="gap-1">
+                  All Payments
+                </TabsTrigger>
+                <TabsTrigger value="today" className="gap-1">
+                  <Calendar className="w-4 h-4" />
+                  Today
+                </TabsTrigger>
+                <TabsTrigger value="week" className="gap-1">
+                  <Calendar className="w-4 h-4" />
+                  This Week
+                </TabsTrigger>
+                <TabsTrigger value="razorpay" className="gap-1">
+                  <CreditCard className="w-4 h-4" />
+                  Razorpay Only
+                </TabsTrigger>
+                <TabsTrigger value="failed" className="gap-1">
+                  <AlertTriangle className="w-4 h-4" />
+                  Failed
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </CardHeader>
           <CardContent>
             {/* Filters */}
