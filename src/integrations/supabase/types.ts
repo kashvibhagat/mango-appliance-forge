@@ -167,6 +167,11 @@ export type Database = {
           is_free_shipping: boolean | null
           items: Json
           order_number: string
+          payment_details: Json | null
+          payment_method: string | null
+          payment_status: string | null
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
           shipping_address: Json | null
           shipping_cost: number | null
           status: string
@@ -182,6 +187,11 @@ export type Database = {
           is_free_shipping?: boolean | null
           items: Json
           order_number: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          payment_status?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           shipping_address?: Json | null
           shipping_cost?: number | null
           status?: string
@@ -197,6 +207,11 @@ export type Database = {
           is_free_shipping?: boolean | null
           items?: Json
           order_number?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          payment_status?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           shipping_address?: Json | null
           shipping_cost?: number | null
           status?: string
